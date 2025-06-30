@@ -1,0 +1,244 @@
+/* Dashboard Header */
+.header {
+  background: var(--secondary-black);
+  padding: var(--spacing-md) 0;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.headerContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo - Aumentado */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--white);
+  text-decoration: none;
+  transition: all var(--transition-medium);
+}
+
+.logoLink:hover {
+  opacity: 0.8;
+}
+
+/* Navigation */
+.headerNav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.navLink {
+  color: var(--gray-400);
+  text-decoration: none;
+  font-weight: 500;
+  padding: var(--spacing-sm) 0;
+  position: relative;
+  transition: all var(--transition-medium);
+}
+
+.navLink:hover {
+  color: var(--primary-gold);
+}
+
+.navLink.active {
+  color: var(--primary-gold);
+}
+
+.navLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-gold);
+  border-radius: 1px;
+}
+
+/* Header Actions */
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.notificationBtn {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+}
+
+.notificationBtn:hover {
+  color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.notificationBadge {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
+  background: var(--primary-gold);
+  color: var(--primary-black);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* User Menu - Simplificado */
+.userMenu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.userInfo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all var(--transition-medium);
+  border: 2px solid var(--gray-300);
+}
+
+.userInfo:hover img {
+  transform: scale(1.05);
+  border-color: var(--primary-gold);
+}
+
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.userActions .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  background: rgba(212, 175, 55, 0.1);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+}
+
+.userActions .logo:hover {
+  background: rgba(212, 175, 55, 0.2);
+  transform: scale(1.05);
+}
+
+.menuLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm);
+  background: rgba(212, 175, 55, 0.1);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+}
+
+.menuLogo:hover {
+  background: rgba(212, 175, 55, 0.2);
+  transform: scale(1.05);
+}
+
+.userAction {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  color: var(--gray-500);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.userAction:hover {
+  color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .headerNav {
+    display: none;
+  }
+
+  .logoLink {
+    font-size: 1.5rem;
+  }
+
+  .logoLink img {
+    width: 120px;
+    height: auto;
+  }
+
+  .headerContent {
+    padding: 0 var(--spacing-md);
+  }
+
+  .userActions {
+    gap: var(--spacing-xs);
+  }
+
+  .menuLogo {
+    padding: var(--spacing-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .headerContent {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .logoLink {
+    font-size: 1.25rem;
+  }
+
+  .logoLink img {
+    width: 100px;
+  }
+} 

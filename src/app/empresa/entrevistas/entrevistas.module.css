@@ -1,0 +1,514 @@
+.entrevistasPage {
+  min-height: 100vh;
+  background: var(--primary-black);
+  color: var(--white);
+}
+
+.loadingPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-black);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(212, 175, 55, 0.3);
+  border-top: 3px solid var(--primary-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mainContent {
+  padding: var(--spacing-xl) 0;
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--spacing-xl);
+}
+
+.titleSection h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-sm);
+}
+
+.titleSection p {
+  color: var(--gray-700);
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.viewToggle {
+  display: flex;
+  background: var(--secondary-black);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs);
+}
+
+.viewToggle button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: none;
+  border: none;
+  color: var(--gray-700);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.viewToggle button.active {
+  background: var(--primary-gold);
+  color: var(--primary-black);
+}
+
+.viewToggle button:hover:not(.active) {
+  color: var(--white);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Filters */
+.filtersSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.filters select {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--secondary-black);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all var(--transition-medium);
+}
+
+.filters select:focus {
+  background: var(--white);
+  color: var(--primary-black);
+  border: 2px solid var(--primary-gold);
+  outline: none;
+}
+
+/* Calendar Section */
+.calendarSection {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.calendarHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+  text-transform: capitalize;
+}
+
+.navButton {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--gray-700);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navButton:hover {
+  border-color: var(--primary-gold);
+  color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.calendar {
+  width: 100%;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.weekDay {
+  padding: var(--spacing-md);
+  text-align: center;
+  font-weight: 600;
+  color: var(--primary-gold);
+  font-size: 0.875rem;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.calendarDay {
+  background: var(--primary-black);
+  min-height: 120px;
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all var(--transition-medium);
+}
+
+.calendarDay:hover {
+  background: var(--black-light);
+}
+
+.calendarDay.otherMonth {
+  opacity: 0.3;
+}
+
+.calendarDay.today {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--primary-gold);
+}
+
+.dayNumber {
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.entrevistasIndicator {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.entrevistaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 2px var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.entrevistaItem.statusAgendada {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60A5FA;
+}
+
+.entrevistaItem.statusConfirmada {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ADE80;
+}
+
+.entrevistaItem.statusRealizada {
+  background: rgba(168, 85, 247, 0.2);
+  color: #A78BFA;
+}
+
+.entrevistaItem.statusCancelada {
+  background: rgba(239, 68, 68, 0.2);
+  color: #F87171;
+}
+
+.moreIndicator {
+  font-size: 0.75rem;
+  color: var(--gray-700);
+  text-align: center;
+  padding: 2px;
+}
+
+/* List Section */
+.listSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.entrevistasList {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.entrevistaCard {
+  background: var(--secondary-black);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-medium);
+}
+
+.entrevistaCard:hover {
+  background: var(--black-light);
+  transform: translateY(-2px);
+}
+
+.entrevistaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+}
+
+.entrevistaInfo h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.vagaTitulo {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+}
+
+.entrevistaStatus {
+  display: flex;
+  align-items: center;
+}
+
+.statusBadge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusAgendada {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60A5FA;
+}
+
+.statusConfirmada {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ADE80;
+}
+
+.statusRealizada {
+  background: rgba(168, 85, 247, 0.2);
+  color: #A78BFA;
+}
+
+.statusCancelada {
+  background: rgba(239, 68, 68, 0.2);
+  color: #F87171;
+}
+
+.entrevistaMeta {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--gray-700);
+  font-size: 0.875rem;
+}
+
+.metaItem svg {
+  color: var(--primary-gold);
+}
+
+.entrevistaLocal {
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.localInfo,
+.linkInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--gray-700);
+  font-size: 0.875rem;
+}
+
+.localInfo svg,
+.linkInfo svg {
+  color: var(--primary-gold);
+}
+
+.linkInfo a {
+  color: var(--primary-gold);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-medium);
+}
+
+.linkInfo a:hover {
+  color: var(--white);
+  text-decoration: underline;
+}
+
+.observacoes {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+}
+
+.observacoes strong {
+  color: var(--white);
+  font-size: 0.875rem;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+.observacoes p {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.entrevistaActions {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: var(--spacing-xxl);
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+}
+
+.emptyIcon {
+  color: var(--primary-gold);
+  margin-bottom: var(--spacing-lg);
+}
+
+.emptyState h3 {
+  font-size: 1.5rem;
+  color: var(--white);
+  margin-bottom: var(--spacing-md);
+}
+
+.emptyState p {
+  color: var(--gray-700);
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pageHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .calendarDay {
+    min-height: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .titleSection h1 {
+    font-size: 2rem;
+  }
+  
+  .calendarSection {
+    padding: var(--spacing-lg);
+  }
+  
+  .calendarDay {
+    min-height: 80px;
+    padding: var(--spacing-xs);
+  }
+  
+  .entrevistaHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .entrevistaMeta {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .entrevistaActions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendarGrid {
+    gap: 0;
+  }
+  
+  .calendarDay {
+    min-height: 60px;
+    padding: 2px;
+  }
+  
+  .dayNumber {
+    font-size: 0.75rem;
+  }
+  
+  .entrevistaItem {
+    font-size: 0.625rem;
+    padding: 1px 2px;
+  }
+  
+  .entrevistaCard {
+    padding: var(--spacing-lg);
+  }
+  
+  .viewToggle {
+    width: 100%;
+  }
+  
+  .viewToggle button {
+    flex: 1;
+    justify-content: center;
+  }
+} 

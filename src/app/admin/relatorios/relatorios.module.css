@@ -1,0 +1,693 @@
+.relatoriosPage {
+  min-height: 100vh;
+  background: var(--primary-black);
+  color: var(--white);
+}
+
+.loadingPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-black);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(212, 175, 55, 0.3);
+  border-top: 3px solid var(--primary-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mainContent {
+  padding: var(--spacing-xl) 0;
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--spacing-xl);
+}
+
+.titleSection h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-sm);
+}
+
+.titleSection p {
+  color: var(--gray-700);
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.filters {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.filterSelect {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--secondary-black);
+  color: var(--white);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all var(--transition-medium);
+}
+
+.filterSelect:focus {
+  background: var(--white);
+  color: var(--primary-black);
+  border: 2px solid var(--primary-gold);
+  outline: none;
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.metricCard {
+  background: var(--secondary-black);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-medium);
+}
+
+.metricCard:hover {
+  background: var(--black-light);
+  transform: translateY(-2px);
+}
+
+.metricHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.metricIcon {
+  padding: var(--spacing-md);
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--primary-gold);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metricVariacao {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.metricVariacao.positivo {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ADE80;
+}
+
+.metricVariacao.negativo {
+  background: rgba(239, 68, 68, 0.2);
+  color: #F87171;
+}
+
+.metricVariacao.neutro {
+  background: rgba(156, 163, 175, 0.2);
+  color: #9CA3AF;
+}
+
+.metricContent h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.metricContent p {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+}
+
+/* Chart Section */
+.chartSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.chartCard {
+  background: var(--secondary-black);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.chartHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.chartLegend {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.875rem;
+  color: var(--gray-700);
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.legendColor.empresas {
+  background: #F59E0B;
+}
+
+.legendColor.vagas {
+  background: var(--primary-gold);
+}
+
+.legendColor.candidatos {
+  background: #60A5FA;
+}
+
+.legendColor.entrevistas {
+  background: #A78BFA;
+}
+
+.legendColor.contratacoes {
+  background: #4ADE80;
+}
+
+.chartContainer {
+  height: 300px;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--spacing-lg) 0;
+}
+
+.chartGrid {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  height: 100%;
+  gap: var(--spacing-md);
+}
+
+.chartColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+.chartBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: calc(100% - 30px);
+  width: 100%;
+  justify-content: center;
+}
+
+.chartBar {
+  width: 12px;
+  border-radius: 2px 2px 0 0;
+  min-height: 4px;
+  transition: all var(--transition-medium);
+}
+
+.chartBar:hover {
+  opacity: 0.8;
+  transform: scaleY(1.05);
+}
+
+.chartBar.empresas {
+  background: #F59E0B;
+}
+
+.chartBar.vagas {
+  background: var(--primary-gold);
+}
+
+.chartBar.candidatos {
+  background: #60A5FA;
+}
+
+.chartBar.entrevistas {
+  background: #A78BFA;
+}
+
+.chartBar.contratacoes {
+  background: #4ADE80;
+}
+
+.chartLabel {
+  margin-top: var(--spacing-sm);
+  font-size: 0.75rem;
+  color: var(--gray-700);
+  font-weight: 500;
+}
+
+/* Reports Grid */
+.reportsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.reportCard {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.reportHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reportHeader h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.exportBtn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--gray-700);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exportBtn:hover {
+  border-color: var(--primary-gold);
+  color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+/* Top Vagas */
+.topVagasList {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.topVagaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+}
+
+.topVagaItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.vagaRank {
+  width: 32px;
+  height: 32px;
+  background: var(--primary-gold);
+  color: var(--primary-black);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.vagaInfo {
+  flex: 1;
+}
+
+.vagaInfo h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.vagaStats {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.vagaStats span {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.75rem;
+  color: var(--gray-700);
+}
+
+.vagaStats svg {
+  color: var(--primary-gold);
+}
+
+.vagaConversao {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.conversaoValue {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--primary-gold);
+}
+
+.conversaoLabel {
+  font-size: 0.75rem;
+  color: var(--gray-700);
+}
+
+/* Região List */
+.regiaoList {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.regiaoItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.regiaoInfo {
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.regiaoNome {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.regiaoQuantidade {
+  font-size: 0.75rem;
+  color: var(--gray-700);
+}
+
+.regiaoBar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.regiaoProgress {
+  height: 100%;
+  background: var(--primary-gold);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-medium);
+}
+
+.regiaoPercentual {
+  min-width: 40px;
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary-gold);
+}
+
+/* Habilidades List */
+.habilidadesList {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.habilidadeItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.habilidadeInfo {
+  min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.habilidadeNome {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.habilidadeDemanda {
+  font-size: 0.75rem;
+  color: var(--gray-700);
+}
+
+.habilidadeBar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.habilidadeProgress {
+  height: 100%;
+  background: #60A5FA;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-medium);
+}
+
+.habilidadePercentual {
+  min-width: 40px;
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #60A5FA;
+}
+
+/* Performance List */
+.performanceList {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.performanceItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.performanceIcon {
+  width: 40px;
+  height: 40px;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--primary-gold);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.performanceInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.performanceLabel {
+  font-size: 0.875rem;
+  color: var(--gray-700);
+}
+
+.performanceValue {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+/* Export Section */
+.exportSection {
+  background: var(--secondary-black);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.exportSection h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-lg);
+}
+
+.exportButtons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pageHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .chartLegend {
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
+  
+  .reportsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .titleSection h1 {
+    font-size: 2rem;
+  }
+  
+  .metricsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  .headerActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filters {
+    flex-direction: column;
+  }
+  
+  .chartContainer {
+    height: 250px;
+  }
+  
+  .chartLegend {
+    justify-content: center;
+  }
+  
+  .topVagaItem {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-sm);
+  }
+  
+  .vagaConversao {
+    text-align: center;
+  }
+  
+  .exportButtons {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metricCard {
+    padding: var(--spacing-lg);
+  }
+  
+  .chartCard {
+    padding: var(--spacing-lg);
+  }
+  
+  .reportHeader,
+  .topVagasList,
+  .regiaoList,
+  .habilidadesList,
+  .performanceList {
+    padding: var(--spacing-md);
+  }
+  
+  .exportSection {
+    padding: var(--spacing-lg);
+  }
+  
+  .chartBars {
+    gap: 1px;
+  }
+  
+  .chartBar {
+    width: 8px;
+  }
+} 

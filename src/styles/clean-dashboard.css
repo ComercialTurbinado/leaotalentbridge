@@ -1,0 +1,355 @@
+/* Clean Dashboard Styles - Remove borders and shadows for modern look */
+
+/* Global clean styles */
+* {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Remove borders and shadows from all cards and containers */
+.dashboardCard,
+.interviewCard,
+.simulationCard,
+.documentCard,
+.courseCard,
+.cultureCard,
+.formatCard,
+.profileCard,
+.statCard,
+.progressCard,
+.checklistItem,
+.opportunityCard,
+.sidebarCard,
+.categoryCard,
+.skillCard,
+.experienceItem,
+.educationItem,
+.projectItem,
+.certificateItem,
+.languageItem,
+.statusCard,
+.welcomeSection,
+.progressSection,
+.checklistSection,
+.dashboardGrid,
+.sidebar,
+.mainContent,
+.container,
+.headerContent,
+.moduleCard,
+.lessonCard,
+.quizCard,
+.videoContainer,
+.contentTabs,
+.tabContent,
+.resourceItem,
+.commentCard,
+.activityItem,
+.notificationCard,
+.messageCard {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Remove borders from form elements */
+input,
+textarea,
+select,
+button,
+.btn,
+.form-control,
+.form-input,
+.form-select,
+.form-textarea {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Remove borders from navigation elements */
+.nav,
+.navbar,
+.menu,
+.tabs,
+.tab,
+.breadcrumb,
+.pagination {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove borders from tables */
+table,
+thead,
+tbody,
+tr,
+td,
+th {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove borders from modals and overlays */
+.modal,
+.overlay,
+.popup,
+.dropdown,
+.tooltip,
+.popover {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove borders from images and media */
+img,
+video,
+iframe,
+.image,
+.media {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove borders from specific dashboard components */
+.dashboardPage .mainContent .container > section,
+.entrevistasPage .mainContent .container > section,
+.simulacoesPage .mainContent .container > section,
+.documentosPage .mainContent .container > section,
+.cursosPage .mainContent .container > section,
+.culturaPage .mainContent .container > section,
+.formatacaoPage .mainContent .container > section,
+.perfilPage .mainContent .container > section {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Clean focus states */
+*:focus,
+*:focus-visible,
+*:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Clean hover states */
+*:hover {
+  box-shadow: none !important;
+}
+
+/* Clean active states */
+*:active {
+  box-shadow: none !important;
+}
+
+/* Ensure buttons maintain their background colors but no borders/shadows */
+.btn {
+  background-color: var(--primary-gold) !important;
+  color: var(--primary-black) !important;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-black) !important;
+  color: var(--white) !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-gold) !important;
+  color: var(--primary-black) !important;
+}
+
+/* Clean input styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+  background-color: var(--secondary-black) !important;
+  color: var(--white) !important;
+  padding: 12px 16px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Input focus states */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus {
+  background-color: var(--white) !important;
+  color: var(--primary-black) !important;
+  border: 2px solid var(--primary-gold) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Placeholder styles */
+input::placeholder,
+textarea::placeholder {
+  color: var(--gray-700) !important;
+  opacity: 0.7 !important;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Clean card backgrounds */
+.dashboardCard,
+.sidebarCard,
+.statCard,
+.progressCard,
+.checklistItem,
+.opportunityCard,
+.categoryCard,
+.simulationCard,
+.documentCard,
+.courseCard {
+  background-color: var(--secondary-black) !important;
+  border-radius: 12px !important;
+  padding: 24px !important;
+}
+
+/* Clean navigation */
+.header,
+.navbar,
+.nav {
+  background-color: var(--secondary-black) !important;
+}
+
+/* Clean main content areas */
+.mainContent {
+  background-color: var(--primary-black) !important;
+}
+
+/* Clean sidebar */
+.sidebar {
+  background-color: var(--primary-black) !important;
+}
+
+/* Remove any remaining borders from specific components */
+.grid > *,
+.flex > *,
+.container > *,
+.section > *,
+.card > *,
+.box > *,
+.panel > *,
+.widget > * {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove borders from upload areas */
+.uploadArea {
+  border: 2px dashed rgba(212, 175, 55, 0.3) !important;
+}
+
+.uploadArea.dragActive {
+  border: 2px dashed var(--primary-gold) !important;
+}
+
+/* Remove borders from progress bars */
+.progressBar {
+  border: none !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Remove borders from status badges */
+.statusBadge,
+.difficultyBadge,
+.completedBadge,
+.tabBadge,
+.notificationBadge {
+  border: none !important;
+}
+
+/* Remove borders from search inputs */
+.searchInput {
+  border: none !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+}
+
+/* Remove borders from action buttons */
+.actionBtn,
+.userAction {
+  border: none !important;
+}
+
+/* Remove borders from feedback sections */
+.feedback,
+.docFeedback {
+  border: none !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-radius: 8px !important;
+}
+
+/* Remove borders from empty states */
+.emptyState {
+  border: none !important;
+}
+
+/* Remove borders from video player controls */
+.videoControls,
+.controlsBar {
+  border: none !important;
+}
+
+/* Remove borders from quiz elements */
+.quizContainer,
+.questionCard,
+.optionButton {
+  border: none !important;
+}
+
+/* Remove borders from course modules */
+.moduleContent {
+  border: none !important;
+}
+
+/* Remove borders from simulation elements */
+.simulationContainer,
+.questionContainer,
+.answerArea {
+  border: none !important;
+}
+
+/* Remove borders from profile sections */
+.profileHeader,
+.profileContent,
+.formGroup {
+  border: none !important;
+}
+
+/* Remove borders from document preview */
+.documentPreview,
+.previewContainer {
+  border: none !important;
+}
+
+/* Remove borders from culture sections */
+.cultureSection,
+.cultureContent {
+  border: none !important;
+}
+
+/* Remove borders from formatting tools */
+.formatTool,
+.formatPreview {
+  border: none !important;
+} 

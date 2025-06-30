@@ -1,0 +1,78 @@
+.animatedCard {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(10, 10, 10, 0.95));
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0; /* Começa invisível para a animação */
+ }
+
+.animatedCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.1), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.animatedCard:hover {
+  transform: translateY(-10px);
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 15px 40px rgba(212, 175, 55, 0.15);
+}
+
+.animatedCard:hover::before {
+  opacity: 1;
+}
+
+.stepNumber {
+  position: absolute;
+  top: -25px;
+   transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #D4AF37, #B8941F);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: #000000;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+  letter-spacing: -1px;
+  z-index: 2;
+}
+
+.stepIcon {
+  margin: var(--spacing-xl) 0;
+  color: var(--primary-gold);
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.animatedCard h3 {
+  font-size: 1.5rem;
+  color: #ffffff;
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  line-height: .9;
+}
+
+.animatedCard p {
+  color: #aaaaaa;
+  line-height: 1.1;
+} 

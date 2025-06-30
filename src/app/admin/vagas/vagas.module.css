@@ -1,0 +1,893 @@
+.vagasPage {
+  min-height: 100vh;
+  background: var(--primary-black);
+  color: var(--white);
+}
+
+.loadingPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-black);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(212, 175, 55, 0.3);
+  border-top: 3px solid var(--primary-gold);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mainContent {
+  padding: var(--spacing-xl) 0;
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--spacing-xl);
+}
+
+.titleSection h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-sm);
+}
+
+.titleSection p {
+  color: var(--gray-700);
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.statCard {
+  background: var(--secondary-black);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.statCard:hover {
+  background: var(--black-light);
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+}
+
+.statIcon {
+  width: 60px;
+  height: 60px;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--primary-gold);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statContent h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.statContent p {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Filters */
+.filtersSection {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  align-items: center;
+}
+
+.searchBox {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchBox svg {
+  position: absolute;
+  left: var(--spacing-md);
+  color: #666666;
+  z-index: 2;
+}
+
+.searchBox input {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 3rem;
+  background: #ffffff !important;
+  border: 2px solid #d1d5db;
+  border-radius: var(--radius-md);
+  color: #1f2937 !important;
+  font-size: 1rem;
+  transition: all var(--transition-medium);
+}
+
+.searchBox input:focus {
+  border-color: var(--primary-gold);
+  background: #ffffff !important;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.searchBox input::placeholder {
+  color: #9ca3af;
+}
+
+.filters {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.filterSelect {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border: 2px solid #d1d5db;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  min-width: 150px;
+  transition: all var(--transition-medium);
+}
+
+.filterSelect:focus {
+  border-color: var(--primary-gold);
+  background: #ffffff !important;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Table Section */
+.tableSection {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.vagasTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.vagasTable thead {
+  background: var(--black-light);
+}
+
+.vagasTable th {
+  padding: var(--spacing-lg);
+  text-align: left;
+  font-weight: 600;
+  color: var(--white);
+  border-bottom: 2px solid var(--gray-300);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vagasTable td {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-200);
+  vertical-align: middle;
+}
+
+.vagasTable tbody tr {
+  transition: background-color var(--transition-medium);
+}
+
+.vagasTable tbody tr:hover {
+  background: rgba(212, 175, 55, 0.05);
+}
+
+/* Vaga Info */
+.vagaInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.vagaInfo img {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 2px solid var(--gray-300);
+}
+
+.vagaDetails h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.vagaDetails p {
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  margin-bottom: var(--spacing-xs);
+}
+
+.vagaLocation {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.75rem;
+  color: var(--primary-gold);
+  font-weight: 500;
+}
+
+/* Status Badge */
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  width: fit-content;
+}
+
+.statusBadge.green {
+  background: rgba(34, 197, 94, 0.2);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.statusBadge.yellow {
+  background: rgba(245, 158, 11, 0.2);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.statusBadge.gray {
+  background: rgba(156, 163, 175, 0.2);
+  color: #6b7280;
+  border: 1px solid rgba(156, 163, 175, 0.3);
+}
+
+.statusBadge.blue {
+  background: rgba(59, 130, 246, 0.2);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.statusBadge.purple {
+  background: rgba(147, 51, 234, 0.2);
+  color: #7c3aed;
+  border: 1px solid rgba(147, 51, 234, 0.3);
+}
+
+.statusBadge.red {
+  background: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Candidatos Info */
+.candidatosInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.candidatosCount {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.candidatosLabel {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+/* Recomendados Info */
+.recomendadosInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.recomendadosCount {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--primary-gold);
+}
+
+.viewCandidatesBtn {
+  background: none;
+  border: 1px solid var(--primary-gold);
+  color: var(--primary-gold);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.viewCandidatesBtn:hover {
+  background: var(--primary-gold);
+  color: var(--primary-black);
+}
+
+/* Salario Info */
+.salarioInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.salarioRange {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.salarioTipo {
+  font-size: 0.75rem;
+  color: var(--primary-black);
+  padding: 2px 6px;
+  background: rgba(212, 175, 55, 0.9);
+  border-radius: var(--radius-sm);
+  width: fit-content;
+  font-weight: 600;
+}
+
+/* Date Text */
+.dateText {
+  font-size: 0.875rem;
+  color: var(--gray-400);
+  font-weight: 500;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.actionBtn {
+  width: 36px;
+  height: 36px;
+  background: var(--black-light);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.actionBtn:hover {
+  background: var(--primary-gold);
+  color: var(--primary-black);
+  border-color: var(--primary-gold);
+  transform: scale(1.05);
+}
+
+.actionBtn.danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--gray-500);
+}
+
+.emptyState svg {
+  color: var(--gray-600);
+  margin-bottom: var(--spacing-lg);
+}
+
+.emptyState h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-sm);
+}
+
+.emptyState p {
+  font-size: 0.875rem;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
+.modalContent {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--gray-200);
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.modalHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+}
+
+.closeButton:hover {
+  background: var(--black-light);
+  color: var(--white);
+}
+
+.modalBody {
+  padding: var(--spacing-xl);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  border-top: 1px solid var(--gray-200);
+}
+
+/* Vaga Details Modal */
+.vagaHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.vagaHeader img {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  border: 3px solid var(--primary-gold);
+}
+
+.vagaHeader h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.vagaHeader p {
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-sm);
+}
+
+.vagaInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background: var(--black-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+}
+
+.infoItem svg {
+  color: var(--primary-gold);
+  flex-shrink: 0;
+}
+
+.infoLabel {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-xs);
+}
+
+.infoValue {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--white);
+  font-weight: 600;
+}
+
+.vagaDescription,
+.vagaRequirements {
+  margin-bottom: var(--spacing-lg);
+}
+
+.vagaDescription h4,
+.vagaRequirements h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-md);
+}
+
+.vagaDescription p {
+  color: var(--gray-500);
+  line-height: 1.6;
+}
+
+.vagaRequirements ul {
+  list-style: none;
+  padding: 0;
+}
+
+.vagaRequirements li {
+  color: var(--gray-500);
+  padding: var(--spacing-sm);
+  background: var(--black-light);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+  padding-left: var(--spacing-lg);
+}
+
+.vagaRequirements li::before {
+  content: '•';
+  color: var(--primary-gold);
+  font-weight: bold;
+  position: absolute;
+  left: var(--spacing-sm);
+}
+
+/* Candidates List Modal */
+.candidatesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.candidateCard {
+  background: var(--black-light);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  transition: all var(--transition-medium);
+}
+
+.candidateCard:hover {
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+}
+
+.candidateHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.candidateHeader img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gray-300);
+}
+
+.candidateInfo {
+  flex: 1;
+}
+
+.candidateInfo h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.candidateInfo p {
+  font-size: 0.875rem;
+  color: var(--gray-400);
+  margin-bottom: var(--spacing-xs);
+}
+
+.candidateLocation {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+.candidateCompatibility {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.compatibilityScore {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--primary-gold);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.candidateStatus {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.candidateDetails {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--secondary-black);
+  border-radius: var(--radius-md);
+}
+
+.candidateContact,
+.candidateExperience {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.candidateContact span,
+.candidateExperience span {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.875rem;
+  color: var(--gray-500);
+}
+
+.candidateActions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--secondary-black);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  color: var(--gray-500);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.actionButton:hover {
+  background: var(--primary-gold);
+  color: var(--primary-black);
+  border-color: var(--primary-gold);
+}
+
+.actionButton.approve:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pageHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .filtersSection {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .filters {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .filterSelect {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .titleSection h1 {
+    font-size: 2rem;
+  }
+  
+  .statsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  
+  .statCard {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-md);
+  }
+  
+  .statIcon {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .vagasTable {
+    font-size: 0.875rem;
+  }
+  
+  .vagasTable th,
+  .vagasTable td {
+    padding: var(--spacing-md);
+  }
+  
+  .vagaInfo {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-sm);
+  }
+  
+  .vagaInfo img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .actionButtons {
+    flex-wrap: wrap;
+  }
+  
+  .modalContent {
+    margin: var(--spacing-md);
+    max-width: none;
+  }
+  
+  .vagaInfoGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .candidateDetails {
+    grid-template-columns: 1fr;
+  }
+  
+  .candidateActions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .tableContainer {
+    font-size: 0.75rem;
+  }
+  
+  .actionBtn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .modalHeader,
+  .modalBody,
+  .modalFooter {
+    padding: var(--spacing-lg);
+  }
+  
+  .vagaHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .candidateHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .candidateCompatibility {
+    align-items: center;
+  }
+} 
