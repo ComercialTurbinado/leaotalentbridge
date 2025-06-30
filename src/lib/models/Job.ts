@@ -387,8 +387,6 @@ JobSchema.index({ category: 1, 'location.city': 1 });
 JobSchema.index({ 'location.country': 1, 'location.isRemote': 1 });
 JobSchema.index({ workType: 1, 'requirements.experience.level': 1 });
 JobSchema.index({ tags: 1 });
-JobSchema.index({ slug: 1 });
-JobSchema.index({ expiresAt: 1 }); // Para expiração automática
 JobSchema.index({ 
   title: 'text', 
   description: 'text', 

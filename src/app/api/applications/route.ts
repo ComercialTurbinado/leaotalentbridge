@@ -206,21 +206,21 @@ export async function POST(request: NextRequest) {
       // Implementar lógica de screening automático aqui
       // Por enquanto, score básico
       application.screening = {
-        score: Math.floor(Math.random() * 40) + 60, // 60-100
+        score: 75,
         criteria: {
-          education: Math.floor(Math.random() * 20) + 80,
-          experience: Math.floor(Math.random() * 20) + 80,
-          skills: Math.floor(Math.random() * 20) + 80,
-          location: Math.floor(Math.random() * 20) + 80,
-          salary: Math.floor(Math.random() * 20) + 80,
-          overall: Math.floor(Math.random() * 20) + 80
+          education: 80,
+          experience: 80,
+          skills: 80,
+          location: 80,
+          salary: 80,
+          overall: 80
         },
         passedScreening: true,
         automatedDate: new Date(),
         notes: 'Screening automático realizado'
       };
       
-      application.status = application.screening.score >= 70 ? 'qualified' : 'screening';
+      application.status = 'qualified';
     }
     
     await application.save();
@@ -234,10 +234,10 @@ export async function POST(request: NextRequest) {
     });
     
     // Atualizar estatísticas da empresa
-    const company = await Company.findById(job.companyId._id);
-    if (company) {
-      await company.updateStats();
-    }
+    // const company = await Company.findById(job.companyId._id);
+    // if (company) {
+    //   await company.updateStats();
+    // }
     
     return NextResponse.json({
       success: true,

@@ -84,7 +84,8 @@ const UserSchema = new Schema<IUser>({
 });
 
 // Índices para performance
-UserSchema.index({ email: 1, type: 1 });
+// UserSchema.index({ email: 1, type: 1 }); // Removido para evitar duplicação com email único
+UserSchema.index({ type: 1 });
 UserSchema.index({ createdAt: -1 });
 
 export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema); 

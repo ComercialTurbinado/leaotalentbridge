@@ -3,6 +3,7 @@ import connectMongoDB from '@/lib/mongodb';
 import Job from '@/lib/models/Job';
 import Company from '@/lib/models/Company';
 import User from '@/lib/models/User';
+import Application from '@/lib/models/Application';
 import jwt from 'jsonwebtoken';
 
 // Middleware para verificar autenticação
@@ -148,7 +149,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Verificar limites do plano
-    if (company.plan.isActive) {
+    if (company.plan && company.plan.isActive) {
       const activeJobs = await Job.countDocuments({ 
         companyId: companyId, 
         status: { $in: ['active', 'draft'] } 
@@ -187,7 +188,7 @@ export async function POST(request: NextRequest) {
     await job.save();
     
     // Atualizar estatísticas da empresa
-    await company.updateStats();
+    // await company.updateStats();
     
     return NextResponse.json({
       success: true,
@@ -197,7 +198,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Erro ao criar vaga:', error);
     return NextResponse.json(
-      { success: false, message: 'Erro ao criar vaga' },
+      { success: false, message: 'Erro ao criar vaga', error: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
