@@ -964,7 +964,8 @@
   align-items: center;
   gap: var(--spacing-lg);
   transition: all var(--transition-medium);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .statCard:hover {
@@ -1017,7 +1018,8 @@
   background: var(--secondary-black);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .sectionHeader {
@@ -1058,7 +1060,7 @@
 }
 
 .applicationItem {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.02);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
   display: flex;
@@ -1066,12 +1068,13 @@
   align-items: flex-start;
   gap: var(--spacing-lg);
   transition: all var(--transition-medium);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .applicationItem:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .applicationInfo h4 {
@@ -1118,7 +1121,7 @@
 }
 
 .jobItem {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.02);
   border-radius: var(--radius-md);
   padding: var(--spacing-lg);
   display: flex;
@@ -1126,12 +1129,13 @@
   align-items: flex-start;
   gap: var(--spacing-lg);
   transition: all var(--transition-medium);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .jobItem:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .jobInfo h4 {
@@ -1304,7 +1308,8 @@
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .activitiesSection h2 {
@@ -1327,13 +1332,14 @@
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
   transition: all var(--transition-medium);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .activityItem:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .activityIcon {
@@ -1404,7 +1410,8 @@
   align-items: center;
   text-align: center;
   gap: var(--spacing-md);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .actionCard:hover {

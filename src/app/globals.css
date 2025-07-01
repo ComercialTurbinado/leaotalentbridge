@@ -6,31 +6,31 @@
 }
 
 :root {
-  /* Cores Principais - DARK THEME para páginas internas */
-  --primary-black: #0A0B0E;
-  --secondary-black: #161B22;
+  /* Cores Principais - LIGHT THEME para páginas internas */
+  --primary-black: #FFFFFF;
+  --secondary-black: #F8F9FA;
   --primary-gold: #D4AF37;
   --secondary-gold: #F4E7A1;
   
   /* Variações de Fundo */
-  --black-light: #1C2128;
-  --black-darker: #0D1117;
+  --black-light: #F1F3F4;
+  --black-darker: #E9ECEF;
   
   /* Variações de Dourado */
   --gold-dark: #B8941F;
   --gold-light: #E8D574;
   
-  /* Cores de Apoio - DARK theme */
-  --white: #F0F6FC;              /* Texto principal claro */
-  --gray-100: #0D1117;           /* Fundo mais escuro */
-  --gray-200: #161B22;           /* Bordas escuras */
-  --gray-300: #21262D;           /* Separadores */
-  --gray-400: #30363D;           /* Elementos de fundo */
-  --gray-500: #484F58;           /* Textos auxiliares */
-  --gray-600: #656D76;           /* Textos secundários */
-  --gray-700: #8B949E;           /* Textos de menor importância */
-  --gray-800: #C9D1D9;           /* Textos claros */
-  --gray-900: #F0F6FC;           /* Texto mais claro */
+  /* Cores de Apoio - LIGHT theme */
+  --white: #212529;              /* Texto principal escuro */
+  --gray-100: #F8F9FA;           /* Fundo mais claro */
+  --gray-200: #E9ECEF;           /* Bordas claras */
+  --gray-300: #DEE2E6;           /* Separadores */
+  --gray-400: #CED4DA;           /* Elementos de fundo */
+  --gray-500: #ADB5BD;           /* Textos auxiliares */
+  --gray-600: #6C757D;           /* Textos secundários */
+  --gray-700: #495057;           /* Textos de menor importância */
+  --gray-800: #343A40;           /* Textos escuros */
+  --gray-900: #212529;           /* Texto mais escuro */
   
   /* Status Colors */
   --success: #198754;
@@ -40,17 +40,17 @@
   --error-dark: #b02a37;
   --info: #0d6efd;
   
-  /* Shadows - Dark theme */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
-  --shadow-gold: 0 4px 15px rgba(212, 175, 55, 0.3);
+  /* Shadows - Light theme */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-gold: 0 4px 15px rgba(212, 175, 55, 0.2);
   
   /* Gradients */
   --gradient-gold: linear-gradient(135deg, var(--primary-gold), var(--gold-light));
   --gradient-black: linear-gradient(135deg, var(--primary-black), var(--secondary-black));
-  --gradient-overlay: linear-gradient(45deg, rgba(0, 0, 0, 0.8), rgba(22, 27, 34, 0.6));
+  --gradient-overlay: linear-gradient(45deg, rgba(255, 255, 255, 0.9), rgba(248, 249, 250, 0.7));
   
   /* Border Radius */
   --radius-sm: 0.375rem;
