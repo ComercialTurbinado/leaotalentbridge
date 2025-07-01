@@ -597,7 +597,7 @@ function DashboardContent() {
                         </div>
                       </div>
                       <div className={styles.applicationStatus}>
-                        <span className={`status ${getStatusColor(application.status)}`}>
+                        <span className={`${styles.status} ${styles[getStatusColor(application.status)]}`}>
                           {getStatusLabel(application.status)}
                         </span>
                         <small>{new Date(application.appliedAt).toLocaleDateString('pt-BR')}</small>
@@ -663,7 +663,7 @@ function DashboardContent() {
                       <div className={styles.jobActions}>
                         <Link 
                           href={`/candidato/vagas/${job._id}`} 
-                          className="btn btn-outline btn-sm"
+                          className={`${styles.btnOutline} ${styles.btnSm}`}
                         >
                           Ver Detalhes
                         </Link>
@@ -715,7 +715,7 @@ function DashboardContent() {
                     </div>
                     {activity.status && (
                       <div className={styles.activityStatus}>
-                        <span className={`status ${getStatusColor(activity.status)}`}>
+                        <span className={`${styles.status} ${styles[getStatusColor(activity.status)]}`}>
                           {getStatusLabel(activity.status)}
                         </span>
                       </div>

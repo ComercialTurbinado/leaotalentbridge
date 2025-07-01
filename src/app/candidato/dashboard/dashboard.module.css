@@ -1296,4 +1296,225 @@
   .jobItem {
     padding: var(--spacing-md);
   }
+}
+
+/* Activities Section */
+.activitiesSection {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.activitiesSection h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-lg);
+}
+
+.activitiesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.activityItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
+}
+
+.activityIcon {
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  background: rgba(212, 175, 55, 0.1);
+  color: var(--primary-gold);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activityContent {
+  flex: 1;
+}
+
+.activityContent h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.activityContent p {
+  color: var(--gray-700);
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 0.875rem;
+}
+
+.activityDate {
+  color: var(--gray-800);
+  font-size: 0.75rem;
+}
+
+.activityStatus {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Quick Actions */
+.quickActions {
+  margin-bottom: var(--spacing-xl);
+}
+
+.quickActions h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-lg);
+}
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.actionCard {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  text-decoration: none;
+  color: inherit;
+  transition: all var(--transition-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.actionCard:hover {
+  background: var(--black-light);
+  transform: translateY(-4px);
+  border-color: var(--primary-gold);
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
+}
+
+.actionCard svg {
+  color: var(--primary-gold);
+  margin-bottom: var(--spacing-sm);
+}
+
+.actionCard h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--white);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.actionCard p {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.actionCard:hover h3 {
+  color: var(--primary-gold);
+}
+
+.actionCard:hover svg {
+  transform: scale(1.1);
+}
+
+/* Button Classes for Module CSS */
+.btnOutline {
+  background: transparent;
+  color: var(--primary-gold);
+  border: 1px solid var(--primary-gold);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition-medium);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+}
+
+.btnOutline:hover {
+  background: var(--primary-gold);
+  color: var(--primary-black);
+  transform: translateY(-1px);
+}
+
+.btnSm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.75rem;
+}
+
+/* Container styles */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 1200px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+  
+  .actionsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .actionsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .activitiesSection,
+  .quickActions {
+    padding: var(--spacing-lg);
+  }
+  
+  .actionCard {
+    padding: var(--spacing-lg);
+  }
+  
+  .activityItem {
+    padding: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .activityContent h4 {
+    font-size: 0.875rem;
+  }
+  
+  .actionCard h3 {
+    font-size: 1rem;
+  }
 } 
