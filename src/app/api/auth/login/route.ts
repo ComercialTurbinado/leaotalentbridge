@@ -60,15 +60,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Gerar JWT token
-    const token = jwt.sign(
-      { 
-        userId: user._id, 
-        email: user.email, 
-        type: user.type 
-      },
-      jwtSecret,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
+    const payload = { 
+      userId: user._id.toString(), 
+      email: user.email, 
+      type: user.type 
+    };
+    
+    const token = jwt.sign(payload, jwtSecret, { expiresIn: '7d' });
 
     // Retornar dados do usuário (sem a senha)
     const userData = {
