@@ -37,7 +37,6 @@ export default function DashboardHeader({ user, userType }: DashboardHeaderProps
           { href: '/candidato/entrevistas', label: 'Entrevistas' },
           { href: '/candidato/simulacoes', label: 'Simulações' },
           { href: '/candidato/documentos', label: 'Documentos' },
-          { href: '/candidato/cursos', label: 'Cursos' },
           { href: '/candidato/cultura', label: 'Cultura' },
           { href: '/candidato/perfil', label: 'Perfil' }
         ];
