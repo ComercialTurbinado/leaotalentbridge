@@ -886,7 +886,7 @@
 }
 
 .emptyState p {
-  color: var(--gray-400);
+  color: #202020;
   line-height: 1.6;
   max-width: 500px;
   margin: 0 auto var(--spacing-xl);
@@ -1179,7 +1179,7 @@
 /* Empty State */
 .emptyState {
   text-align: center;
-  padding: var(--spacing-4xl);
+  padding: 10px;
   background: rgba(255, 255, 255, 0.02);
   border: 2px dashed rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-xl);
