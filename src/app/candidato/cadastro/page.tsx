@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ApiService } from '@/lib/api';
+import { AuthService } from '@/lib/auth';
 import { 
   Crown, 
   User, 
@@ -206,10 +207,14 @@ export default function CandidatoCadastroPage() {
         }
       };
 
-      await ApiService.updateUser(loginData.user.id, profileData);
-
-      // Redirecionar para dashboard
-      router.push('/candidato/dashboard?cadastro=sucesso');
+      // Verificar se o login foi bem-sucedido
+      if (loginData.success && loginData.user) {
+        await ApiService.updateUser(loginData.user.id, profileData);
+        // Redirecionar para dashboard
+        router.push('/candidato/dashboard?cadastro=sucesso');
+      } else {
+        throw new Error('Erro ao fazer login após o cadastro');
+      }
     } catch (error) {
       console.error('Erro no cadastro:', error);
       alert(error instanceof Error ? error.message : 'Erro ao realizar cadastro. Tente novamente.');

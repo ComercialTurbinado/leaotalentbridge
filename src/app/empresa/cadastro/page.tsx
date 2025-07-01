@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ApiService } from '@/lib/api';
+import { AuthService } from '@/lib/auth';
 import { 
   Crown, 
   Building2, 
@@ -77,6 +78,11 @@ export default function EmpresaCadastroPage() {
         formData.senha,
         'empresa'
       );
+
+      // Verificar se o login foi bem-sucedido
+      if (!loginData.success) {
+        throw new Error('Erro ao fazer login após o cadastro');
+      }
 
       // 3. Criar empresa
       const companyData = await ApiService.createCompany({
