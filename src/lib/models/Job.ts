@@ -364,7 +364,7 @@ const JobSchema = new Schema<IJob>({
   },
   slug: {
     type: String,
-    unique: true
+    index: true
   },
   
   createdBy: {
@@ -381,6 +381,7 @@ const JobSchema = new Schema<IJob>({
 });
 
 // Índices para performance e busca
+JobSchema.index({ slug: 1 }, { unique: true });
 JobSchema.index({ companyId: 1, status: 1 });
 JobSchema.index({ status: 1, publishedAt: -1 });
 JobSchema.index({ category: 1, 'location.city': 1 });
@@ -445,7 +446,7 @@ JobSchema.methods.updateMetrics = async function() {
   return this.save();
 };
 
-// Middleware para expiração automática
-JobSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+// Índice TTL para expiração automática (sem expireAfterSeconds para manter controle manual)
+JobSchema.index({ expiresAt: 1 });
 
 export default mongoose.models.Job || mongoose.model<IJob>('Job', JobSchema); 

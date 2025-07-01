@@ -16,8 +16,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Verificar se JWT_SECRET está configurado
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('JWT_SECRET não configurado');
+      return NextResponse.json(
+        { success: false, message: 'Configuração de segurança não encontrada' },
+        { status: 500 }
+      );
+    }
+
     // Conectar ao MongoDB
-    await connectMongoDB();
+    const mongoConnection = await connectMongoDB();
+    if (!mongoConnection) {
+      console.error('Falha na conexão com MongoDB');
+      return NextResponse.json(
+        { success: false, message: 'Erro de conexão com o banco de dados' },
+        { status: 500 }
+      );
+    }
     
     // Buscar usuário no banco
     const user = await User.findOne({ 
@@ -49,8 +66,8 @@ export async function POST(request: NextRequest) {
         email: user.email, 
         type: user.type 
       },
-      process.env.JWT_SECRET!,
-      { expiresIn: '7d' }
+      jwtSecret,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
     // Retornar dados do usuário (sem a senha)
@@ -72,7 +89,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Erro no login:', error);
     return NextResponse.json(
-      { success: false, message: 'Erro interno do servidor' },
+      { success: false, message: 'Erro interno do servidor', error: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

@@ -31,9 +31,9 @@ const UserSchema = new Schema<IUser>({
   email: {
     type: String,
     required: true,
-    unique: true,
     lowercase: true,
-    trim: true
+    trim: true,
+    index: true
   },
   password: {
     type: String,
@@ -84,7 +84,7 @@ const UserSchema = new Schema<IUser>({
 });
 
 // Índices para performance
-// UserSchema.index({ email: 1, type: 1 }); // Removido para evitar duplicação com email único
+UserSchema.index({ email: 1, type: 1 }, { unique: true });
 UserSchema.index({ type: 1 });
 UserSchema.index({ createdAt: -1 });
 
