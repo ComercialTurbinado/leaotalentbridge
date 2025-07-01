@@ -17,13 +17,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se JWT_SECRET está configurado
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-      console.error('JWT_SECRET não configurado');
-      return NextResponse.json(
-        { success: false, message: 'Configuração de segurança não encontrada' },
-        { status: 500 }
-      );
+    const jwtSecret = process.env.JWT_SECRET || 'default-jwt-secret-key-for-production-leao-careers-2024-mongodb-atlas-amplify';
+    if (!process.env.JWT_SECRET) {
+      console.warn('JWT_SECRET não configurado, usando valor padrão (não recomendado para produção)');
     }
 
     // Conectar ao MongoDB

@@ -4,13 +4,12 @@ declare global {
   var mongoose: any;
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://comercialturbinado:Pikopiko2212@cluster0.vryeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 // Verificação condicional para permitir desenvolvimento sem MongoDB
 async function connectMongoDB() {
-  if (!MONGODB_URI) {
-    console.warn('MONGODB_URI não definido. Funcionando sem banco de dados.');
-    return null;
+  if (!process.env.MONGODB_URI) {
+    console.warn('MONGODB_URI não definido no ambiente, usando valor padrão.');
   }
 
   let cached = global.mongoose;
