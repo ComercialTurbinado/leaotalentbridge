@@ -149,7 +149,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Verificar limites do plano
-    if (company.plan && company.plan.isActive) {
+    if (company.plan?.isActive) {
       const activeJobs = await Job.countDocuments({ 
         companyId: companyId, 
         status: { $in: ['active', 'draft'] } 
