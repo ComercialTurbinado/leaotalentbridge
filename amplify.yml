@@ -21,4 +21,6 @@ frontend:
       MONGODB_URI: mongodb+srv://comercialturbinado:Pikopiko2212@cluster0.vryeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       NODE_ENV: production
       NEXTAUTH_URL: https://main.d34ynwi1hnilao.amplifyapp.com
-      NEXT_PUBLIC_API_URL: https://main.d34ynwi1hnilao.amplifyapp.com/api 
+      NEXT_PUBLIC_API_URL: https://main.d34ynwi1hnilao.amplifyapp.com/api
+      JWT_SECRET: chave-secreta-local-desenvolvimento
+      JWT_EXPIRES_IN: 7d 
