@@ -1,13 +1,15 @@
+import Cookies from 'js-cookie';
+
 // Utilitário para chamadas de API
 export class ApiService {
   private static baseUrl = '/api';
   private static cache = new Map<string, { data: any; timestamp: number }>();
   private static cacheTimeout = 5 * 60 * 1000; // 5 minutos
 
-  // Obter token do localStorage
+  // Obter token dos cookies (consistente com AuthService)
   private static getToken(): string | null {
     if (typeof window === 'undefined') return null;
-    return localStorage.getItem('token');
+    return Cookies.get('leao_token') || null;
   }
 
   // Headers padrão com autenticação

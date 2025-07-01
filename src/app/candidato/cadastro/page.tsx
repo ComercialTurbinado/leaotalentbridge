@@ -148,13 +148,11 @@ export default function CandidatoCadastroPage() {
       });
 
       // 2. Fazer login para obter token
-      const loginData = await ApiService.login({
-        email: formData.email,
-        password: formData.senha,
-      }) as any;
-
-      // Salvar token no localStorage
-      localStorage.setItem('token', loginData.token);
+      const loginData = await AuthService.login(
+        formData.email,
+        formData.senha,
+        'candidato'
+      );
 
       // 3. Atualizar perfil do usuário com dados completos
       const profileData = {

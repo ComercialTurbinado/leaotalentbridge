@@ -71,14 +71,12 @@ export default function EmpresaCadastroPage() {
         type: 'empresa'
       });
 
-      // 2. Fazer login para obter token
-      const loginData = await ApiService.login({
-        email: formData.email,
-        password: formData.senha,
-      }) as any;
-
-      // Salvar token no localStorage
-      localStorage.setItem('token', loginData.token);
+            // 2. Fazer login para obter token  
+      const loginData = await AuthService.login(
+        formData.email,
+        formData.senha,
+        'empresa'
+      );
 
       // 3. Criar empresa
       const companyData = await ApiService.createCompany({
