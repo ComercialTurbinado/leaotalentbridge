@@ -111,6 +111,12 @@
   color: var(--gray-200);
   margin-bottom: var(--spacing-sm);
 }
+.form-label svg {
+  top: 4px;
+  left: -5px;
+  position: relative;
+}
+
 
 .errorMessage {
   display: flex;
