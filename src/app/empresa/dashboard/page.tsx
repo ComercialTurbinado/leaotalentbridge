@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrBriefcase, GrGroup, GrCalendar, GrAdd, GrLineChart, GrClock, GrView } from 'react-icons/gr';
+import { GrBriefcase, GrGroup, GrCalendar, GrAdd, GrLineChart, GrClock, GrView, GrUser } from 'react-icons/gr';
 import styles from './dashboard.module.css';
 
 interface DashboardStats {

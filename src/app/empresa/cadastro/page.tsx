@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ApiService } from '@/lib/api';
 import { AuthService } from '@/lib/auth';
-import { GrOrganization, GrMail, GrPhone, GrLocation, GrGroup, GrGlobe, GrView, GrHide, GrPrevious, GrStatusGood, GrDocument } from 'react-icons/gr';
+import { GrOrganization, GrMail, GrPhone, GrLocation, GrGroup, GrGlobe, GrView, GrHide, GrPrevious, GrStatusGood, GrDocument, GrLinkedin, GrStar } from 'react-icons/gr';
 import styles from './cadastro.module.css';
 
 export default function EmpresaCadastroPage() {

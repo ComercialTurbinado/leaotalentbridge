@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ApiService } from '@/lib/api';
 import { AuthService } from '@/lib/auth';
-import { GrUser, GrMail, GrPhone, GrLocation, GrBriefcase, GrView, GrHide, GrPrevious, GrStatusGood, GrDocument, GrCalendar, GrGlobe } from 'react-icons/gr';
+import { GrUser, GrMail, GrPhone, GrLocation, GrBriefcase, GrView, GrHide, GrPrevious, GrStatusGood, GrDocument, GrCalendar, GrGlobe, GrLinkedin, GrBook, GrStar } from 'react-icons/gr';
 import styles from './cadastro.module.css';
 
 export default function CandidatoCadastroPage() {

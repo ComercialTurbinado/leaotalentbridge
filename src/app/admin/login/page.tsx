@@ -143,7 +143,7 @@ export default function AdminLogin() {
               {!isLoading && (
                 <>
                   Acessar Sistema
-                  <GrSettings size={20} />
+                  <GrNext size={20} />
                 </>
               )}
             </button>

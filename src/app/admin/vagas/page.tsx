@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrBriefcase, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrGroup, GrLocation, GrCalendar, GrMoney, GrOrganization, GrClock, GrStatusGood, GrStatusCritical, GrStatusWarning, GrStar, GrDownload, GrClose, GrMail, GrPhone } from 'react-icons/gr';
+import { GrBriefcase, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrGroup, GrLocation, GrCalendar, GrMoney, GrOrganization, GrClock, GrStatusGood, GrStatusCritical, GrStatusWarning, GrStar, GrDownload, GrClose, GrMail, GrPhone, GrUser } from 'react-icons/gr';
 import styles from './vagas.module.css';
 
 interface Candidato {

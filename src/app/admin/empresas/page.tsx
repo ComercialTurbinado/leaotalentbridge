@@ -469,7 +469,7 @@ export default function AdminEmpresasPage() {
                                 className={`${styles.actionBtn} ${styles.danger}`}
                                 title="Rejeitar"
                               >
-                                <GrBlock size={16} />
+                                <GrStatusCritical size={16} />
                               </button>
                             </>
                           )}
@@ -607,7 +607,7 @@ export default function AdminEmpresasPage() {
               {modalType === 'reject' && (
                 <div className={styles.confirmationContent}>
                   <div className={styles.warningIcon}>
-                    <GrBlock size={48} />
+                                            <GrStatusCritical size={48} />
                   </div>
                   <h3>Rejeitar empresa {empresaSelecionada.nome}?</h3>
                   <p>
@@ -653,7 +653,7 @@ export default function AdminEmpresasPage() {
                   onClick={() => handleStatusChange(empresaSelecionada.id, 'rejeitada')}
                   className="btn btn-warning"
                 >
-                  <GrBlock size={16} />
+                                                <GrStatusCritical size={16} />
                   Rejeitar Empresa
                 </button>
               )}

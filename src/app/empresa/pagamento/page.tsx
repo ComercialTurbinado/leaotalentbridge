@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrSearch, GrPower, GrOrganization, GrCalendar, GrChat, GrBarChart } from 'react-icons/gr';
+import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrSearch, GrPower, GrOrganization, GrCalendar, GrChat, GrBarChart, GrTarget, GrUser } from 'react-icons/gr';
 import styles from './pagamento.module.css';
 
 export default function EmpresaPagamentoPage() {
@@ -51,17 +51,17 @@ export default function EmpresaPagamentoPage() {
 
   const commonFeatures = [
     {
-      icon: Calendar,
+      icon: GrCalendar,
       title: 'Acesso completo por 12 meses',
       description: 'Plataforma disponível 24/7 para sua equipe'
     },
     {
-      icon: GrStorage,
+      icon: GrGroup,
       title: 'Banco de talentos brasileiros ilimitado',
       description: 'Acesso a milhares de profissionais qualificados'
     },
     {
-      icon: Search,
+      icon: GrSearch,
       title: 'Filtros avançados de busca por skills',
       description: 'Encontre o perfil exato que procura'
     },
@@ -71,12 +71,12 @@ export default function EmpresaPagamentoPage() {
       description: 'Sistema inteligente de matching'
     },
     {
-      icon: MessageCircle,
+      icon: GrChat,
       title: 'Suporte prioritário via WhatsApp',
       description: 'Atendimento exclusivo para empresas'
     },
     {
-      icon: BarChart3,
+      icon: GrBarChart,
       title: 'Relatórios detalhados de performance',
       description: 'Analytics completos do processo seletivo'
     },
@@ -96,7 +96,7 @@ export default function EmpresaPagamentoPage() {
       description: 'Página customizada com sua marca'
     },
     {
-      icon: Settings,
+      icon: GrShield,
       title: 'Integração com sistemas de RH',
       description: 'APIs e integrações com seus sistemas'
     }

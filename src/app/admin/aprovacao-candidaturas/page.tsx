@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrGroup, GrDocument, GrSearch, GrFilter, GrStatusGood, GrClose, GrView, GrEdit, GrOrganization, GrLocation, GrMoney, GrClock, GrStatusWarning, GrSend, GrDownload, GrUpload, GrStar, GrBriefcase } from 'react-icons/gr';
+import { GrGroup, GrDocument, GrSearch, GrFilter, GrStatusGood, GrClose, GrView, GrEdit, GrOrganization, GrLocation, GrMoney, GrClock, GrStatusWarning, GrSend, GrDownload, GrUpload, GrStar, GrBriefcase, GrUser } from 'react-icons/gr';
 import styles from './aprovacao-candidaturas.module.css';
 
 interface Application {

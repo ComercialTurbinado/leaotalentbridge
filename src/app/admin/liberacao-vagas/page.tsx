@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrGroup, GrBriefcase, GrSearch, GrFilter, GrStatusGood, GrClose, GrView, GrSend, GrOrganization, GrLocation, GrMoney, GrClock, GrStatusWarning, GrAdd, GrTrash } from 'react-icons/gr';
+import { GrGroup, GrBriefcase, GrSearch, GrFilter, GrStatusGood, GrClose, GrView, GrSend, GrOrganization, GrLocation, GrMoney, GrClock, GrStatusWarning, GrAdd, GrTrash, GrUser } from 'react-icons/gr';
 import styles from './liberacao-vagas.module.css';
 
 interface Job {

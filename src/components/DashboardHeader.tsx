@@ -5,11 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { 
-  GrNotification, 
-  GrLogout,
-  GrUser
-} from 'react-icons/gr';
+import { GrNotification, GrLogout, GrUser } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import styles from './DashboardHeader.module.css';
 

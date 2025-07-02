@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrGroup, GrSearch, GrFilter, GrCalendar, GrStar, GrLocation, GrBriefcase, GrClock, GrStatusGood, GrClose, GrView, GrPhone, GrVideo, GrDown, GrDownload, GrDocument, GrMail, GrGlobe, GrStatusWarning, GrSend } from 'react-icons/gr';
+import { GrGroup, GrSearch, GrFilter, GrCalendar, GrStar, GrLocation, GrBriefcase, GrClock, GrStatusGood, GrClose, GrView, GrPhone, GrVideo, GrDown, GrDownload, GrDocument, GrMail, GrGlobe, GrStatusWarning, GrSend, GrUser } from 'react-icons/gr';
 import styles from './candidatos.module.css';
 
 interface Application {

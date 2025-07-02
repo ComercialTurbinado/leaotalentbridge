@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrBarChart, GrLineChart, GrGroup, GrView, GrCalendar, GrDownload, GrFilter, GrClock, GrLocation, GrBriefcase, GrStar, GrDown, GrDocument, GrOrganization } from 'react-icons/gr';
+import { GrBarChart, GrLineChart, GrGroup, GrView, GrCalendar, GrDownload, GrFilter, GrClock, GrLocation, GrBriefcase, GrStar, GrDown, GrDocument, GrOrganization, GrTrophy, GrTarget } from 'react-icons/gr';
 import styles from './relatorios.module.css';
 
 interface MetricaCard {
@@ -76,7 +76,7 @@ export default function AdminRelatoriosPage() {
       valor: '456',
       variacao: '+24%',
       tipo: 'positivo',
-      icon: Briefcase
+      icon: GrBriefcase
     },
     {
       titulo: 'Taxa de Match Global',

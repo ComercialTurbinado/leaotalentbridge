@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrDocument, GrVideo, GrPower, GrCalendar, GrChat, GrGlobe, GrBriefcase } from 'react-icons/gr';
+import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrDocument, GrVideo, GrPower, GrCalendar, GrChat, GrGlobe, GrBriefcase, GrTarget, GrBook, GrUser, GrTrophy } from 'react-icons/gr';
 import styles from './pagamento.module.css';
 
 export default function CandidatoPagamentoPage() {
@@ -51,7 +51,7 @@ export default function CandidatoPagamentoPage() {
 
   const commonFeatures = [
     {
-      icon: Calendar,
+      icon: GrCalendar,
       title: 'Acesso completo por 12 meses',
       description: 'Plataforma disponível 24/7'
     },
@@ -61,12 +61,12 @@ export default function CandidatoPagamentoPage() {
       description: 'Funcionalidades premium incluídas'
     },
     {
-      icon: Video,
+      icon: GrVideo,
       title: 'Simulações de entrevista ilimitadas',
       description: 'Pratique quantas vezes quiser'
     },
     {
-      icon: FileText,
+      icon: GrDocument,
       title: 'Formatação de documentos profissionais',
       description: 'CV, carta de apresentação e mais'
     },
@@ -76,7 +76,7 @@ export default function CandidatoPagamentoPage() {
       description: 'Guia essencial para adaptação'
     },
     {
-      icon: MessageCircle,
+      icon: GrChat,
       title: 'Suporte prioritário via WhatsApp',
       description: 'Atendimento exclusivo e rápido'
     },
@@ -91,7 +91,7 @@ export default function CandidatoPagamentoPage() {
       description: 'Orientação individual focada'
     },
     {
-      icon: Briefcase,
+      icon: GrBriefcase,
       title: 'Networking exclusivo com empresas',
       description: 'Conexões diretas no mercado'
     },

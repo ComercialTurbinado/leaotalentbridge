@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrPrevious, GrPlay, GrClock, GrGroup, GrStar, GrStatusGood, GrLock, GrDocument, GrVideo, GrDownload, GrUser, GrNotification, GrLogout, GrCalendar, GrGlobe, GrBriefcase, GrBarChart, GrLineChart, GrShare, GrChat, GrNext } from 'react-icons/gr';
+import { GrPrevious, GrPlay, GrClock, GrGroup, GrStar, GrStatusGood, GrLock, GrDocument, GrVideo, GrDownload, GrUser, GrNotification, GrLogout, GrCalendar, GrGlobe, GrBriefcase, GrBarChart, GrLineChart, GrShare, GrChat, GrNext, GrLike, GrBook, GrTrophy, GrTarget, GrCode, GrPaint, GrBookmark } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './curso-detalhes.module.css';
