@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrPlay, GrClock, GrVideo, GrMicrophone, GrUser, GrNotification, GrLogout, GrStatusGood, GrStar, GrLineChart, GrFilter, GrSearch, GrAdd, GrPower, GrGroup, GrBriefcase, GrBarChart, GrShield, GrGlobe, GrCamera, GrUndo, GrNext } from 'react-icons/gr';
+import { GrPlay, GrClock, GrVideo, GrMicrophone, GrUser, GrNotification, GrLogout, GrStatusGood, GrStar, GrLineChart, GrFilter, GrSearch, GrAdd, GrPower, GrGroup, GrBriefcase, GrBarChart, GrShield, GrGlobe, GrCamera, GrUndo, GrNext, GrCode, GrTrophy, GrPaint, GrBook, GrTarget } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './simulacoes.module.css';
@@ -298,7 +298,7 @@ export default function SimulacoesPage() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Simulações de Entrevista</h1>
-              <p>Pratique entrevistas reais e melhore suas habilidades de comunicação</p>
+              <p>Simule entrevistas reais e desenvolva suas habilidades de comunicação</p>
             </div>
             
             <div className={styles.headerActions}>
@@ -327,7 +327,7 @@ export default function SimulacoesPage() {
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.avgScore}%</h3>
-                <p>Pontuação Média</p>
+                <p>Desempenho Médio</p>
               </div>
             </div>
 

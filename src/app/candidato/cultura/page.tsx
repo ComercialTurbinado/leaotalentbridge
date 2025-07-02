@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrDownload, GrView, GrClock, GrGroup, GrGlobe, GrBriefcase, GrUser, GrNotification, GrLogout, GrStar, GrStatusGood, GrDocument, GrPlay, GrNext, GrCalendar, GrLocation, GrFavorite, GrShield, GrPower } from 'react-icons/gr';
+import { GrDownload, GrView, GrClock, GrGroup, GrGlobe, GrBriefcase, GrUser, GrNotification, GrLogout, GrStar, GrStatusGood, GrDocument, GrPlay, GrNext, GrCalendar, GrLocation, GrFavorite, GrShield, GrPower, GrChat, GrCoffee, GrTarget, GrBook } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './cultura.module.css';
@@ -254,7 +254,7 @@ export default function CandidatoCultura() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Guia Cultural - Emirados Árabes Unidos</h1>
-              <p>Prepare-se culturalmente para trabalhar nos UAE com nosso guia completo</p>
+              <p>Prepare-se culturalmente para atuar nos Emirados Árabes Unidos com nosso guia completo</p>
             </div>
             
             <div className={styles.headerActions}>

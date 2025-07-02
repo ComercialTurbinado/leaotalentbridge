@@ -298,7 +298,7 @@ export default function CandidatoDocumentos() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Meus Documentos</h1>
-              <p>Gerencie seus currículos, certificados e documentos recebidos da nossa equipe</p>
+              <p>Gerencie seu currículo, certificados e demais documentos aprovados pela nossa equipe</p>
             </div>
             
             <div className={styles.headerActions}>

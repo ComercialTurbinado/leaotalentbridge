@@ -310,7 +310,7 @@ function DashboardContent() {
           label: 'Perfil Incompleto',
           color: 'warning',
           icon: <GrStatusWarning size={20} />,
-          message: 'Complete seu perfil para ser incluído no banco de talentos'
+          message: 'Complete seu perfil para receber oportunidades exclusivas'
         };
       case 'pending_approval':
         return {
