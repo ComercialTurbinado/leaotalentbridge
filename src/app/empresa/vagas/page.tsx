@@ -353,12 +353,12 @@ export default function EmpresaVagasPage() {
                       <div className={styles.jobMeta}>
                         <span className={styles.location}>
                           <GrLocation size={14} />
-                          {job.location.city}, {job.location.state}
-                          {job.location.isRemote && ' (Remoto)'}
+                          {job.location?.city || 'N/A'}, {job.location?.state || 'N/A'}
+                          {job.location?.isRemote && ' (Remoto)'}
                         </span>
                         <span className={styles.salary}>
                           <GrCurrency size={14} />
-                          {formatSalary(job.salary)}
+                          {job.salary ? formatSalary(job.salary) : 'A combinar'}
                         </span>
                         <span className={styles.workType}>
                           <GrBriefcase size={14} />
@@ -378,16 +378,16 @@ export default function EmpresaVagasPage() {
                   </div>
 
                   <div className={styles.jobDescription}>
-                    <p>{job.description.substring(0, 150)}...</p>
+                    <p>{job.description ? job.description.substring(0, 150) : 'Sem descrição disponível'}...</p>
                   </div>
 
                   <div className={styles.jobSkills}>
-                    {job.requirements.skills.slice(0, 4).map((skill, index) => (
+                    {(job.requirements?.skills && Array.isArray(job.requirements.skills) ? job.requirements.skills : []).slice(0, 4).map((skill, index) => (
                       <span key={index} className={styles.skillTag}>
                         {skill}
                       </span>
                     ))}
-                    {job.requirements.skills.length > 4 && (
+                    {(job.requirements?.skills && Array.isArray(job.requirements.skills) && job.requirements.skills.length > 4) && (
                       <span className={styles.skillTag}>
                         +{job.requirements.skills.length - 4}
                       </span>
