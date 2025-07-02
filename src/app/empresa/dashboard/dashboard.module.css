@@ -109,6 +109,145 @@
   font-weight: 500;
 }
 
+/* Content Grid */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Activity Section */
+.activitySection h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-lg);
+}
+
+.activityList {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+}
+
+.activityItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.activityIcon {
+  width: 40px;
+  height: 40px;
+  background: var(--primary-gold);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-black);
+  flex-shrink: 0;
+}
+
+.activityContent {
+  flex: 1;
+}
+
+.activityContent h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.activityContent p {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.activityDate {
+  color: var(--gray-700);
+  font-size: 0.75rem;
+}
+
+/* Jobs Section */
+.jobsSection h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-lg);
+}
+
+.jobsList {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.jobItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+}
+
+.jobItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.jobContent h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.jobContent p {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.jobDate {
+  color: var(--gray-700);
+  font-size: 0.75rem;
+}
+
+.jobStats {
+  text-align: right;
+  color: var(--primary-gold);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--gray-700);
+}
+
+.emptyState p {
+  margin-bottom: var(--spacing-md);
+  font-size: 0.875rem;
+}
+
 /* Quick Actions */
 .quickActions {
   margin-bottom: var(--spacing-xl);
@@ -169,70 +308,6 @@
   color: var(--primary-gold);
 }
 
-/* Recent Activities */
-.recentSection h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--white);
-  margin-bottom: var(--spacing-lg);
-}
-
-.activitiesList {
-  background: var(--secondary-black);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.activityItem {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-medium);
-}
-
-.activityItem:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.activityIcon {
-  width: 40px;
-  height: 40px;
-  background: var(--primary-gold);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary-black);
-  flex-shrink: 0;
-}
-
-.activityContent {
-  flex: 1;
-}
-
-.activityContent h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--white);
-  margin-bottom: var(--spacing-xs);
-}
-
-.activityContent p {
-  color: var(--gray-700);
-  font-size: 0.875rem;
-  margin-bottom: var(--spacing-xs);
-}
-
-.activityDate {
-  color: var(--gray-700);
-  font-size: 0.75rem;
-}
-
 /* Responsive Design */
 @media (max-width: 1024px) {
   .pageHeader {
@@ -247,6 +322,10 @@
   
   .actionsGrid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -272,6 +351,11 @@
     align-items: flex-start;
     text-align: left;
   }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
 }
 
 @media (max-width: 480px) {
@@ -283,7 +367,8 @@
     padding: var(--spacing-lg);
   }
   
-  .activitiesList {
+  .activityList,
+  .jobsList {
     padding: var(--spacing-md);
   }
 } 

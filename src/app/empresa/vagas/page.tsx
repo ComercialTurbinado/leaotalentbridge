@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrAdd, GrSearch, GrFilter, GrEdit, GrView, GrGroup, GrLocation, GrCalendar, GrMoney, GrMore, GrBriefcase, GrDown, GrClock, GrTrash, GrPlay, GrPause, GrStatusGood, GrStatusWarning, GrClose } from 'react-icons/gr';
+import { GrAdd, GrSearch, GrFilter, GrEdit, GrView, GrGroup, GrLocation, GrCalendar, GrCurrency, GrMore, GrBriefcase, GrNext, GrClock, GrTrash, GrPlay, GrPause, GrStatusCritical, GrStatusWarning, GrClose } from 'react-icons/gr';
 import styles from './vagas.module.css';
 
 interface Job {
@@ -221,7 +221,7 @@ export default function EmpresaVagasPage() {
           {/* Success/Error Messages */}
           {successMessage && (
             <div className={styles.successMessage}>
-              <GrStatusGood size={20} />
+              <GrStatusCritical size={20} />
               <span>{successMessage}</span>
               <button onClick={() => setSuccessMessage('')}>
                 <GrClose size={16} />
@@ -321,7 +321,7 @@ export default function EmpresaVagasPage() {
                   <option value="draft">Rascunho</option>
                   <option value="expired">Expirada</option>
                 </select>
-                <GrDown size={16} className={styles.dropdownIcon} />
+                <GrNext size={16} className={styles.dropdownIcon} />
               </div>
               
               <div className={styles.dropdown}>
@@ -337,12 +337,12 @@ export default function EmpresaVagasPage() {
                   <option value="freelance">Freelance</option>
                   <option value="remote">Remoto</option>
                 </select>
-                <GrDown size={16} className={styles.dropdownIcon} />
+                <GrNext size={16} className={styles.dropdownIcon} />
               </div>
             </div>
           </div>
 
-          {/* Jobs GrList */}
+          {/* Jobs List */}
           <div className={styles.jobsList}>
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
@@ -357,7 +357,7 @@ export default function EmpresaVagasPage() {
                           {job.location.isRemote && ' (Remoto)'}
                         </span>
                         <span className={styles.salary}>
-                          <GrMoney size={14} />
+                          <GrCurrency size={14} />
                           {formatSalary(job.salary)}
                         </span>
                         <span className={styles.workType}>
