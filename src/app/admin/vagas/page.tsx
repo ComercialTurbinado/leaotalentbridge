@@ -427,7 +427,7 @@ export default function AdminVagasPage() {
                     <th>Vaga</th>
                     <th>Status</th>
                     <th>Candidatos</th>
-                    <th>Recomendados</th>
+                    <th className={styles.highlighted}>Candidatos Recomendados</th>
                     <th>Salário</th>
                     <th>Publicação</th>
                     <th>Ações</th>
@@ -461,14 +461,16 @@ export default function AdminVagasPage() {
                           <span className={styles.candidatosLabel}>candidatos</span>
                         </div>
                       </td>
-                      <td>
+                      <td className={styles.highlighted}>
                         <div className={styles.recomendadosInfo}>
                           <span className={styles.recomendadosCount}>{vaga.candidatosRecomendados.length}</span>
+                          <span className={styles.recomendadosLabel}>recomendados</span>
                           <button 
                             onClick={() => handleViewCandidates(vaga)}
                             className={styles.viewCandidatesBtn}
                           >
-                            Ver candidatos
+                            <GrView size={14} />
+                            Ver
                           </button>
                         </div>
                       </td>

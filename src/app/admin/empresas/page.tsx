@@ -389,6 +389,7 @@ export default function AdminEmpresasPage() {
                     <th>Setor</th>
                     <th>Tamanho</th>
                     <th>Vagas</th>
+                    <th>Total de Contratações</th>
                     <th>Avaliação</th>
                     <th>Cadastro</th>
                     <th>Ações</th>
@@ -425,9 +426,12 @@ export default function AdminEmpresasPage() {
                       <td>
                         <div className={styles.vagasInfo}>
                           <span className={styles.vagasCount}>{empresa.vagasPublicadas}</span>
-                          <span className={styles.contratacoes}>
-                            {empresa.candidatosContratados} contratações
-                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        <div className={styles.contratacoesInfo}>
+                          <span className={styles.contratacoesCount}>{empresa.candidatosContratados}</span>
+                          <span className={styles.contratacoesLabel}>contratações</span>
                         </div>
                       </td>
                       <td>

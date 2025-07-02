@@ -181,6 +181,19 @@ export default function AdminDashboard() {
 
               <div className={styles.statCard}>
                 <div className={styles.statIcon}>
+                  <GrUser size={24} />
+                </div>
+                <div className={styles.statContent}>
+                  <h3>312</h3>
+                  <p>Contratações Este Mês</p>
+                  <span className={styles.statChange}>
+                    +12,5% em relação ao mês anterior
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.statCard}>
+                <div className={styles.statIcon}>
                   <GrClock size={24} />
                 </div>
                 <div className={styles.statContent}>
