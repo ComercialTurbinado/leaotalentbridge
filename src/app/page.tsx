@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import AnimatedCard from '@/components/AnimatedCard';
 import AnimatedHeading from '@/components/AnimatedHeading';
-import { GrNext, GrGroup, GrOrganization, GrStatusGood, GrStar, GrGlobe, GrBriefcase, GrLineChart, GrShield, GrMail, GrPhone, GrLocation, GrCalendar, GrClock, GrPlay, GrDocument, GrTarget, GrTrophy, GrPlan } from 'react-icons/gr';
+import { GrNext, GrGroup, GrOrganization, GrStatusCritical, GrStar, GrGlobe, GrBriefcase, GrLineChart, GrShield, GrMail, GrPhone, GrLocation, GrCalendar, GrClock, GrPlay, GrDocument, GrTarget, GrTrophy, GrPlan } from 'react-icons/gr';
 import styles from './page.module.css';
 import Image from 'next/image';
 
@@ -137,7 +137,7 @@ export default function HomePage() {
                     >
                       <GrGroup size={36} />
                       <span>Sou Candidato</span>
-                      <GrStatusGood className={styles.checkIcon} size={24} />
+                      <GrStatusCritical className={styles.checkIcon} size={24} />
                     </button>
                     <button
                       type="button"
@@ -146,7 +146,7 @@ export default function HomePage() {
                     >
                       <GrOrganization size={36} />
                       <span>Sou Empresa</span>
-                      <GrStatusGood className={styles.checkIcon} size={24} />
+                      <GrStatusCritical className={styles.checkIcon} size={24} />
                     </button>
                   </div>
 
