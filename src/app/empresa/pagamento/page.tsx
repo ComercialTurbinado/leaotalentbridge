@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrSearch, GrPower, GrOrganization, GrCalendar, GrChat, GrBarChart, GrSettings } from 'react-icons/gr';
+import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrSearch, GrPower, GrOrganization, GrCalendar, GrChat, GrBarChart } from 'react-icons/gr';
 import styles from './pagamento.module.css';
 
 export default function EmpresaPagamentoPage() {
@@ -86,12 +86,12 @@ export default function EmpresaPagamentoPage() {
       description: 'Especialistas em recrutamento internacional'
     },
     {
-      icon: Users,
+      icon: GrGroup,
       title: 'Gerente de conta dedicado',
       description: 'Suporte personalizado para sua empresa'
     },
     {
-      icon: Building2,
+      icon: GrOrganization,
       title: 'Branding personalizado da empresa',
       description: 'Página customizada com sua marca'
     },

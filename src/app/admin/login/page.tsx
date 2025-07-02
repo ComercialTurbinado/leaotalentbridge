@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { GrMail, GrLock, GrView, GrHide, GrNext, GrStatusWarning, GrShield, GrSettings } from 'react-icons/gr';
+import { GrMail, GrLock, GrView, GrHide, GrNext, GrStatusWarning, GrShield } from 'react-icons/gr';
 import { AuthService } from '@/lib/auth';
 import styles from './login.module.css';
 import Image from 'next/image';

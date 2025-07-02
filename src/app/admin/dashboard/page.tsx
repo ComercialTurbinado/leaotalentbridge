@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrGroup, GrOrganization, GrLineChart, GrView, GrFilter, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrBarChart, GrAdd, GrDownload, GrSettings, GrDocument, GrBriefcase, GrStar } from 'react-icons/gr';
+import { GrGroup, GrOrganization, GrLineChart, GrView, GrFilter, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrBarChart, GrAdd, GrDownload, GrDocument, GrBriefcase, GrStar } from 'react-icons/gr';
 import styles from './dashboard.module.css';
 
 export default function AdminDashboard() {

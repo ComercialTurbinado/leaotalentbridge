@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrPrevious, GrNext, GrPlay, GrPause, GrVolume, GrVolumeMute, GrSettings, GrUndo, GrClock, GrStatusGood, GrLock, GrDocument, GrVideo, GrDownload, GrUser, GrNotification, GrLogout, GrShare, GrView, GrGroup, GrStar } from 'react-icons/gr';
+import { GrPrevious, GrNext, GrPlay, GrPause, GrVolume, GrVolumeMute, GrUndo, GrClock, GrStatusGood, GrLock, GrDocument, GrVideo, GrDownload, GrUser, GrNotification, GrLogout, GrShare, GrView, GrGroup, GrStar } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './modulo.module.css';

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrUser, GrMail, GrPhone, GrLocation, GrCalendar, GrBriefcase, GrStar, GrSave, GrClose, GrAdd, GrTrash, GrNotification, GrSettings, GrLogout, GrCamera, GrView, GrHide, GrGlobe, GrLinkExternal, GrUpload, GrDownload, GrDocument, GrLineChart, GrStatusGood, GrStatusWarning } from 'react-icons/gr';
+import { GrUser, GrMail, GrPhone, GrLocation, GrCalendar, GrBriefcase, GrStar, GrSave, GrClose, GrAdd, GrTrash, GrNotification, GrLogout, GrCamera, GrView, GrHide, GrGlobe, GrLink, GrUpload, GrDownload, GrDocument, GrLineChart, GrStatusGood, GrStatusWarning } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -663,7 +663,7 @@ export default function CandidatoPerfil() {
                           {profileData.personalInfo.linkedin ? (
                             <a href={profileData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer">
                               {profileData.personalInfo.linkedin}
-                              <GrLinkExternal size={14} />
+                              <GrLink size={14} />
                             </a>
                           ) : (
                             'Não informado'
@@ -687,7 +687,7 @@ export default function CandidatoPerfil() {
                           {profileData.personalInfo.github ? (
                             <a href={profileData.personalInfo.github} target="_blank" rel="noopener noreferrer">
                               {profileData.personalInfo.github}
-                              <GrLinkExternal size={14} />
+                              <GrLink size={14} />
                             </a>
                           ) : (
                             'Não informado'
@@ -711,7 +711,7 @@ export default function CandidatoPerfil() {
                           {profileData.personalInfo.website ? (
                             <a href={profileData.personalInfo.website} target="_blank" rel="noopener noreferrer">
                               {profileData.personalInfo.website}
-                              <GrLinkExternal size={14} />
+                              <GrLink size={14} />
                             </a>
                           ) : (
                             'Não informado'
@@ -1223,7 +1223,7 @@ export default function CandidatoPerfil() {
                                   {cert.url ? (
                                     <a href={cert.url} target="_blank" rel="noopener noreferrer">
                                       Ver Certificação
-                                      <GrLinkExternal size={14} />
+                                      <GrLink size={14} />
                                     </a>
                                   ) : (
                                     'Não informado'

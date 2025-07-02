@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrDownload, GrView, GrClock, GrGroup, GrGlobe, GrBriefcase, GrUser, GrNotification, GrSettings, GrLogout, GrStar, GrStatusGood, GrDocument, GrPlay, GrNext, GrCalendar, GrLocation, GrFavorite, GrShield, GrPower } from 'react-icons/gr';
+import { GrDownload, GrView, GrClock, GrGroup, GrGlobe, GrBriefcase, GrUser, GrNotification, GrLogout, GrStar, GrStatusGood, GrDocument, GrPlay, GrNext, GrCalendar, GrLocation, GrFavorite, GrShield, GrPower } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './cultura.module.css';

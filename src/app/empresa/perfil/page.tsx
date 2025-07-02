@@ -131,9 +131,9 @@ export default function EmpresaPerfilPage() {
   };
 
   const tabs = [
-    { id: 'geral', label: 'Informações Gerais', icon: Building2 },
-    { id: 'contato', label: 'Contato & Localização', icon: MapPin },
-    { id: 'cultura', label: 'Cultura & Valores', icon: Users }
+    { id: 'geral', label: 'Informações Gerais', icon: GrOrganization },
+    { id: 'contato', label: 'Contato & Localização', icon: GrLocation },
+    { id: 'cultura', label: 'Cultura & Valores', icon: GrGroup }
   ];
 
   if (loading) {

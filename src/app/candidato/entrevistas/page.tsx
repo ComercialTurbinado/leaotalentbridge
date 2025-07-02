@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GrCalendar, GrClock, GrLocation, GrVideo, GrPhone, GrUser, GrNotification, GrSettings, GrLogout, GrStatusGood, GrStatusWarning, GrStatusCritical, GrView, GrDocument, GrStar, GrLineChart, GrFilter, GrSearch, GrAdd, GrTrash, GrMore, GrBriefcase, GrGroup, GrPower, GrNext } from 'react-icons/gr';
+import { GrCalendar, GrClock, GrLocation, GrVideo, GrPhone, GrUser, GrNotification, GrLogout, GrStatusGood, GrStatusWarning, GrStatusCritical, GrView, GrDocument, GrStar, GrLineChart, GrFilter, GrSearch, GrAdd, GrTrash, GrMore, GrBriefcase, GrGroup, GrPower, GrNext } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './entrevistas.module.css';

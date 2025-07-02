@@ -62,14 +62,14 @@ export default function AdminRelatoriosPage() {
       valor: '127',
       variacao: '+18%',
       tipo: 'positivo',
-      icon: Building2
+      icon: GrOrganization
     },
     {
       titulo: 'Candidatos Totais',
       valor: '8,943',
       variacao: '+32%',
       tipo: 'positivo',
-      icon: Users
+      icon: GrGroup
     },
     {
       titulo: 'Vagas Publicadas',

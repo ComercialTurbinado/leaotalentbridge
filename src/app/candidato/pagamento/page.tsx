@@ -86,7 +86,7 @@ export default function CandidatoPagamentoPage() {
       description: 'Sessões 1:1 com profissionais'
     },
     {
-      icon: Users,
+      icon: GrGroup,
       title: 'Consultoria 1:1 personalizada',
       description: 'Orientação individual focada'
     },

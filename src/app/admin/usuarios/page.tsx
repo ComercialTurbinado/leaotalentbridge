@@ -329,7 +329,7 @@ export default function AdminUsuariosPage() {
             </div>
           </div>
 
-          {/* Users Table */}
+          {/* GrGroup Table */}
           <div className={styles.tableSection}>
             <div className={styles.tableContainer}>
               <table className={styles.usersTable}>
