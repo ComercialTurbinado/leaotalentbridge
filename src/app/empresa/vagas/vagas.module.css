@@ -4,6 +4,10 @@
   padding: var(--spacing-2xl) 0;
 }
 
+.mainContent {
+  padding: var(--spacing-xl) 0;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -32,6 +36,65 @@
   100% { transform: rotate(360deg); }
 }
 
+/* Messages */
+.successMessage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  color: #155724;
+  border: 2px solid #b8dabd;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-xl);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(21, 87, 36, 0.15);
+}
+
+.successMessage button {
+  background: none;
+  border: none;
+  color: #155724;
+  cursor: pointer;
+  margin-left: auto;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.successMessage button:hover {
+  background: rgba(21, 87, 36, 0.1);
+}
+
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, #f8d7da, #f1b0b7);
+  color: #721c24;
+  border: 2px solid #f5c6cb;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-xl);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(114, 28, 36, 0.15);
+}
+
+.errorMessage button {
+  background: none;
+  border: none;
+  color: #721c24;
+  cursor: pointer;
+  margin-left: auto;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.errorMessage button:hover {
+  background: rgba(114, 28, 36, 0.1);
+}
+
 /* Page Header */
 .pageHeader {
   display: flex;
@@ -55,6 +118,53 @@
   font-size: 1.25rem;
   line-height: 1.5;
   max-width: 600px;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.statCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+  transition: all var(--transition-medium);
+}
+
+.statCard:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.15);
+}
+
+.statIcon {
+  color: var(--primary-gold);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  justify-content: center;
+}
+
+.statContent h3 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--white);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+.statContent p {
+  color: var(--gray-400);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
 }
 
 /* Filters Section */
@@ -154,14 +264,14 @@
   pointer-events: none;
 }
 
-/* Vagas List */
-.vagasList {
+/* Jobs List */
+.jobsList {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
 }
 
-.vagaCard {
+.jobCard {
   background: #ffffff;
   border: 2px solid var(--gray-200);
   border-radius: var(--radius-xl);
@@ -172,7 +282,7 @@
   overflow: hidden;
 }
 
-.vagaCard::before {
+.jobCard::before {
   content: '';
   position: absolute;
   top: 0;
@@ -184,22 +294,22 @@
   transition: opacity var(--transition-medium);
 }
 
-.vagaCard:hover {
+.jobCard:hover {
   border-color: var(--primary-gold);
   box-shadow: 0 8px 32px rgba(212, 175, 55, 0.15);
   transform: translateY(-4px);
 }
 
-.vagaCard:hover::before {
+.jobCard:hover::before {
   opacity: 1;
 }
 
-/* Vaga Header */
-.vagaHeader {
+/* Job Header */
+.jobHeader {
   margin-bottom: var(--spacing-xl);
 }
 
-.vagaTitle {
+.jobTitle {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -207,13 +317,42 @@
   gap: var(--spacing-lg);
 }
 
-.vagaTitle h3 {
+.jobTitle h3 {
   font-size: 1.75rem;
   font-weight: 700;
   color: var(--gray-900);
   margin: 0;
   line-height: 1.3;
   flex: 1;
+}
+
+.jobMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.location, .salary, .workType {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--gray-600);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.location svg, .salary svg, .workType svg {
+  color: var(--primary-gold);
+  flex-shrink: 0;
+}
+
+.jobStatus {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
 }
 
 .statusBadge {
@@ -234,12 +373,43 @@
   box-shadow: 0 2px 8px rgba(21, 87, 36, 0.15);
 }
 
-.vagaDescricao {
+.jobDescription {
   color: var(--gray-600);
   font-size: 1.125rem;
   line-height: 1.6;
-  margin: 0;
+  margin: 0 0 var(--spacing-lg) 0;
   font-weight: 400;
+}
+
+.jobDescription p {
+  margin: 0;
+}
+
+.jobSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+}
+
+.skillTag {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: linear-gradient(135deg, var(--primary-gold), #e6b800);
+  color: var(--primary-black);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  transition: all var(--transition-fast);
+}
+
+.skillTag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
 }
 
 /* Vaga Details */
@@ -270,8 +440,8 @@
   height: 18px;
 }
 
-/* Vaga Footer */
-.vagaFooter {
+/* Job Footer */
+.jobFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -280,32 +450,26 @@
   gap: var(--spacing-lg);
 }
 
-.vagaDates {
+.jobStats {
   display: flex;
   gap: var(--spacing-xl);
 }
 
-.dateInfo {
+.stat {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: var(--spacing-xs);
-}
-
-.dateLabel {
-  font-size: 0.8rem;
-  color: var(--gray-500);
+  color: var(--gray-600);
+  font-size: 0.9rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.dateValue {
-  font-size: 0.95rem;
-  color: var(--gray-800);
-  font-weight: 700;
+.stat svg {
+  color: var(--primary-gold);
+  flex-shrink: 0;
 }
 
-.vagaActions {
+.jobActions {
   display: flex;
   gap: var(--spacing-md);
 }
