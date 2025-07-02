@@ -6,16 +6,7 @@ import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Briefcase,
-  Users,
-  Calendar,
-  UserCheck,
-  Plus,
-  TrendingUp,
-  Clock,
-  Eye
-} from 'lucide-react';
+import { GrBriefcase, GrGroup, GrCalendar, GrAdd, GrLineChart, GrClock, GrView } from 'react-icons/gr';
 import styles from './dashboard.module.css';
 
 interface DashboardStats {
@@ -191,17 +182,17 @@ export default function EmpresaDashboardPage() {
             </div>
             <div className={styles.headerActions}>
               <Link href="/empresa/vagas/nova" className="btn btn-primary">
-                <Plus size={16} />
+                <GrAdd size={16} />
                 Nova Vaga
               </Link>
             </div>
           </div>
 
-          {/* Stats Grid */}
+          {/* Stats GrApps */}
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Briefcase size={24} />
+                <GrBriefcase size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.totalVagas}</h3>
@@ -212,7 +203,7 @@ export default function EmpresaDashboardPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Users size={24} />
+                <GrGroup size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.candidatosIndicados}</h3>
@@ -223,7 +214,7 @@ export default function EmpresaDashboardPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Calendar size={24} />
+                <GrCalendar size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.entrevistasAgendadas}</h3>
@@ -234,7 +225,7 @@ export default function EmpresaDashboardPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <UserCheck size={24} />
+                <GrUser size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.contratacoes}</h3>
@@ -244,7 +235,7 @@ export default function EmpresaDashboardPage() {
             </div>
           </div>
 
-          {/* Content Grid */}
+          {/* Content GrApps */}
           <div className={styles.contentGrid}>
             {/* Recent Activities */}
             <div className={styles.activitySection}>
@@ -254,10 +245,10 @@ export default function EmpresaDashboardPage() {
                   recentActivities.map((activity) => (
                     <div key={activity.id} className={styles.activityItem}>
                       <div className={styles.activityIcon}>
-                        {activity.type === 'vaga' && <Briefcase size={16} />}
-                        {activity.type === 'candidato' && <Users size={16} />}
-                        {activity.type === 'entrevista' && <Calendar size={16} />}
-                        {activity.type === 'contratacao' && <UserCheck size={16} />}
+                        {activity.type === 'vaga' && <GrBriefcase size={16} />}
+                        {activity.type === 'candidato' && <GrGroup size={16} />}
+                        {activity.type === 'entrevista' && <GrCalendar size={16} />}
+                        {activity.type === 'contratacao' && <GrUser size={16} />}
                       </div>
                       <div className={styles.activityContent}>
                         <h4>{activity.title}</h4>
@@ -310,25 +301,25 @@ export default function EmpresaDashboardPage() {
             <h2>Ações Rápidas</h2>
             <div className={styles.actionsGrid}>
               <Link href="/empresa/vagas" className={styles.actionCard}>
-                <Briefcase size={32} />
+                <GrBriefcase size={32} />
                 <h3>Gerenciar Vagas</h3>
                 <p>Criar, editar e visualizar suas vagas</p>
               </Link>
 
               <Link href="/empresa/candidatos" className={styles.actionCard}>
-                <Users size={32} />
+                <GrGroup size={32} />
                 <h3>Ver Candidatos</h3>
                 <p>Analisar perfis indicados para suas vagas</p>
               </Link>
 
               <Link href="/empresa/entrevistas" className={styles.actionCard}>
-                <Calendar size={32} />
+                <GrCalendar size={32} />
                 <h3>Calendário</h3>
                 <p>Agendar e gerenciar entrevistas</p>
               </Link>
 
               <Link href="/empresa/perfil" className={styles.actionCard}>
-                <TrendingUp size={32} />
+                <GrLineChart size={32} />
                 <h3>Perfil da Empresa</h3>
                 <p>Editar informações e preferências</p>
               </Link>

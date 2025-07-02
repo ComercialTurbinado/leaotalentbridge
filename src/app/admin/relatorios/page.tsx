@@ -4,24 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  BarChart3,
-  TrendingUp,
-  Users,
-  Eye,
-  Calendar,
-  Download,
-  Filter,
-  Target,
-  Clock,
-  Award,
-  MapPin,
-  Briefcase,
-  Star,
-  ChevronDown,
-  FileText,
-  Building2
-} from 'lucide-react';
+import { GrBarChart, GrLineChart, GrGroup, GrView, GrCalendar, GrDownload, GrFilter, GrClock, GrLocation, GrBriefcase, GrStar, GrDown, GrDocument, GrOrganization } from 'react-icons/gr';
 import styles from './relatorios.module.css';
 
 interface MetricaCard {
@@ -100,7 +83,7 @@ export default function AdminRelatoriosPage() {
       valor: '12.3%',
       variacao: '+5%',
       tipo: 'positivo',
-      icon: Target
+      icon: GrTarget
     }
   ];
 
@@ -229,7 +212,7 @@ export default function AdminRelatoriosPage() {
                 onClick={() => exportarRelatorio('PDF')}
                 className="btn btn-secondary"
               >
-                <Download size={16} />
+                <GrDownload size={16} />
                 Exportar PDF
               </button>
             </div>
@@ -329,7 +312,7 @@ export default function AdminRelatoriosPage() {
               <div className={styles.reportHeader}>
                 <h3>Top 5 Empresas por Performance</h3>
                 <button className={styles.exportBtn}>
-                  <Download size={14} />
+                  <GrDownload size={14} />
                 </button>
               </div>
               <div className={styles.topVagasList}>
@@ -339,8 +322,8 @@ export default function AdminRelatoriosPage() {
                     <div className={styles.vagaInfo}>
                       <h4>{empresa.nome}</h4>
                       <div className={styles.vagaStats}>
-                        <span><Briefcase size={12} /> {empresa.vagas_ativas} vagas ativas</span>
-                        <span><Users size={12} /> {empresa.candidatos_totais} candidatos</span>
+                        <span><GrBriefcase size={12} /> {empresa.vagas_ativas} vagas ativas</span>
+                        <span><GrGroup size={12} /> {empresa.candidatos_totais} candidatos</span>
                       </div>
                     </div>
                     <div className={styles.vagaConversao}>
@@ -357,7 +340,7 @@ export default function AdminRelatoriosPage() {
               <div className={styles.reportHeader}>
                 <h3>Candidatos por Região</h3>
                 <button className={styles.exportBtn}>
-                  <Download size={14} />
+                  <GrDownload size={14} />
                 </button>
               </div>
               <div className={styles.regiaoList}>
@@ -384,7 +367,7 @@ export default function AdminRelatoriosPage() {
               <div className={styles.reportHeader}>
                 <h3>Setores Mais Ativos</h3>
                 <button className={styles.exportBtn}>
-                  <Download size={14} />
+                  <GrDownload size={14} />
                 </button>
               </div>
               <div className={styles.habilidadesList}>
@@ -411,13 +394,13 @@ export default function AdminRelatoriosPage() {
               <div className={styles.reportHeader}>
                 <h3>Métricas da Plataforma</h3>
                 <button className={styles.exportBtn}>
-                  <Download size={14} />
+                  <GrDownload size={14} />
                 </button>
               </div>
               <div className={styles.performanceList}>
                 <div className={styles.performanceItem}>
                   <div className={styles.performanceIcon}>
-                    <Clock size={16} />
+                    <GrClock size={16} />
                   </div>
                   <div className={styles.performanceInfo}>
                     <span className={styles.performanceLabel}>Tempo Médio de Match</span>
@@ -427,7 +410,7 @@ export default function AdminRelatoriosPage() {
                 
                 <div className={styles.performanceItem}>
                   <div className={styles.performanceIcon}>
-                    <Star size={16} />
+                    <GrStar size={16} />
                   </div>
                   <div className={styles.performanceInfo}>
                     <span className={styles.performanceLabel}>Satisfação das Empresas</span>
@@ -437,7 +420,7 @@ export default function AdminRelatoriosPage() {
                 
                 <div className={styles.performanceItem}>
                   <div className={styles.performanceIcon}>
-                    <Award size={16} />
+                    <GrTrophy size={16} />
                   </div>
                   <div className={styles.performanceInfo}>
                     <span className={styles.performanceLabel}>Taxa de Sucesso Global</span>
@@ -447,7 +430,7 @@ export default function AdminRelatoriosPage() {
                 
                 <div className={styles.performanceItem}>
                   <div className={styles.performanceIcon}>
-                    <TrendingUp size={16} />
+                    <GrLineChart size={16} />
                   </div>
                   <div className={styles.performanceInfo}>
                     <span className={styles.performanceLabel}>Crescimento Mensal</span>
@@ -466,21 +449,21 @@ export default function AdminRelatoriosPage() {
                 onClick={() => exportarRelatorio('Excel')}
                 className="btn btn-secondary"
               >
-                <FileText size={16} />
+                <GrDocument size={16} />
                 Relatório Completo (Excel)
               </button>
               <button 
                 onClick={() => exportarRelatorio('CSV')}
                 className="btn btn-secondary"
               >
-                <Download size={16} />
+                <GrDownload size={16} />
                 Dados Brutos (CSV)
               </button>
               <button 
                 onClick={() => exportarRelatorio('Dashboard')}
                 className="btn btn-primary"
               >
-                <BarChart3 size={16} />
+                <GrBarChart size={16} />
                 Dashboard Executivo
               </button>
             </div>

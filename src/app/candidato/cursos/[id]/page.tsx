@@ -4,39 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  ArrowLeft,
-  Play, 
-  Clock, 
-  Users, 
-  Star, 
-  Award, 
-  CheckCircle,
-  Lock,
-  BookOpen,
-  FileText,
-  Video,
-  Download,
-  User,
-  Bell,
-  Settings,
-  LogOut,
-  Calendar,
-  Target,
-  Globe,
-  Briefcase,
-  Code,
-  Palette,
-  MessageSquare,
-  BarChart3,
-  TrendingUp,
-  Share2,
-  Bookmark,
-  ThumbsUp,
-  MessageCircle,
-  ArrowRight
-} from 'lucide-react';
+import { GrPrevious, GrPlay, GrClock, GrGroup, GrStar, GrStatusGood, GrLock, GrDocument, GrVideo, GrDownload, GrUser, GrNotification, GrSettings, GrLogout, GrCalendar, GrGlobe, GrBriefcase, GrBarChart, GrLineChart, GrShare, GrChat, GrNext } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './curso-detalhes.module.css';
@@ -235,7 +203,7 @@ export default function CursoDetalhes() {
         'Conhecimento básico de HTML, CSS e JavaScript',
         'Familiaridade com ES6+',
         'Node.js instalado no computador',
-        'Editor de código (VS Code recomendado)'
+        'Editor de código (VS GrCode recomendado)'
       ],
       whatYouWillLearn: [
         'Dominar os conceitos fundamentais do React',
@@ -276,17 +244,17 @@ export default function CursoDetalhes() {
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'tecnologia':
-        return <Code size={20} />;
+        return <GrCode size={20} />;
       case 'design':
-        return <Palette size={20} />;
+        return <GrPaint size={20} />;
       case 'negocios':
-        return <Briefcase size={20} />;
+        return <GrBriefcase size={20} />;
       case 'idiomas':
-        return <Globe size={20} />;
+        return <GrGlobe size={20} />;
       case 'soft-skills':
-        return <MessageSquare size={20} />;
+        return <GrChat size={20} />;
       default:
-        return <BookOpen size={20} />;
+        return <GrBook size={20} />;
     }
   };
 
@@ -323,15 +291,15 @@ export default function CursoDetalhes() {
   const getModuleIcon = (type: string) => {
     switch (type) {
       case 'video':
-        return <Video size={16} />;
+        return <GrVideo size={16} />;
       case 'text':
-        return <FileText size={16} />;
+        return <GrDocument size={16} />;
       case 'quiz':
-        return <Target size={16} />;
+        return <GrTarget size={16} />;
       case 'assignment':
-        return <BookOpen size={16} />;
+        return <GrBook size={16} />;
       default:
-        return <BookOpen size={16} />;
+        return <GrBook size={16} />;
     }
   };
 
@@ -388,7 +356,7 @@ export default function CursoDetalhes() {
           {/* Breadcrumb */}
           <div className={styles.breadcrumb}>
             <Link href="/candidato/cursos" className={styles.backLink}>
-              <ArrowLeft size={16} />
+              <GrPrevious size={16} />
               Voltar aos Cursos
             </Link>
           </div>
@@ -411,23 +379,23 @@ export default function CursoDetalhes() {
 
               <div className={styles.courseStats}>
                 <div className={styles.statItem}>
-                  <Star size={16} />
+                  <GrStar size={16} />
                   <span>{course.rating} ({course.reviews} avaliações)</span>
                 </div>
                 <div className={styles.statItem}>
-                  <Users size={16} />
+                  <GrGroup size={16} />
                   <span>{course.students.toLocaleString()} alunos</span>
                 </div>
                 <div className={styles.statItem}>
-                  <Clock size={16} />
+                  <GrClock size={16} />
                   <span>{course.duration} horas</span>
                 </div>
                 <div className={styles.statItem}>
-                  <BookOpen size={16} />
+                  <GrBook size={16} />
                   <span>{course.modules.length} módulos</span>
                 </div>
                 <div className={styles.statItem}>
-                  <Globe size={16} />
+                  <GrGlobe size={16} />
                   <span>{course.language}</span>
                 </div>
               </div>
@@ -468,7 +436,7 @@ export default function CursoDetalhes() {
                   href={`/candidato/cursos/${course.id}/modulo/4`}
                   className="btn btn-primary btn-large w-full"
                 >
-                  <Play size={20} />
+                  <GrPlay size={20} />
                   {course.status === 'in_progress' ? 'Continuar Curso' : 
                    course.status === 'completed' ? 'Revisar Curso' : 'Iniciar Curso'}
                 </Link>
@@ -486,7 +454,7 @@ export default function CursoDetalhes() {
                   </div>
                   {course.certificate && (
                     <div className={styles.certificateInfo}>
-                      <Award size={16} />
+                      <GrTrophy size={16} />
                       <span>Certificado incluído</span>
                     </div>
                   )}
@@ -494,11 +462,11 @@ export default function CursoDetalhes() {
 
                 <div className={styles.actionButtons}>
                   <button className={styles.actionBtn}>
-                    <Bookmark size={16} />
+                    <GrBookmark size={16} />
                     Salvar
                   </button>
                   <button className={styles.actionBtn}>
-                    <Share2 size={16} />
+                    <GrShare size={16} />
                     Compartilhar
                   </button>
                 </div>
@@ -543,7 +511,7 @@ export default function CursoDetalhes() {
                     <ul className={styles.learningList}>
                       {course.whatYouWillLearn.map((item, index) => (
                         <li key={index}>
-                          <CheckCircle size={16} />
+                          <GrStatusGood size={16} />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -576,19 +544,19 @@ export default function CursoDetalhes() {
                     <h3>Detalhes do Curso</h3>
                     <div className={styles.detailsList}>
                       <div className={styles.detailItem}>
-                        <Clock size={16} />
+                        <GrClock size={16} />
                         <span>Duração: {course.duration} horas</span>
                       </div>
                       <div className={styles.detailItem}>
-                        <BookOpen size={16} />
+                        <GrBook size={16} />
                         <span>{course.modules.length} módulos</span>
                       </div>
                       <div className={styles.detailItem}>
-                        <Award size={16} />
+                        <GrTrophy size={16} />
                         <span>Certificado incluído</span>
                       </div>
                       <div className={styles.detailItem}>
-                        <Calendar size={16} />
+                        <GrCalendar size={16} />
                         <span>Atualizado em {new Date(course.lastUpdated).toLocaleDateString('pt-BR')}</span>
                       </div>
                     </div>
@@ -598,15 +566,15 @@ export default function CursoDetalhes() {
                     <h3>Estatísticas</h3>
                     <div className={styles.statsList}>
                       <div className={styles.statItem}>
-                        <Users size={16} />
+                        <GrGroup size={16} />
                         <span>{course.students.toLocaleString()} alunos</span>
                       </div>
                       <div className={styles.statItem}>
-                        <Star size={16} />
+                        <GrStar size={16} />
                         <span>{course.rating}/5 ({course.reviews} avaliações)</span>
                       </div>
                       <div className={styles.statItem}>
-                        <TrendingUp size={16} />
+                        <GrLineChart size={16} />
                         <span>95% de conclusão</span>
                       </div>
                     </div>
@@ -628,9 +596,9 @@ export default function CursoDetalhes() {
                       <div className={styles.moduleHeader}>
                         <div className={styles.moduleNumber}>
                           {module.completed ? (
-                            <CheckCircle size={20} className={styles.completed} />
+                            <GrStatusGood size={20} className={styles.completed} />
                           ) : module.locked ? (
-                            <Lock size={20} className={styles.locked} />
+                            <GrLock size={20} className={styles.locked} />
                           ) : (
                             <span>{index + 1}</span>
                           )}
@@ -646,7 +614,7 @@ export default function CursoDetalhes() {
                               <span>{getModuleTypeName(module.type)}</span>
                             </div>
                             <div className={styles.moduleDuration}>
-                              <Clock size={14} />
+                              <GrClock size={14} />
                               <span>{formatDuration(module.duration)}</span>
                             </div>
                           </div>
@@ -656,7 +624,7 @@ export default function CursoDetalhes() {
                               <span>Recursos:</span>
                               {module.resources.map((resource, idx) => (
                                 <a key={idx} href={resource.url} className={styles.resourceLink}>
-                                  <Download size={12} />
+                                  <GrDownload size={12} />
                                   {resource.title}
                                 </a>
                               ))}
@@ -682,7 +650,7 @@ export default function CursoDetalhes() {
                               className="btn btn-primary btn-small"
                             >
                               {index === course.completedModules ? 'Iniciar' : 'Assistir'}
-                              <ArrowRight size={16} />
+                              <GrNext size={16} />
                             </Link>
                           )}
                         </div>
@@ -702,7 +670,7 @@ export default function CursoDetalhes() {
                       <span className={styles.ratingNumber}>{course.rating}</span>
                       <div className={styles.stars}>
                         {[...Array(5)].map((_, i) => (
-                          <Star 
+                          <GrStar 
                             key={i} 
                             size={16} 
                             className={i < Math.floor(course.rating) ? styles.starFilled : styles.starEmpty}
@@ -726,7 +694,7 @@ export default function CursoDetalhes() {
                         <h4>Ana Silva</h4>
                         <div className={styles.reviewRating}>
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={12} className={styles.starFilled} />
+                            <GrStar key={i} size={12} className={styles.starFilled} />
                           ))}
                         </div>
                       </div>
@@ -737,11 +705,11 @@ export default function CursoDetalhes() {
                     </p>
                     <div className={styles.reviewActions}>
                       <button className={styles.reviewAction}>
-                        <ThumbsUp size={14} />
+                        <GrLike size={14} />
                         Útil (12)
                       </button>
                       <button className={styles.reviewAction}>
-                        <MessageCircle size={14} />
+                        <GrChat size={14} />
                         Responder
                       </button>
                     </div>
@@ -759,9 +727,9 @@ export default function CursoDetalhes() {
                         <h4>João Santos</h4>
                         <div className={styles.reviewRating}>
                           {[...Array(4)].map((_, i) => (
-                            <Star key={i} size={12} className={styles.starFilled} />
+                            <GrStar key={i} size={12} className={styles.starFilled} />
                           ))}
-                          <Star size={12} className={styles.starEmpty} />
+                          <GrStar size={12} className={styles.starEmpty} />
                         </div>
                       </div>
                       <span className={styles.reviewDate}>há 1 semana</span>
@@ -771,11 +739,11 @@ export default function CursoDetalhes() {
                     </p>
                     <div className={styles.reviewActions}>
                       <button className={styles.reviewAction}>
-                        <ThumbsUp size={14} />
+                        <GrLike size={14} />
                         Útil (8)
                       </button>
                       <button className={styles.reviewAction}>
-                        <MessageCircle size={14} />
+                        <GrChat size={14} />
                         Responder
                       </button>
                     </div>

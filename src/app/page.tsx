@@ -4,32 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import AnimatedCard from '@/components/AnimatedCard';
 import AnimatedHeading from '@/components/AnimatedHeading';
-import { 
-  Crown, 
-  ArrowRight, 
-  Users, 
-  Building2, 
-  CheckCircle, 
-  Star, 
-  Globe, 
-  Briefcase,
-  Target,
-  TrendingUp,
-  Award,
-  Shield,
-  Mail,
-  Phone,
-  MapPin,
-  Linkedin,
-  Calendar,
-  Clock,
-  ChevronRight,
-  Play,
-  Quote,
-  FileText,
-  Handshake,
-  Plane
-} from 'lucide-react';
+import { GrNext, GrGroup, GrOrganization, GrStatusGood, GrStar, GrGlobe, GrBriefcase, GrLineChart, GrShield, GrMail, GrPhone, GrLocation, GrCalendar, GrClock, GrPlay, GrDocument, GrTarget, GrTrophy, GrPlan } from 'react-icons/gr';
 import styles from './page.module.css';
 import Image from 'next/image';
 
@@ -140,7 +115,7 @@ export default function HomePage() {
               <div className={styles.heroCta}>
                 <a href="#como-funciona" className="btn btn-secondary ">
                   Saiba mais
-                  <ChevronRight size={20} />
+                  <GrNext size={20} />
                 </a>
               </div>
             </div>
@@ -160,18 +135,18 @@ export default function HomePage() {
                       className={`${styles.userTypeButton} ${userType === 'candidato' ? styles.active : ''}`}
                       onClick={() => setUserType('candidato')}
                     >
-                      <Users size={36} />
+                      <GrGroup size={36} />
                       <span>Sou Candidato</span>
-                      <CheckCircle className={styles.checkIcon} size={24} />
+                      <GrStatusGood className={styles.checkIcon} size={24} />
                     </button>
                     <button
                       type="button"
                       className={`${styles.userTypeButton} ${userType === 'empresa' ? styles.active : ''}`}
                       onClick={() => setUserType('empresa')}
                     >
-                      <Building2 size={36} />
+                      <GrOrganization size={36} />
                       <span>Sou Empresa</span>
-                      <CheckCircle className={styles.checkIcon} size={24} />
+                      <GrStatusGood className={styles.checkIcon} size={24} />
                     </button>
                   </div>
 
@@ -302,7 +277,7 @@ export default function HomePage() {
                         ) : (
                           <>
                             Iniciar Cadastro
-                            <ArrowRight size={20} />
+                            <GrNext size={20} />
                           </>
                         )}
                       </button>
@@ -341,7 +316,7 @@ export default function HomePage() {
           <div className={styles.stepsGrid}>
             <AnimatedCard
               number="01"
-              icon={<FileText size={40} />}
+              icon={<GrDocument size={40} />}
               title="Crie Seu Perfil"
               description="Complete seu perfil com experiências, competências e objetivos."
               delay={0}
@@ -349,7 +324,7 @@ export default function HomePage() {
 
             <AnimatedCard
               number="02"
-              icon={<Target size={40} />}
+              icon={<GrTarget size={40} />}
               title="Conexão Inteligente"
               description="Nossa plataforma cruza seus dados com vagas exclusivas que realmente combinam com seu talento."
               delay={200}
@@ -357,7 +332,7 @@ export default function HomePage() {
 
             <AnimatedCard
               number="03"
-              icon={<Handshake size={40} />}
+              icon={<GrGroup size={40} />}
               title="Seleção com Propósito"
               description="Participe de processos seletivos com empresas que valorizam o profissional brasileiro."
               delay={400}
@@ -365,7 +340,7 @@ export default function HomePage() {
 
             <AnimatedCard
               number="04"
-              icon={<Plane size={40} />}
+              icon={<GrPlan size={40} />}
               title="Transição estruturada"
               description="Receba orientação jurídica, profissional com suporte cultural."
               delay={600}
@@ -385,7 +360,7 @@ export default function HomePage() {
           <div className="grid grid-3">
             <div className="card">
               <div className={styles.benefitIcon}>
-                <TrendingUp size={50} />
+                <GrLineChart size={50} />
               </div>
               <h3>Oportunidades Exclusivas</h3>
               <p>
@@ -395,7 +370,7 @@ export default function HomePage() {
 
             <div className="card">
               <div className={styles.benefitIcon}>
-                <Shield size={50} />
+                <GrShield size={50} />
               </div>
               <h3>Processo Seguro</h3>
               <p>
@@ -405,7 +380,7 @@ export default function HomePage() {
 
             <div className="card">
               <div className={styles.benefitIcon}>
-                <Globe size={50} />
+                <GrGlobe size={50} />
               </div>
               <h3>Suporte Completo</h3>
               <p>
@@ -447,7 +422,7 @@ export default function HomePage() {
                   height={300}
                 />
                 <div className={styles.imageOverlay}>
-                  <Crown size={48} />
+                  <GrStar size={48} />
                 </div>
               </div>
             </div>
@@ -465,7 +440,7 @@ export default function HomePage() {
 
           <div className="grid grid-3">
             <div className={styles.contactCard}>
-              <Mail size={40} />
+              <GrMail size={40} />
               <h4>Email</h4>
               <p>contato@leaocareers.com</p>
               <a href="mailto:contato@leaocareers.com" className="btn btn-secondary">
@@ -474,7 +449,7 @@ export default function HomePage() {
             </div>
 
             <div className={styles.contactCard}>
-              <Phone size={40} />
+              <GrPhone size={40} />
               <h4>Telefone</h4>
               <p>+971 50 371 6967</p>
               <a href="tel:+971503716967" className="btn btn-secondary">
@@ -483,7 +458,7 @@ export default function HomePage() {
             </div>
 
             <div className={styles.contactCard}>
-              <MapPin size={40} />
+              <GrLocation size={40} />
               <h4>Unidades</h4>
               <p>Rio de Janeiro, Brasil<br />Dubai, UAE</p>
               <button className="btn btn-secondary">

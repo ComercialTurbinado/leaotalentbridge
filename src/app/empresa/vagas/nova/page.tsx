@@ -6,18 +6,7 @@ import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  ArrowLeft,
-  Save,
-  MapPin,
-  DollarSign,
-  Briefcase,
-  Users,
-  Calendar,
-  FileText,
-  Plus,
-  X
-} from 'lucide-react';
+import { GrPrevious, GrSave, GrLocation, GrMoney, GrBriefcase, GrGroup, GrCalendar, GrDocument, GrAdd, GrClose } from 'react-icons/gr';
 import styles from './nova-vaga.module.css';
 
 interface FormData {
@@ -225,7 +214,7 @@ export default function NovaVagaPage() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <Link href="/empresa/vagas" className={styles.backButton}>
-                <ArrowLeft size={20} />
+                <GrPrevious size={20} />
                 Voltar às Vagas
               </Link>
               <h1>Criar Nova Vaga</h1>
@@ -399,7 +388,7 @@ export default function NovaVagaPage() {
                         onClick={() => addSkill('habilidadesRequeridas')}
                         className={styles.addBtn}
                       >
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                       </button>
                     </div>
                     <div className={styles.skillTags}>
@@ -410,7 +399,7 @@ export default function NovaVagaPage() {
                             type="button"
                             onClick={() => removeSkill('habilidadesRequeridas', index)}
                           >
-                            <X size={12} />
+                            <GrClose size={12} />
                           </button>
                         </span>
                       ))}
@@ -432,7 +421,7 @@ export default function NovaVagaPage() {
                         onClick={() => addSkill('habilidadesDesejaveis')}
                         className={styles.addBtn}
                       >
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                       </button>
                     </div>
                     <div className={styles.skillTags}>
@@ -443,7 +432,7 @@ export default function NovaVagaPage() {
                             type="button"
                             onClick={() => removeSkill('habilidadesDesejaveis', index)}
                           >
-                            <X size={12} />
+                            <GrClose size={12} />
                           </button>
                         </span>
                       ))}
@@ -487,7 +476,7 @@ export default function NovaVagaPage() {
                   </>
                 ) : (
                   <>
-                    <Save size={16} />
+                    <GrSave size={16} />
                     Publicar Vaga
                   </>
                 )}

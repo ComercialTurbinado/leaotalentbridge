@@ -5,27 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Users,
-  FileText,
-  Search,
-  Filter,
-  CheckCircle,
-  X,
-  Eye,
-  Edit,
-  UserCheck,
-  Building2,
-  MapPin,
-  DollarSign,
-  Clock,
-  AlertCircle,
-  Send,
-  Download,
-  Upload,
-  Star,
-  Briefcase
-} from 'lucide-react';
+import { GrGroup, GrDocument, GrSearch, GrFilter, GrStatusGood, GrClose, GrView, GrEdit, GrOrganization, GrLocation, GrMoney, GrClock, GrStatusWarning, GrSend, GrDownload, GrUpload, GrStar, GrBriefcase } from 'react-icons/gr';
 import styles from './aprovacao-candidaturas.module.css';
 
 interface Application {
@@ -264,20 +244,20 @@ export default function AdminAprovacaoCandidaturasPage() {
           {/* Success/Error Messages */}
           {successMessage && (
             <div className={styles.successMessage}>
-              <CheckCircle size={20} />
+              <GrStatusGood size={20} />
               <span>{successMessage}</span>
               <button onClick={() => setSuccessMessage('')}>
-                <X size={16} />
+                <GrClose size={16} />
               </button>
             </div>
           )}
           
           {errorMessage && (
             <div className={styles.errorMessage}>
-              <AlertCircle size={20} />
+              <GrStatusWarning size={20} />
               <span>{errorMessage}</span>
               <button onClick={() => setErrorMessage('')}>
-                <X size={16} />
+                <GrClose size={16} />
               </button>
             </div>
           )}
@@ -294,7 +274,7 @@ export default function AdminAprovacaoCandidaturasPage() {
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Users size={24} />
+                <GrGroup size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{applications.length}</h3>
@@ -304,7 +284,7 @@ export default function AdminAprovacaoCandidaturasPage() {
             
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Clock size={24} />
+                <GrClock size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{applications.filter(app => !app.adminApproved).length}</h3>
@@ -314,7 +294,7 @@ export default function AdminAprovacaoCandidaturasPage() {
             
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <CheckCircle size={24} />
+                <GrStatusGood size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{applications.filter(app => app.adminApproved).length}</h3>
@@ -326,7 +306,7 @@ export default function AdminAprovacaoCandidaturasPage() {
           {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBox}>
-              <Search size={20} className={styles.searchIcon} />
+              <GrSearch size={20} className={styles.searchIcon} />
               <input
                 type="text"
                 placeholder="Buscar por candidato, vaga ou empresa..."
@@ -349,7 +329,7 @@ export default function AdminAprovacaoCandidaturasPage() {
             </div>
           </div>
 
-          {/* Applications List */}
+          {/* Applications GrList */}
           <div className={styles.applicationsList}>
             {filteredApplications.length > 0 ? (
               filteredApplications.map((application) => (
@@ -360,14 +340,14 @@ export default function AdminAprovacaoCandidaturasPage() {
                       <p>{application.userId.email}</p>
                       {application.userId.address && (
                         <span className={styles.location}>
-                          <MapPin size={14} />
+                          <GrLocation size={14} />
                           {application.userId.address.city}, {application.userId.address.state}
                         </span>
                       )}
                     </div>
                     
                     <div className={styles.matchScore}>
-                      <Star size={16} />
+                      <GrStar size={16} />
                       <span>{calculateMatchScore(application)}% match</span>
                     </div>
                   </div>
@@ -376,16 +356,16 @@ export default function AdminAprovacaoCandidaturasPage() {
                     <h4>{application.jobId.title}</h4>
                     <div className={styles.jobMeta}>
                       <span>
-                        <Building2 size={14} />
+                        <GrOrganization size={14} />
                         {application.jobId.companyId.name}
                       </span>
                       <span>
-                        <MapPin size={14} />
+                        <GrLocation size={14} />
                         {application.jobId.location.city}, {application.jobId.location.state}
                         {application.jobId.location.isRemote && ' (Remoto)'}
                       </span>
                       <span>
-                        <DollarSign size={14} />
+                        <GrMoney size={14} />
                         {formatSalary(application.jobId.salary)}
                       </span>
                     </div>
@@ -393,18 +373,18 @@ export default function AdminAprovacaoCandidaturasPage() {
 
                   <div className={styles.applicationMeta}>
                     <span className={styles.appliedDate}>
-                      <Clock size={14} />
+                      <GrClock size={14} />
                       Aplicou em {formatDate(application.appliedAt)}
                     </span>
                     <div className={styles.statusBadge}>
                       {application.adminApproved ? (
                         <span className="status green">
-                          <CheckCircle size={14} />
+                          <GrStatusGood size={14} />
                           Aprovada
                         </span>
                       ) : (
                         <span className="status yellow">
-                          <Clock size={14} />
+                          <GrClock size={14} />
                           Pendente
                         </span>
                       )}
@@ -416,7 +396,7 @@ export default function AdminAprovacaoCandidaturasPage() {
                       onClick={() => handleViewApplication(application)}
                       className="btn btn-outline btn-sm"
                     >
-                      <Eye size={16} />
+                      <GrView size={16} />
                       Ver Detalhes
                     </button>
 
@@ -426,7 +406,7 @@ export default function AdminAprovacaoCandidaturasPage() {
                           onClick={() => handleAdjustResume(application)}
                           className="btn btn-outline btn-sm"
                         >
-                          <Edit size={16} />
+                          <GrEdit size={16} />
                           Ajustar Currículo
                         </button>
 
@@ -439,7 +419,7 @@ export default function AdminAprovacaoCandidaturasPage() {
                             <div className={styles.spinner}></div>
                           ) : (
                             <>
-                              <UserCheck size={16} />
+                              <GrUser size={16} />
                               Aprovar
                             </>
                           )}
@@ -451,7 +431,7 @@ export default function AdminAprovacaoCandidaturasPage() {
               ))
             ) : (
               <div className={styles.emptyState}>
-                <Users size={64} />
+                <GrGroup size={64} />
                 <h3>Nenhuma candidatura encontrada</h3>
                 <p>
                   {applications.length === 0 
@@ -475,7 +455,7 @@ export default function AdminAprovacaoCandidaturasPage() {
                     onClick={() => setShowModal(false)}
                     className={styles.modalClose}
                   >
-                    <X size={24} />
+                    <GrClose size={24} />
                   </button>
                 </div>
 
@@ -497,11 +477,11 @@ export default function AdminAprovacaoCandidaturasPage() {
                           <p>{selectedApplication.jobId.companyId.name}</p>
                           <div className={styles.jobDetails}>
                             <span>
-                              <MapPin size={14} />
+                              <GrLocation size={14} />
                               {selectedApplication.jobId.location.city}, {selectedApplication.jobId.location.state}
                             </span>
                             <span>
-                              <DollarSign size={14} />
+                              <GrMoney size={14} />
                               {formatSalary(selectedApplication.jobId.salary)}
                             </span>
                           </div>
@@ -606,7 +586,7 @@ export default function AdminAprovacaoCandidaturasPage() {
                             }}
                             className="btn btn-outline"
                           >
-                            <Edit size={16} />
+                            <GrEdit size={16} />
                             Ajustar Currículo
                           </button>
                           <button
@@ -618,7 +598,7 @@ export default function AdminAprovacaoCandidaturasPage() {
                               <div className={styles.spinner}></div>
                             ) : (
                               <>
-                                <UserCheck size={16} />
+                                <GrUser size={16} />
                                 Aprovar
                               </>
                             )}
@@ -643,7 +623,7 @@ export default function AdminAprovacaoCandidaturasPage() {
                           <div className={styles.spinner}></div>
                         ) : (
                           <>
-                            <UserCheck size={16} />
+                            <GrUser size={16} />
                             Aprovar com Ajustes
                           </>
                         )}

@@ -4,39 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  BookOpen, 
-  Play, 
-  Clock, 
-  Users, 
-  Star, 
-  Award, 
-  TrendingUp,
-  Filter,
-  Search,
-  Grid,
-  List,
-  User,
-  Bell,
-  Settings,
-  LogOut,
-  CheckCircle,
-  BarChart3,
-  Calendar,
-  Target,
-  Zap,
-  Globe,
-  Briefcase,
-  Code,
-  Palette,
-  MessageSquare,
-  FileText,
-  Video,
-  Download,
-  ArrowRight,
-  ChevronRight
-} from 'lucide-react';
+import { GrPlay, GrClock, GrGroup, GrStar, GrLineChart, GrFilter, GrSearch, GrUser, GrNotification, GrLogout, GrStatusGood, GrBarChart, GrCalendar, GrPower, GrGlobe, GrBriefcase, GrDocument, GrVideo, GrDownload, GrNext, GrCode, GrPaint, GrChat, GrBook, GrTrophy, GrApps, GrList } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './cursos.module.css';
@@ -227,17 +195,17 @@ export default function CursosPage() {
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'tecnologia':
-        return <Code size={20} />;
+        return <GrCode size={20} />;
       case 'design':
-        return <Palette size={20} />;
+        return <GrPaint size={20} />;
       case 'negocios':
-        return <Briefcase size={20} />;
+        return <GrBriefcase size={20} />;
       case 'idiomas':
-        return <Globe size={20} />;
+        return <GrGlobe size={20} />;
       case 'soft-skills':
-        return <MessageSquare size={20} />;
+        return <GrChat size={20} />;
       default:
-        return <BookOpen size={20} />;
+        return <GrBook size={20} />;
     }
   };
 
@@ -289,21 +257,21 @@ export default function CursosPage() {
       case 'completed':
         return (
           <div className={styles.statusBadge}>
-            <CheckCircle size={16} className={styles.statusCompleted} />
+            <GrStatusGood size={16} className={styles.statusCompleted} />
             <span>Concluído</span>
           </div>
         );
       case 'in_progress':
         return (
           <div className={styles.statusBadge}>
-            <Play size={16} className={styles.statusInProgress} />
+            <GrPlay size={16} className={styles.statusInProgress} />
             <span>{progress}% Concluído</span>
           </div>
         );
       default:
         return (
           <div className={styles.statusBadge}>
-            <BookOpen size={16} className={styles.statusNotStarted} />
+            <GrBook size={16} className={styles.statusNotStarted} />
             <span>Disponível</span>
           </div>
         );
@@ -373,7 +341,7 @@ export default function CursosPage() {
           <div className={styles.statsSection}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <BookOpen size={20} />
+                <GrBook size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.available}</h3>
@@ -383,7 +351,7 @@ export default function CursosPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Play size={20} />
+                <GrPlay size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.inProgress}</h3>
@@ -393,7 +361,7 @@ export default function CursosPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <CheckCircle size={20} />
+                <GrStatusGood size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.completed}</h3>
@@ -403,7 +371,7 @@ export default function CursosPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Award size={20} />
+                <GrTrophy size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.certificates}</h3>
@@ -416,7 +384,7 @@ export default function CursosPage() {
           <div className={styles.filtersSection}>
             <div className={styles.searchBar}>
               <div className={styles.searchInput}>
-                <Search size={20} />
+                <GrSearch size={20} />
                 <input
                   type="text"
                   placeholder="Buscar cursos..."
@@ -463,19 +431,19 @@ export default function CursosPage() {
                   className={`${styles.viewBtn} ${viewMode === 'grid' ? styles.active : ''}`}
                   onClick={() => setViewMode('grid')}
                 >
-                  <Grid size={18} />
+                  <GrApps size={18} />
                 </button>
                 <button 
                   className={`${styles.viewBtn} ${viewMode === 'list' ? styles.active : ''}`}
                   onClick={() => setViewMode('list')}
                 >
-                  <List size={18} />
+                  <GrList size={18} />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Courses List */}
+          {/* Courses GrList */}
           <div className={styles.coursesSection}>
             <div className={styles.coursesHeader}>
               <h2>
@@ -488,7 +456,7 @@ export default function CursosPage() {
                 <div key={course.id} className={styles.courseCard}>
                   {course.featured && (
                     <div className={styles.featuredBadge}>
-                      <Star size={12} />
+                      <GrStar size={12} />
                       Destaque
                     </div>
                   )}
@@ -507,7 +475,7 @@ export default function CursosPage() {
                       </div>
                     )}
                     <div className={styles.playButton}>
-                      <Play size={24} />
+                      <GrPlay size={24} />
                     </div>
                   </div>
 
@@ -532,19 +500,19 @@ export default function CursosPage() {
 
                     <div className={styles.courseStats}>
                       <div className={styles.statItem}>
-                        <Clock size={14} />
+                        <GrClock size={14} />
                         <span>{course.duration}h</span>
                       </div>
                       <div className={styles.statItem}>
-                        <BookOpen size={14} />
+                        <GrBook size={14} />
                         <span>{course.modules} módulos</span>
                       </div>
                       <div className={styles.statItem}>
-                        <Users size={14} />
+                        <GrGroup size={14} />
                         <span>{course.students.toLocaleString()}</span>
                       </div>
                       <div className={styles.statItem}>
-                        <Star size={14} />
+                        <GrStar size={14} />
                         <span>{course.rating} ({course.reviews})</span>
                       </div>
                     </div>
@@ -574,7 +542,7 @@ export default function CursosPage() {
                         >
                           {course.status === 'in_progress' ? 'Continuar' : 
                            course.status === 'completed' ? 'Revisar' : 'Iniciar'}
-                          <ArrowRight size={16} />
+                          <GrNext size={16} />
                         </Link>
                       </div>
                     </div>
@@ -586,7 +554,7 @@ export default function CursosPage() {
             {sortedCourses.length === 0 && (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>
-                  <BookOpen size={48} />
+                  <GrBook size={48} />
                 </div>
                 <h3>Nenhum curso encontrado</h3>
                 <p>Tente ajustar os filtros ou termos de busca para encontrar cursos relevantes.</p>

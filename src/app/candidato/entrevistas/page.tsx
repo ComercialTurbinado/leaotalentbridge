@@ -4,39 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  Video, 
-  Phone, 
-  User, 
-  Bell, 
-  Settings, 
-  LogOut,
-  CheckCircle,
-  AlertCircle,
-  XCircle,
-  Eye,
-  MessageSquare,
-  FileText,
-  Star,
-  TrendingUp,
-  Filter,
-  Search,
-  Plus,
-  Edit3,
-  Trash2,
-  MoreVertical,
-  Building,
-  Briefcase,
-  Users,
-  Award,
-  Target,
-  Zap,
-  ChevronRight
-} from 'lucide-react';
+import { GrCalendar, GrClock, GrLocation, GrVideo, GrPhone, GrUser, GrNotification, GrSettings, GrLogout, GrStatusGood, GrStatusWarning, GrStatusCritical, GrView, GrDocument, GrStar, GrLineChart, GrFilter, GrSearch, GrAdd, GrTrash, GrMore, GrBriefcase, GrGroup, GrPower, GrNext } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './entrevistas.module.css';
@@ -187,17 +155,17 @@ export default function EntrevistasPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'confirmada':
-        return <CheckCircle size={16} className={styles.statusConfirmed} />;
+        return <GrStatusGood size={16} className={styles.statusConfirmed} />;
       case 'agendada':
-        return <Clock size={16} className={styles.statusScheduled} />;
+        return <GrClock size={16} className={styles.statusScheduled} />;
       case 'concluida':
-        return <CheckCircle size={16} className={styles.statusCompleted} />;
+        return <GrStatusGood size={16} className={styles.statusCompleted} />;
       case 'cancelada':
-        return <XCircle size={16} className={styles.statusCancelled} />;
+        return <GrStatusCritical size={16} className={styles.statusCancelled} />;
       case 'reagendada':
-        return <AlertCircle size={16} className={styles.statusRescheduled} />;
+        return <GrStatusWarning size={16} className={styles.statusRescheduled} />;
       default:
-        return <Clock size={16} />;
+        return <GrClock size={16} />;
     }
   };
 
@@ -221,13 +189,13 @@ export default function EntrevistasPage() {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'online':
-        return <Video size={16} />;
+        return <GrVideo size={16} />;
       case 'presencial':
-        return <MapPin size={16} />;
+        return <GrLocation size={16} />;
       case 'telefone':
-        return <Phone size={16} />;
+        return <GrPhone size={16} />;
       default:
-        return <Calendar size={16} />;
+        return <GrCalendar size={16} />;
     }
   };
 
@@ -297,7 +265,7 @@ export default function EntrevistasPage() {
           <div className={styles.statsSection}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Calendar size={20} />
+                <GrCalendar size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.total}</h3>
@@ -307,7 +275,7 @@ export default function EntrevistasPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Clock size={20} />
+                <GrClock size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.proximas}</h3>
@@ -317,7 +285,7 @@ export default function EntrevistasPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <CheckCircle size={20} />
+                <GrStatusGood size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.concluidas}</h3>
@@ -327,7 +295,7 @@ export default function EntrevistasPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Star size={20} />
+                <GrStar size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.aprovacoes}</h3>
@@ -343,7 +311,7 @@ export default function EntrevistasPage() {
                 className={`${styles.tab} ${activeTab === 'proximas' ? styles.active : ''}`}
                 onClick={() => setActiveTab('proximas')}
               >
-                <Clock size={18} />
+                <GrClock size={18} />
                 Próximas Entrevistas
                 <span className={styles.tabBadge}>{stats.proximas}</span>
               </button>
@@ -352,7 +320,7 @@ export default function EntrevistasPage() {
                 className={`${styles.tab} ${activeTab === 'historico' ? styles.active : ''}`}
                 onClick={() => setActiveTab('historico')}
               >
-                <CheckCircle size={18} />
+                <GrStatusGood size={18} />
                 Histórico
                 <span className={styles.tabBadge}>{stats.concluidas}</span>
               </button>
@@ -363,7 +331,7 @@ export default function EntrevistasPage() {
           <div className={styles.filtersSection}>
             <div className={styles.searchBar}>
               <div className={styles.searchInput}>
-                <Search size={20} />
+                <GrSearch size={20} />
                 <input
                   type="text"
                   placeholder="Buscar entrevistas..."
@@ -398,7 +366,7 @@ export default function EntrevistasPage() {
             </div>
           </div>
 
-          {/* Interviews List */}
+          {/* Interviews GrList */}
           <div className={styles.interviewsSection}>
             <div className={styles.interviewsHeader}>
               <h2>
@@ -417,15 +385,15 @@ export default function EntrevistasPage() {
                       
                       <div className={styles.interviewMeta}>
                         <div className={styles.metaItem}>
-                          <Briefcase size={14} />
+                          <GrBriefcase size={14} />
                           <span>{interview.position}</span>
                         </div>
                         <div className={styles.metaItem}>
-                          <Calendar size={14} />
+                          <GrCalendar size={14} />
                           <span>{new Date(interview.date).toLocaleDateString('pt-BR')}</span>
                         </div>
                         <div className={styles.metaItem}>
-                          <Clock size={14} />
+                          <GrClock size={14} />
                           <span>{interview.time} ({interview.duration}min)</span>
                         </div>
                         <div className={styles.metaItem}>
@@ -442,7 +410,7 @@ export default function EntrevistasPage() {
                       </div>
                       
                       <div className={styles.matchScore}>
-                        <Target size={14} />
+                        <GrTarget size={14} />
                         <span>{interview.matchScore}% match</span>
                       </div>
                     </div>
@@ -456,14 +424,14 @@ export default function EntrevistasPage() {
                     <div className={styles.interviewDetails}>
                       {interview.location && (
                         <div className={styles.location}>
-                          <MapPin size={16} />
+                          <GrLocation size={16} />
                           <span>{interview.location}</span>
                         </div>
                       )}
 
                       {interview.meetingLink && (
                         <div className={styles.meetingLink}>
-                          <Video size={16} />
+                          <GrVideo size={16} />
                           <a href={interview.meetingLink} target="_blank" rel="noopener noreferrer">
                             Link da Reunião
                           </a>
@@ -488,7 +456,7 @@ export default function EntrevistasPage() {
                         <div className={styles.materialsList}>
                           {interview.preparationMaterials.map((material, index) => (
                             <span key={index} className={styles.materialTag}>
-                              <FileText size={12} />
+                              <GrDocument size={12} />
                               {material}
                             </span>
                           ))}
@@ -499,12 +467,12 @@ export default function EntrevistasPage() {
                     {interview.feedback && (
                       <div className={styles.feedback}>
                         <div className={styles.feedbackHeader}>
-                          <MessageSquare size={16} />
+                          <GrChat size={16} />
                           <span>Feedback da Entrevista</span>
                           {interview.rating && (
                             <div className={styles.rating}>
                               {[...Array(5)].map((_, i) => (
-                                <Star 
+                                <GrStar 
                                   key={i} 
                                   size={14} 
                                   className={i < interview.rating! ? styles.starFilled : styles.starEmpty}
@@ -526,7 +494,7 @@ export default function EntrevistasPage() {
                   <div className={styles.interviewActions}>
                     {interview.status === 'agendada' && (
                       <button className="btn btn-primary btn-small">
-                        <CheckCircle size={16} />
+                        <GrStatusGood size={16} />
                         Confirmar Presença
                       </button>
                     )}
@@ -538,17 +506,17 @@ export default function EntrevistasPage() {
                         rel="noopener noreferrer"
                         className="btn btn-secondary btn-small"
                       >
-                        <Video size={16} />
+                        <GrVideo size={16} />
                         Entrar na Reunião
                       </a>
                     )}
                     
                     <button className={styles.actionBtn} title="Ver detalhes">
-                      <Eye size={16} />
+                      <GrView size={16} />
                     </button>
                     
                     <button className={styles.actionBtn} title="Mais opções">
-                      <MoreVertical size={16} />
+                      <GrMore size={16} />
                     </button>
                   </div>
                 </div>
@@ -558,7 +526,7 @@ export default function EntrevistasPage() {
             {filteredInterviews.length === 0 && (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>
-                  <Calendar size={48} />
+                  <GrCalendar size={48} />
                 </div>
                 <h3>Nenhuma entrevista encontrada</h3>
                 <p>

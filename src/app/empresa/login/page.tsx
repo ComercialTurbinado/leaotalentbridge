@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Crown, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Building2 } from 'lucide-react';
+import { GrMail, GrLock, GrView, GrHide, GrNext, GrStatusWarning, GrOrganization } from 'react-icons/gr';
 import { AuthService } from '@/lib/auth';
 import styles from './login.module.css';
 import Image from 'next/image';
@@ -67,7 +67,7 @@ export default function EmpresaLogin() {
         <div className={styles.loginCard}>
           <div className={styles.cardHeader}>
             <div className={styles.headerIcon}>
-              <Building2 size={32} />
+              <GrOrganization size={32} />
             </div>
             <h1>Portal da Empresa</h1>
             <p>Acesse sua conta para gerenciar vagas e candidatos</p>
@@ -76,14 +76,14 @@ export default function EmpresaLogin() {
           <form onSubmit={handleSubmit} className={styles.loginForm}>
             {error && (
               <div className={styles.errorMessage}>
-                <AlertCircle size={20} />
+                <GrStatusWarning size={20} />
                 <span>{error}</span>
               </div>
             )}
 
             <div className="form-group">
               <label className="form-label">
-                <Mail size={18} />
+                <GrMail size={18} />
                 Email Corporativo
               </label>
               <input
@@ -100,7 +100,7 @@ export default function EmpresaLogin() {
 
             <div className="form-group">
               <label className="form-label">
-                <Lock size={18} />
+                <GrLock size={18} />
                 Senha
               </label>
               <div className={styles.passwordInput}>
@@ -120,7 +120,7 @@ export default function EmpresaLogin() {
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <GrHide size={18} /> : <GrView size={18} />}
                 </button>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function EmpresaLogin() {
               {!isLoading && (
                 <>
                   Acessar Portal
-                  <ArrowRight size={20} />
+                  <GrNext size={20} />
                 </>
               )}
             </button>

@@ -6,35 +6,7 @@ import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Users,
-  Search,
-  Filter,
-  Calendar,
-  Star,
-  MapPin,
-  Briefcase,
-  GraduationCap,
-  Award,
-  Clock,
-  CheckCircle,
-  X,
-  Eye,
-  Phone,
-  Video,
-  MessageSquare,
-  ChevronDown,
-  Download,
-  FileText,
-  Mail,
-  Globe,
-  Building,
-  Calendar as CalendarIcon,
-  AlertCircle,
-  UserCheck,
-  UserX,
-  Send
-} from 'lucide-react';
+import { GrGroup, GrSearch, GrFilter, GrCalendar, GrStar, GrLocation, GrBriefcase, GrClock, GrStatusGood, GrClose, GrView, GrPhone, GrVideo, GrDown, GrDownload, GrDocument, GrMail, GrGlobe, GrStatusWarning, GrSend } from 'react-icons/gr';
 import styles from './candidatos.module.css';
 
 interface Application {
@@ -261,20 +233,20 @@ function CandidatosContent() {
           {/* Success/Error Messages */}
           {successMessage && (
             <div className={styles.successMessage}>
-              <CheckCircle size={20} />
+              <GrStatusGood size={20} />
               <span>{successMessage}</span>
               <button onClick={() => setSuccessMessage('')}>
-                <X size={16} />
+                <GrClose size={16} />
               </button>
             </div>
           )}
           
           {errorMessage && (
             <div className={styles.errorMessage}>
-              <AlertCircle size={20} />
+              <GrStatusWarning size={20} />
               <span>{errorMessage}</span>
               <button onClick={() => setErrorMessage('')}>
-                <X size={16} />
+                <GrClose size={16} />
               </button>
             </div>
           )}
@@ -308,7 +280,7 @@ function CandidatosContent() {
           {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBox}>
-              <Search size={20} className={styles.searchIcon} />
+              <GrSearch size={20} className={styles.searchIcon} />
               <input
                 type="text"
                 placeholder="Buscar por nome, email ou vaga..."
@@ -334,7 +306,7 @@ function CandidatosContent() {
                   <option value="hired">Contratado</option>
                   <option value="rejected">Rejeitado</option>
                 </select>
-                <ChevronDown size={16} className={styles.dropdownIcon} />
+                <GrDown size={16} className={styles.dropdownIcon} />
               </div>
               
               <div className={styles.dropdown}>
@@ -350,12 +322,12 @@ function CandidatosContent() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={16} className={styles.dropdownIcon} />
+                <GrDown size={16} className={styles.dropdownIcon} />
               </div>
             </div>
           </div>
 
-          {/* Applications List */}
+          {/* Applications GrList */}
           <div className={styles.candidatosList}>
             {filteredApplications.length > 0 ? (
               filteredApplications.map((application) => (
@@ -365,24 +337,24 @@ function CandidatosContent() {
                       <div className={styles.candidatoNome}>
                         <h3>{application.userId.name}</h3>
                         <div className={styles.candidatoScore}>
-                          <Star size={16} />
+                          <GrStar size={16} />
                           <span>{calculateScore(application)}% match</span>
                         </div>
                       </div>
                       <div className={styles.candidatoMeta}>
                         <span className={styles.vaga}>
-                          <Briefcase size={14} />
+                          <GrBriefcase size={14} />
                           {application.jobId.title}
                         </span>
                         <span className={styles.localizacao}>
-                          <MapPin size={14} />
+                          <GrLocation size={14} />
                           {application.userId.address ? 
                             `${application.userId.address.city}, ${application.userId.address.state}` : 
                             'Localização não informada'
                           }
                         </span>
                         <span className={styles.dataAplicacao}>
-                          <Calendar size={14} />
+                          <GrCalendar size={14} />
                           Aplicou em {formatDate(application.appliedAt)}
                         </span>
                       </div>
@@ -418,12 +390,12 @@ function CandidatosContent() {
                   <div className={styles.candidatoFooter}>
                     <div className={styles.candidatoContato}>
                       <a href={`mailto:${application.userId.email}`} className={styles.contatoBtn}>
-                        <Mail size={16} />
+                        <GrMail size={16} />
                         Email
                       </a>
                       {application.userId.phone && (
                         <a href={`tel:${application.userId.phone}`} className={styles.contatoBtn}>
-                          <Phone size={16} />
+                          <GrPhone size={16} />
                           Telefone
                         </a>
                       )}
@@ -434,7 +406,7 @@ function CandidatosContent() {
                           rel="noopener noreferrer"
                           className={styles.contatoBtn}
                         >
-                          <Globe size={16} />
+                          <GrGlobe size={16} />
                           LinkedIn
                         </a>
                       )}
@@ -445,7 +417,7 @@ function CandidatosContent() {
                         onClick={() => handleVerDetalhes(application)}
                         className="btn btn-outline btn-sm"
                       >
-                        <Eye size={16} />
+                        <GrView size={16} />
                         Ver Detalhes
                       </button>
 
@@ -459,7 +431,7 @@ function CandidatosContent() {
                             <div className={styles.spinner}></div>
                           ) : (
                             <>
-                              <UserCheck size={16} />
+                              <GrUser size={16} />
                               Analisar
                             </>
                           )}
@@ -477,7 +449,7 @@ function CandidatosContent() {
                               <div className={styles.spinner}></div>
                             ) : (
                               <>
-                                <Calendar size={16} />
+                                <GrCalendar size={16} />
                                 Entrevista
                               </>
                             )}
@@ -491,7 +463,7 @@ function CandidatosContent() {
                               <div className={styles.spinner}></div>
                             ) : (
                               <>
-                                <UserX size={16} />
+                                <GrUser size={16} />
                                 Rejeitar
                               </>
                             )}
@@ -509,7 +481,7 @@ function CandidatosContent() {
                             <div className={styles.spinner}></div>
                           ) : (
                             <>
-                              <Send size={16} />
+                              <GrSend size={16} />
                               Fazer Oferta
                             </>
                           )}
@@ -521,7 +493,7 @@ function CandidatosContent() {
               ))
             ) : (
               <div className={styles.emptyState}>
-                <Users size={64} />
+                <GrGroup size={64} />
                 <h3>Nenhuma candidatura encontrada</h3>
                 <p>
                   {applications.length === 0 
@@ -531,7 +503,7 @@ function CandidatosContent() {
                 </p>
                 {applications.length === 0 && (
                   <Link href="/empresa/vagas" className="btn btn-primary">
-                    <Briefcase size={16} />
+                    <GrBriefcase size={16} />
                     Ver Minhas Vagas
                   </Link>
                 )}
@@ -549,7 +521,7 @@ function CandidatosContent() {
                     onClick={() => setCandidatoSelecionado(null)}
                     className={styles.modalClose}
                   >
-                    <X size={24} />
+                    <GrClose size={24} />
                   </button>
                 </div>
 
@@ -559,17 +531,17 @@ function CandidatosContent() {
                       <h3>{candidatoSelecionado.userId.name}</h3>
                       <div className={styles.candidatoContatos}>
                         <span>
-                          <Mail size={16} />
+                          <GrMail size={16} />
                           {candidatoSelecionado.userId.email}
                         </span>
                         {candidatoSelecionado.userId.phone && (
                           <span>
-                            <Phone size={16} />
+                            <GrPhone size={16} />
                             {candidatoSelecionado.userId.phone}
                           </span>
                         )}
                         <span>
-                          <MapPin size={16} />
+                          <GrLocation size={16} />
                           {candidatoSelecionado.userId.address ? 
                             `${candidatoSelecionado.userId.address.city}, ${candidatoSelecionado.userId.address.state}` : 
                             'Localização não informada'
@@ -681,7 +653,7 @@ function CandidatosContent() {
                       href={`mailto:${candidatoSelecionado.userId.email}`}
                       className="btn btn-primary"
                     >
-                      <Mail size={16} />
+                      <GrMail size={16} />
                       Enviar Email
                     </a>
                     <button 

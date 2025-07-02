@@ -5,16 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  ArrowLeft,
-  Clock,
-  CheckCircle,
-  Target,
-  Star,
-  BarChart3,
-  ArrowRight,
-  Home
-} from 'lucide-react';
+import { GrPrevious, GrClock, GrStatusGood, GrStar, GrBarChart, GrNext, GrHome } from 'react-icons/gr';
 import styles from './simulacao.module.css';
 
 interface Question {
@@ -204,7 +195,7 @@ export default function SimulacaoDetalhePage() {
         <div className={styles.completedContainer}>
           <div className={styles.completedContent}>
             <div className={styles.completedIcon}>
-              <CheckCircle size={64} />
+              <GrStatusGood size={64} />
             </div>
             
             <h1>Simulação Concluída!</h1>
@@ -223,7 +214,7 @@ export default function SimulacaoDetalhePage() {
 
             <div className={styles.completedActions}>
               <Link href="/candidato/simulacoes" className="btn btn-primary">
-                <Home size={16} />
+                <GrHome size={16} />
                 Voltar às Simulações
               </Link>
               <button 
@@ -303,7 +294,7 @@ export default function SimulacaoDetalhePage() {
                   disabled={!currentAnswer.trim()}
                 >
                   {currentQuestion === simulation.questions.length - 1 ? 'Finalizar' : 'Próxima'}
-                  <ArrowRight size={16} />
+                  <GrNext size={16} />
                 </button>
               </div>
             </div>

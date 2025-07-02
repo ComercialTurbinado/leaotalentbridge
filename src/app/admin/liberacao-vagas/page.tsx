@@ -5,24 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Users,
-  Briefcase,
-  Search,
-  Filter,
-  CheckCircle,
-  X,
-  Eye,
-  Send,
-  UserCheck,
-  Building2,
-  MapPin,
-  DollarSign,
-  Clock,
-  AlertCircle,
-  Plus,
-  Trash2
-} from 'lucide-react';
+import { GrGroup, GrBriefcase, GrSearch, GrFilter, GrStatusGood, GrClose, GrView, GrSend, GrOrganization, GrLocation, GrMoney, GrClock, GrStatusWarning, GrAdd, GrTrash } from 'react-icons/gr';
 import styles from './liberacao-vagas.module.css';
 
 interface Job {
@@ -242,20 +225,20 @@ export default function AdminLiberacaoVagasPage() {
           {/* Success/Error Messages */}
           {successMessage && (
             <div className={styles.successMessage}>
-              <CheckCircle size={20} />
+              <GrStatusGood size={20} />
               <span>{successMessage}</span>
               <button onClick={() => setSuccessMessage('')}>
-                <X size={16} />
+                <GrClose size={16} />
               </button>
             </div>
           )}
           
           {errorMessage && (
             <div className={styles.errorMessage}>
-              <AlertCircle size={20} />
+              <GrStatusWarning size={20} />
               <span>{errorMessage}</span>
               <button onClick={() => setErrorMessage('')}>
-                <X size={16} />
+                <GrClose size={16} />
               </button>
             </div>
           )}
@@ -272,7 +255,7 @@ export default function AdminLiberacaoVagasPage() {
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Briefcase size={24} />
+                <GrBriefcase size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{jobs.length}</h3>
@@ -282,7 +265,7 @@ export default function AdminLiberacaoVagasPage() {
             
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Users size={24} />
+                <GrGroup size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{candidates.length}</h3>
@@ -292,7 +275,7 @@ export default function AdminLiberacaoVagasPage() {
             
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <UserCheck size={24} />
+                <GrUser size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{candidates.filter(c => c.profileStatus === 'verified').length}</h3>
@@ -304,7 +287,7 @@ export default function AdminLiberacaoVagasPage() {
           {/* Search */}
           <div className={styles.searchSection}>
             <div className={styles.searchBox}>
-              <Search size={20} className={styles.searchIcon} />
+              <GrSearch size={20} className={styles.searchIcon} />
               <input
                 type="text"
                 placeholder="Buscar vagas por título ou empresa..."
@@ -315,7 +298,7 @@ export default function AdminLiberacaoVagasPage() {
             </div>
           </div>
 
-          {/* Jobs List */}
+          {/* Jobs GrList */}
           <div className={styles.jobsList}>
             <h2>Vagas Disponíveis</h2>
             {filteredJobs.length > 0 ? (
@@ -325,23 +308,23 @@ export default function AdminLiberacaoVagasPage() {
                     <div className={styles.jobHeader}>
                       <h3>{job.title}</h3>
                       <div className={styles.jobCompany}>
-                        <Building2 size={16} />
+                        <GrOrganization size={16} />
                         {job.companyId.name}
                       </div>
                     </div>
 
                     <div className={styles.jobMeta}>
                       <span className={styles.location}>
-                        <MapPin size={14} />
+                        <GrLocation size={14} />
                         {job.location.city}, {job.location.state}
                         {job.location.isRemote && ' (Remoto)'}
                       </span>
                       <span className={styles.salary}>
-                        <DollarSign size={14} />
+                        <GrMoney size={14} />
                         {formatSalary(job.salary)}
                       </span>
                       <span className={styles.workType}>
-                        <Briefcase size={14} />
+                        <GrBriefcase size={14} />
                         {job.workType}
                       </span>
                     </div>
@@ -364,7 +347,7 @@ export default function AdminLiberacaoVagasPage() {
                         onClick={() => handleReleaseJob(job)}
                         className="btn btn-primary btn-sm"
                       >
-                        <Send size={16} />
+                        <GrSend size={16} />
                         Liberar para Candidatos
                       </button>
                     </div>
@@ -373,7 +356,7 @@ export default function AdminLiberacaoVagasPage() {
               </div>
             ) : (
               <div className={styles.emptyState}>
-                <Briefcase size={64} />
+                <GrBriefcase size={64} />
                 <h3>Nenhuma vaga encontrada</h3>
                 <p>Não há vagas ativas disponíveis para liberação</p>
               </div>
@@ -390,7 +373,7 @@ export default function AdminLiberacaoVagasPage() {
                     onClick={() => setShowModal(false)}
                     className={styles.modalClose}
                   >
-                    <X size={24} />
+                    <GrClose size={24} />
                   </button>
                 </div>
 
@@ -400,11 +383,11 @@ export default function AdminLiberacaoVagasPage() {
                     <p>{selectedJob.companyId.name}</p>
                     <div className={styles.jobDetails}>
                       <span>
-                        <MapPin size={14} />
+                        <GrLocation size={14} />
                         {selectedJob.location.city}, {selectedJob.location.state}
                       </span>
                       <span>
-                        <DollarSign size={14} />
+                        <GrMoney size={14} />
                         {formatSalary(selectedJob.salary)}
                       </span>
                     </div>
@@ -428,7 +411,7 @@ export default function AdminLiberacaoVagasPage() {
                             <p>{candidate.email}</p>
                             {candidate.address && (
                               <span className={styles.candidateLocation}>
-                                <MapPin size={12} />
+                                <GrLocation size={12} />
                                 {candidate.address.city}, {candidate.address.state}
                               </span>
                             )}
@@ -475,7 +458,7 @@ export default function AdminLiberacaoVagasPage() {
                       </>
                     ) : (
                       <>
-                        <Send size={16} />
+                        <GrSend size={16} />
                         Liberar para {selectedCandidates.length} candidato(s)
                       </>
                     )}

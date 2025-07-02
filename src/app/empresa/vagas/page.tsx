@@ -6,27 +6,7 @@ import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Plus,
-  Search,
-  Filter,
-  Edit,
-  Eye,
-  Users,
-  MapPin,
-  Calendar,
-  DollarSign,
-  MoreVertical,
-  Briefcase,
-  ChevronDown,
-  Clock,
-  Trash2,
-  Play,
-  Pause,
-  CheckCircle,
-  AlertCircle,
-  X
-} from 'lucide-react';
+import { GrAdd, GrSearch, GrFilter, GrEdit, GrView, GrGroup, GrLocation, GrCalendar, GrMoney, GrMore, GrBriefcase, GrDown, GrClock, GrTrash, GrPlay, GrPause, GrStatusGood, GrStatusWarning, GrClose } from 'react-icons/gr';
 import styles from './vagas.module.css';
 
 interface Job {
@@ -241,20 +221,20 @@ export default function EmpresaVagasPage() {
           {/* Success/Error Messages */}
           {successMessage && (
             <div className={styles.successMessage}>
-              <CheckCircle size={20} />
+              <GrStatusGood size={20} />
               <span>{successMessage}</span>
               <button onClick={() => setSuccessMessage('')}>
-                <X size={16} />
+                <GrClose size={16} />
               </button>
             </div>
           )}
           
           {errorMessage && (
             <div className={styles.errorMessage}>
-              <AlertCircle size={20} />
+              <GrStatusWarning size={20} />
               <span>{errorMessage}</span>
               <button onClick={() => setErrorMessage('')}>
-                <X size={16} />
+                <GrClose size={16} />
               </button>
             </div>
           )}
@@ -266,7 +246,7 @@ export default function EmpresaVagasPage() {
               <p>Crie, edite e gerencie suas oportunidades de trabalho</p>
             </div>
             <Link href="/empresa/vagas/nova" className="btn btn-primary">
-              <Plus size={20} />
+              <GrAdd size={20} />
               NOVA VAGA
             </Link>
           </div>
@@ -275,7 +255,7 @@ export default function EmpresaVagasPage() {
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Briefcase size={24} />
+                <GrBriefcase size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{jobs.length}</h3>
@@ -285,7 +265,7 @@ export default function EmpresaVagasPage() {
             
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Play size={24} />
+                <GrPlay size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{jobs.filter(job => job.status === 'active').length}</h3>
@@ -295,7 +275,7 @@ export default function EmpresaVagasPage() {
             
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Users size={24} />
+                <GrGroup size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{jobs.reduce((total, job) => total + (job.applicationsCount || 0), 0)}</h3>
@@ -305,7 +285,7 @@ export default function EmpresaVagasPage() {
             
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Clock size={24} />
+                <GrClock size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{jobs.filter(job => isExpired(job.expiresAt)).length}</h3>
@@ -317,7 +297,7 @@ export default function EmpresaVagasPage() {
           {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBox}>
-              <Search size={20} className={styles.searchIcon} />
+              <GrSearch size={20} className={styles.searchIcon} />
               <input
                 type="text"
                 placeholder="Buscar por título ou localização..."
@@ -341,7 +321,7 @@ export default function EmpresaVagasPage() {
                   <option value="draft">Rascunho</option>
                   <option value="expired">Expirada</option>
                 </select>
-                <ChevronDown size={16} className={styles.dropdownIcon} />
+                <GrDown size={16} className={styles.dropdownIcon} />
               </div>
               
               <div className={styles.dropdown}>
@@ -357,12 +337,12 @@ export default function EmpresaVagasPage() {
                   <option value="freelance">Freelance</option>
                   <option value="remote">Remoto</option>
                 </select>
-                <ChevronDown size={16} className={styles.dropdownIcon} />
+                <GrDown size={16} className={styles.dropdownIcon} />
               </div>
             </div>
           </div>
 
-          {/* Jobs List */}
+          {/* Jobs GrList */}
           <div className={styles.jobsList}>
             {filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
@@ -372,16 +352,16 @@ export default function EmpresaVagasPage() {
                       <h3>{job.title}</h3>
                       <div className={styles.jobMeta}>
                         <span className={styles.location}>
-                          <MapPin size={14} />
+                          <GrLocation size={14} />
                           {job.location.city}, {job.location.state}
                           {job.location.isRemote && ' (Remoto)'}
                         </span>
                         <span className={styles.salary}>
-                          <DollarSign size={14} />
+                          <GrMoney size={14} />
                           {formatSalary(job.salary)}
                         </span>
                         <span className={styles.workType}>
-                          <Briefcase size={14} />
+                          <GrBriefcase size={14} />
                           {job.workType}
                         </span>
                       </div>
@@ -417,15 +397,15 @@ export default function EmpresaVagasPage() {
                   <div className={styles.jobFooter}>
                     <div className={styles.jobStats}>
                       <span className={styles.stat}>
-                        <Users size={14} />
+                        <GrGroup size={14} />
                         {job.applicationsCount || 0} candidaturas
                       </span>
                       <span className={styles.stat}>
-                        <Calendar size={14} />
+                        <GrCalendar size={14} />
                         Publicada em {formatDate(job.publishedAt)}
                       </span>
                       <span className={styles.stat}>
-                        <Clock size={14} />
+                        <GrClock size={14} />
                         Expira em {formatDate(job.expiresAt)}
                       </span>
                     </div>
@@ -435,7 +415,7 @@ export default function EmpresaVagasPage() {
                         href={`/empresa/candidaturas?jobId=${job._id}`}
                         className="btn btn-outline btn-sm"
                       >
-                        <Users size={16} />
+                        <GrGroup size={16} />
                         Ver Candidatos
                       </Link>
                       
@@ -443,7 +423,7 @@ export default function EmpresaVagasPage() {
                         href={`/empresa/vagas/${job._id}/editar`}
                         className="btn btn-outline btn-sm"
                       >
-                        <Edit size={16} />
+                        <GrEdit size={16} />
                         Editar
                       </Link>
 
@@ -457,7 +437,7 @@ export default function EmpresaVagasPage() {
                             <div className={styles.spinner}></div>
                           ) : (
                             <>
-                              <Pause size={16} />
+                              <GrPause size={16} />
                               Pausar
                             </>
                           )}
@@ -472,7 +452,7 @@ export default function EmpresaVagasPage() {
                             <div className={styles.spinner}></div>
                           ) : (
                             <>
-                              <Play size={16} />
+                              <GrPlay size={16} />
                               Ativar
                             </>
                           )}
@@ -488,7 +468,7 @@ export default function EmpresaVagasPage() {
                           <div className={styles.spinner}></div>
                         ) : (
                           <>
-                            <Trash2 size={16} />
+                            <GrTrash size={16} />
                             Excluir
                           </>
                         )}
@@ -499,7 +479,7 @@ export default function EmpresaVagasPage() {
               ))
             ) : (
               <div className={styles.emptyState}>
-                <Briefcase size={64} />
+                <GrBriefcase size={64} />
                 <h3>Nenhuma vaga encontrada</h3>
                 <p>
                   {jobs.length === 0 
@@ -509,7 +489,7 @@ export default function EmpresaVagasPage() {
                 </p>
                 {jobs.length === 0 && (
                   <Link href="/empresa/vagas/nova" className="btn btn-primary">
-                    <Plus size={16} />
+                    <GrAdd size={16} />
                     Criar Primeira Vaga
                   </Link>
                 )}

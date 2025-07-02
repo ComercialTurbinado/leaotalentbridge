@@ -5,21 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ApiService } from '@/lib/api';
 import { AuthService } from '@/lib/auth';
-import { 
-  Crown, 
-  Building2, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Users, 
-  Globe,
-  Linkedin,
-  Eye,
-  EyeOff,
-  ArrowLeft,
-  CheckCircle,
-  FileText
-} from 'lucide-react';
+import { GrOrganization, GrMail, GrPhone, GrLocation, GrGroup, GrGlobe, GrView, GrHide, GrPrevious, GrStatusGood, GrDocument } from 'react-icons/gr';
 import styles from './cadastro.module.css';
 
 export default function EmpresaCadastroPage() {
@@ -126,12 +112,12 @@ export default function EmpresaCadastroPage() {
         {/* Header */}
         <div className={styles.cadastroHeader}>
           <Link href="/" className={styles.backButton}>
-            <ArrowLeft size={20} />
+            <GrPrevious size={20} />
             Voltar ao Início
           </Link>
           
           <div className={styles.logo}>
-            <Crown size={32} />
+            <GrStar size={32} />
             <span> Leao Talent Bridge</span>
           </div>
         </div>
@@ -147,7 +133,7 @@ export default function EmpresaCadastroPage() {
             {/* Dados da Empresa */}
             <div className={styles.formSection}>
               <h3>
-                <Building2 size={20} />
+                <GrOrganization size={20} />
                 Dados da Empresa
               </h3>
               
@@ -207,7 +193,7 @@ export default function EmpresaCadastroPage() {
                 <div className="form-group">
                   <label className="form-label">Website *</label>
                   <div className={styles.inputWithIcon}>
-                    <Globe size={20} />
+                    <GrGlobe size={20} />
                     <input
                       type="url"
                       name="website"
@@ -223,7 +209,7 @@ export default function EmpresaCadastroPage() {
                 <div className="form-group">
                   <label className="form-label">LinkedIn da Empresa *</label>
                   <div className={styles.inputWithIcon}>
-                    <Linkedin size={20} />
+                    <GrLinkedin size={20} />
                     <input
                       type="url"
                       name="linkedin"
@@ -241,7 +227,7 @@ export default function EmpresaCadastroPage() {
             {/* Localização */}
             <div className={styles.formSection}>
               <h3>
-                <MapPin size={20} />
+                <GrLocation size={20} />
                 Localização
               </h3>
               
@@ -297,7 +283,7 @@ export default function EmpresaCadastroPage() {
             {/* Informações da Empresa */}
             <div className={styles.formSection}>
               <h3>
-                <FileText size={20} />
+                <GrDocument size={20} />
                 Informações da Empresa
               </h3>
               
@@ -361,7 +347,7 @@ export default function EmpresaCadastroPage() {
             {/* Contato Responsável */}
             <div className={styles.formSection}>
               <h3>
-                <Users size={20} />
+                <GrGroup size={20} />
                 Contato Responsável
               </h3>
               
@@ -397,7 +383,7 @@ export default function EmpresaCadastroPage() {
             {/* Senha */}
             <div className={styles.formSection}>
               <h3>
-                <CheckCircle size={20} />
+                <GrStatusGood size={20} />
                 Segurança
               </h3>
               
@@ -420,7 +406,7 @@ export default function EmpresaCadastroPage() {
                       onClick={() => setShowPassword(!showPassword)}
                       className={styles.passwordToggle}
                     >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      {showPassword ? <GrHide size={20} /> : <GrView size={20} />}
                     </button>
                   </div>
                 </div>
@@ -443,7 +429,7 @@ export default function EmpresaCadastroPage() {
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className={styles.passwordToggle}
                     >
-                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      {showConfirmPassword ? <GrHide size={20} /> : <GrView size={20} />}
                     </button>
                   </div>
                 </div>

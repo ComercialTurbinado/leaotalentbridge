@@ -4,36 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  BookOpen, 
-  Download, 
-  Eye, 
-  Clock, 
-  Users, 
-  Globe, 
-  Briefcase,
-  User, 
-  Bell, 
-  Settings, 
-  LogOut,
-  Star,
-  CheckCircle,
-  FileText,
-  Play,
-  ArrowRight,
-  Calendar,
-  MapPin,
-  Coffee,
-  Handshake,
-  Heart,
-  Shield,
-  Target,
-  Award,
-  Building,
-  Zap,
-  MessageSquare
-} from 'lucide-react';
+import { GrDownload, GrView, GrClock, GrGroup, GrGlobe, GrBriefcase, GrUser, GrNotification, GrSettings, GrLogout, GrStar, GrStatusGood, GrDocument, GrPlay, GrNext, GrCalendar, GrLocation, GrFavorite, GrShield, GrPower } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './cultura.module.css';
@@ -81,7 +52,7 @@ export default function CandidatoCultura() {
       id: 'basics',
       title: 'Fundamentos Culturais',
       description: 'Conheça a história, religião e valores fundamentais dos Emirados Árabes Unidos',
-      icon: <Globe size={24} />,
+      icon: <GrGlobe size={24} />,
       color: '#3B82F6',
       readTime: 15,
       isCompleted: completedSections.includes('basics'),
@@ -113,7 +84,7 @@ export default function CandidatoCultura() {
       id: 'business',
       title: 'Etiqueta Empresarial',
       description: 'Protocolos e comportamentos adequados para o ambiente corporativo nos UAE',
-      icon: <Briefcase size={24} />,
+      icon: <GrBriefcase size={24} />,
       color: '#10B981',
       readTime: 20,
       isCompleted: completedSections.includes('business'),
@@ -145,7 +116,7 @@ export default function CandidatoCultura() {
       id: 'communication',
       title: 'Comunicação Eficaz',
       description: 'Como se comunicar de forma apropriada e eficiente com colegas emiratienses',
-      icon: <MessageSquare size={24} />,
+      icon: <GrChat size={24} />,
       color: '#F59E0B',
       readTime: 12,
       isCompleted: false,
@@ -171,7 +142,7 @@ export default function CandidatoCultura() {
       id: 'workplace',
       title: 'Ambiente de Trabalho',
       description: 'Dinâmicas do local de trabalho, hierarquia e colaboração em equipe',
-      icon: <Users size={24} />,
+      icon: <GrGroup size={24} />,
       color: '#8B5CF6',
       readTime: 18,
       isCompleted: false,
@@ -197,7 +168,7 @@ export default function CandidatoCultura() {
       id: 'social',
       title: 'Vida Social e Networking',
       description: 'Como construir relacionamentos e navegar na vida social profissional',
-      icon: <Coffee size={24} />,
+      icon: <GrCoffee size={24} />,
       color: '#EC4899',
       readTime: 14,
       isCompleted: false,
@@ -223,7 +194,7 @@ export default function CandidatoCultura() {
       id: 'practical',
       title: 'Dicas Práticas',
       description: 'Informações úteis para o dia a dia nos Emirados Árabes Unidos',
-      icon: <Target size={24} />,
+      icon: <GrTarget size={24} />,
       color: '#EF4444',
       readTime: 16,
       isCompleted: false,
@@ -288,7 +259,7 @@ export default function CandidatoCultura() {
             
             <div className={styles.headerActions}>
               <button className="btn btn-secondary">
-                <Download size={16} />
+                <GrDownload size={16} />
                 Baixar PDF Completo
               </button>
             </div>
@@ -298,7 +269,7 @@ export default function CandidatoCultura() {
           <div className={styles.statsSection}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <BookOpen size={20} />
+                <GrBook size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.completedSections}/{stats.totalSections}</h3>
@@ -308,7 +279,7 @@ export default function CandidatoCultura() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Clock size={20} />
+                <GrClock size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.completedReadTime}min</h3>
@@ -318,7 +289,7 @@ export default function CandidatoCultura() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Target size={20} />
+                <GrTarget size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{Math.round((stats.completedSections / stats.totalSections) * 100)}%</h3>
@@ -328,7 +299,7 @@ export default function CandidatoCultura() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Globe size={20} />
+                <GrGlobe size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>UAE</h3>
@@ -351,14 +322,14 @@ export default function CandidatoCultura() {
                   </div>
                   {section.isCompleted && (
                     <div className={styles.completedBadge}>
-                      <CheckCircle size={20} />
+                      <GrStatusGood size={20} />
                     </div>
                   )}
                 </div>
 
                 <div className={styles.sectionMeta}>
                   <div className={styles.readTime}>
-                    <Clock size={14} />
+                    <GrClock size={14} />
                     <span>{section.readTime} min</span>
                   </div>
                   <div className={styles.sectionStatus}>
@@ -379,7 +350,7 @@ export default function CandidatoCultura() {
                     className="btn btn-primary btn-small"
                     onClick={() => setActiveSection(section.id)}
                   >
-                    <Eye size={16} />
+                    <GrView size={16} />
                     {section.isCompleted ? 'Revisar' : 'Ler Agora'}
                   </button>
                 </div>
@@ -465,7 +436,7 @@ export default function CandidatoCultura() {
                             setActiveSection(null);
                           }}
                         >
-                          <CheckCircle size={16} />
+                          <GrStatusGood size={16} />
                           Marcar como Concluído
                         </button>
                       </div>

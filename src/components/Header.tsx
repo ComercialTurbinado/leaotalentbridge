@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
+import { GrMenu, GrClose } from 'react-icons/gr';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -65,7 +65,7 @@ export default function Header({ transparent = false }: HeaderProps) {
             onClick={toggleMenu}
             aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? <GrClose size={24} /> : <GrMenu size={24} />}
           </button>
         </div>
 

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Crown, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, Shield, Settings } from 'lucide-react';
+import { GrMail, GrLock, GrView, GrHide, GrNext, GrStatusWarning, GrShield, GrSettings } from 'react-icons/gr';
 import { AuthService } from '@/lib/auth';
 import styles from './login.module.css';
 import Image from 'next/image';
@@ -67,7 +67,7 @@ export default function AdminLogin() {
         <div className={styles.loginCard}>
           <div className={styles.cardHeader}>
             <div className={styles.headerIcon}>
-              <Shield size={32} />
+              <GrShield size={32} />
             </div>
             <h1>Área Administrativa</h1>
             <p>Acesso restrito para administradores do sistema</p>
@@ -76,14 +76,14 @@ export default function AdminLogin() {
           <form onSubmit={handleSubmit} className={styles.loginForm}>
             {error && (
               <div className={styles.errorMessage}>
-                <AlertCircle size={20} />
+                <GrStatusWarning size={20} />
                 <span>{error}</span>
               </div>
             )}
 
             <div className="form-group">
               <label className="form-label">
-                <Mail size={18} />
+                <GrMail size={18} />
                 Email Administrativo
               </label>
               <input
@@ -100,7 +100,7 @@ export default function AdminLogin() {
 
             <div className="form-group">
               <label className="form-label">
-                <Lock size={18} />
+                <GrLock size={18} />
                 Senha de Administrador
               </label>
               <div className={styles.passwordInput}>
@@ -120,7 +120,7 @@ export default function AdminLogin() {
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <GrHide size={18} /> : <GrView size={18} />}
                 </button>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function AdminLogin() {
               {!isLoading && (
                 <>
                   Acessar Sistema
-                  <Settings size={20} />
+                  <GrSettings size={20} />
                 </>
               )}
             </button>
@@ -159,7 +159,7 @@ export default function AdminLogin() {
           {/* Security Info */}
           <div className={styles.securityInfo}>
             <div className={styles.securityHeader}>
-              <Shield size={16} />
+              <GrShield size={16} />
               <h4>Segurança</h4>
             </div>
             <ul>

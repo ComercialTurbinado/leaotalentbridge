@@ -4,26 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  Check, 
-  CreditCard, 
-  Shield, 
-  ArrowLeft,
-  Star,
-  Users,
-  Search,
-  Target,
-  Award,
-  Zap,
-  Building2,
-  Calendar,
-  MessageCircle,
-  UserCheck,
-  BarChart3,
-  Settings,
-  Database
-} from 'lucide-react';
+import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrSearch, GrPower, GrOrganization, GrCalendar, GrChat, GrBarChart, GrSettings } from 'react-icons/gr';
 import styles from './pagamento.module.css';
 
 export default function EmpresaPagamentoPage() {
@@ -75,7 +56,7 @@ export default function EmpresaPagamentoPage() {
       description: 'Plataforma disponível 24/7 para sua equipe'
     },
     {
-      icon: Database,
+      icon: GrStorage,
       title: 'Banco de talentos brasileiros ilimitado',
       description: 'Acesso a milhares de profissionais qualificados'
     },
@@ -85,7 +66,7 @@ export default function EmpresaPagamentoPage() {
       description: 'Encontre o perfil exato que procura'
     },
     {
-      icon: Target,
+      icon: GrTarget,
       title: 'Entrevistas pré-agendadas automaticamente',
       description: 'Sistema inteligente de matching'
     },
@@ -100,7 +81,7 @@ export default function EmpresaPagamentoPage() {
       description: 'Analytics completos do processo seletivo'
     },
     {
-      icon: UserCheck,
+      icon: GrUser,
       title: 'Consultoria especializada em RH',
       description: 'Especialistas em recrutamento internacional'
     },
@@ -153,7 +134,7 @@ export default function EmpresaPagamentoPage() {
         {/* Header */}
         <div className={styles.pagamentoHeader}>
           <Link href="/" className={styles.backButton}>
-            <ArrowLeft size={20} />
+            <GrPrevious size={20} />
             Voltar ao Início
           </Link>
           
@@ -180,7 +161,7 @@ export default function EmpresaPagamentoPage() {
           <div className={styles.commonFeaturesSection}>
             <div className={styles.commonFeaturesCard}>
               <div className={styles.featuresHeader}>
-                <Building2 size={32} className={styles.crownIcon} />
+                <GrOrganization size={32} className={styles.crownIcon} />
                 <h3>O que sua empresa terá acesso:</h3>
                 <p>Todos os recursos premium para recrutamento internacional</p>
               </div>
@@ -203,7 +184,7 @@ export default function EmpresaPagamentoPage() {
             </div>
           </div>
 
-          {/* Plans Grid */}
+          {/* Plans GrApps */}
           <div className={styles.plansGrid}>
             {plans.map((plan) => (
               <div 
@@ -213,7 +194,7 @@ export default function EmpresaPagamentoPage() {
               >
                 {plan.popular && (
                   <div className={styles.popularBadge}>
-                    <Star size={16} />
+                    <GrStar size={16} />
                     Mais Popular
                   </div>
                 )}
@@ -266,7 +247,7 @@ export default function EmpresaPagamentoPage() {
                   className={`${styles.paymentMethod} ${paymentMethod === 'credit' ? styles.active : ''}`}
                   onClick={() => setPaymentMethod('credit')}
                 >
-                  <CreditCard size={20} />
+                  <GrCreditCard size={20} />
                   <span>Cartão de Crédito</span>
                   <div className={styles.paymentBadges}>
                     <span>Visa</span>
@@ -279,7 +260,7 @@ export default function EmpresaPagamentoPage() {
                     className={`${styles.paymentMethod} ${paymentMethod === 'pix' ? styles.active : ''}`}
                     onClick={() => setPaymentMethod('pix')}
                   >
-                    <Zap size={20} />
+                    <GrPower size={20} />
                     <span>PIX</span>
                     <div className={styles.paymentBadge}>
                       <span>Instantâneo</span>
@@ -327,14 +308,14 @@ export default function EmpresaPagamentoPage() {
                   </>
                 ) : (
                   <>
-                    <Shield size={20} />
+                    <GrShield size={20} />
                     Finalizar Pagamento Seguro
                   </>
                 )}
               </button>
 
               <div className={styles.securityNote}>
-                <Shield size={16} />
+                <GrShield size={16} />
                 <span>Pagamento 100% seguro e criptografado</span>
               </div>
             </div>

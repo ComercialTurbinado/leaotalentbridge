@@ -4,30 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Briefcase,
-  Search,
-  Filter,
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
-  Users,
-  MapPin,
-  Calendar,
-  DollarSign,
-  Building2,
-  Clock,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Star,
-  Download,
-  X,
-  UserCheck,
-  Mail,
-  Phone
-} from 'lucide-react';
+import { GrBriefcase, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrGroup, GrLocation, GrCalendar, GrMoney, GrOrganization, GrClock, GrStatusGood, GrStatusCritical, GrStatusWarning, GrStar, GrDownload, GrClose, GrMail, GrPhone } from 'react-icons/gr';
 import styles from './vagas.module.css';
 
 interface Candidato {
@@ -280,11 +257,11 @@ export default function AdminVagasPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'ativa': return <CheckCircle size={14} />;
-      case 'pausada': return <Clock size={14} />;
-      case 'fechada': return <XCircle size={14} />;
-      case 'rascunho': return <Edit size={14} />;
-      default: return <XCircle size={14} />;
+      case 'ativa': return <GrStatusGood size={14} />;
+      case 'pausada': return <GrClock size={14} />;
+      case 'fechada': return <GrStatusCritical size={14} />;
+      case 'rascunho': return <GrEdit size={14} />;
+      default: return <GrStatusCritical size={14} />;
     }
   };
 
@@ -301,12 +278,12 @@ export default function AdminVagasPage() {
 
   const getCandidateStatusIcon = (status: string) => {
     switch (status) {
-      case 'novo': return <Users size={12} />;
-      case 'analisando': return <Eye size={12} />;
-      case 'entrevista': return <Calendar size={12} />;
-      case 'aprovado': return <CheckCircle size={12} />;
-      case 'rejeitado': return <XCircle size={12} />;
-      default: return <Users size={12} />;
+      case 'novo': return <GrGroup size={12} />;
+      case 'analisando': return <GrView size={12} />;
+      case 'entrevista': return <GrCalendar size={12} />;
+      case 'aprovado': return <GrStatusGood size={12} />;
+      case 'rejeitado': return <GrStatusCritical size={12} />;
+      default: return <GrGroup size={12} />;
     }
   };
 
@@ -356,7 +333,7 @@ export default function AdminVagasPage() {
                 onClick={exportarVagas}
                 className="btn btn-secondary"
               >
-                <Download size={16} />
+                <GrDownload size={16} />
                 Exportar
               </button>
             </div>
@@ -366,7 +343,7 @@ export default function AdminVagasPage() {
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Briefcase size={24} />
+                <GrBriefcase size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{vagas.length}</h3>
@@ -375,7 +352,7 @@ export default function AdminVagasPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <CheckCircle size={24} />
+                <GrStatusGood size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{vagas.filter(v => v.status === 'ativa').length}</h3>
@@ -384,7 +361,7 @@ export default function AdminVagasPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Users size={24} />
+                <GrGroup size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{vagas.reduce((acc, v) => acc + v.totalCandidatos, 0)}</h3>
@@ -393,7 +370,7 @@ export default function AdminVagasPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Star size={24} />
+                <GrStar size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{vagas.reduce((acc, v) => acc + v.candidatosRecomendados.length, 0)}</h3>
@@ -405,7 +382,7 @@ export default function AdminVagasPage() {
           {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBox}>
-              <Search size={20} />
+              <GrSearch size={20} />
               <input
                 type="text"
                 placeholder="Buscar por título, empresa ou localização..."
@@ -466,7 +443,7 @@ export default function AdminVagasPage() {
                             <h4>{vaga.titulo}</h4>
                             <p>{vaga.empresa.nome}</p>
                             <span className={styles.vagaLocation}>
-                              <MapPin size={12} />
+                              <GrLocation size={12} />
                               {vaga.localizacao} • {vaga.modalidade}
                             </span>
                           </div>
@@ -515,20 +492,20 @@ export default function AdminVagasPage() {
                             className={styles.actionBtn}
                             title="Visualizar"
                           >
-                            <Eye size={16} />
+                            <GrView size={16} />
                           </button>
                           <button 
                             onClick={() => handleViewCandidates(vaga)}
                             className={styles.actionBtn}
                             title="Ver Candidatos"
                           >
-                            <Users size={16} />
+                            <GrGroup size={16} />
                           </button>
                           <button 
                             className={`${styles.actionBtn} ${styles.danger}`}
                             title="Excluir"
                           >
-                            <Trash2 size={16} />
+                            <GrTrash size={16} />
                           </button>
                         </div>
                       </td>
@@ -540,7 +517,7 @@ export default function AdminVagasPage() {
 
             {vagasFiltradas.length === 0 && (
               <div className={styles.emptyState}>
-                <Briefcase size={48} />
+                <GrBriefcase size={48} />
                 <h3>Nenhuma vaga encontrada</h3>
                 <p>Tente ajustar os filtros de busca.</p>
               </div>
@@ -562,7 +539,7 @@ export default function AdminVagasPage() {
                 onClick={() => setShowModal(false)}
                 className={styles.closeButton}
               >
-                <X size={20} />
+                <GrClose size={20} />
               </button>
             </div>
 
@@ -583,14 +560,14 @@ export default function AdminVagasPage() {
 
                   <div className={styles.vagaInfoGrid}>
                     <div className={styles.infoItem}>
-                      <MapPin size={16} />
+                      <GrLocation size={16} />
                       <div>
                         <span className={styles.infoLabel}>Localização</span>
                         <span className={styles.infoValue}>{vagaSelecionada.localizacao}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <DollarSign size={16} />
+                      <GrMoney size={16} />
                       <div>
                         <span className={styles.infoLabel}>Salário</span>
                         <span className={styles.infoValue}>
@@ -599,14 +576,14 @@ export default function AdminVagasPage() {
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <Briefcase size={16} />
+                      <GrBriefcase size={16} />
                       <div>
                         <span className={styles.infoLabel}>Tipo</span>
                         <span className={styles.infoValue}>{vagaSelecionada.tipo}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <Users size={16} />
+                      <GrGroup size={16} />
                       <div>
                         <span className={styles.infoLabel}>Candidatos</span>
                         <span className={styles.infoValue}>{vagaSelecionada.totalCandidatos}</span>
@@ -640,13 +617,13 @@ export default function AdminVagasPage() {
                           <h4>{candidato.nome}</h4>
                           <p>{candidato.cargo}</p>
                           <span className={styles.candidateLocation}>
-                            <MapPin size={12} />
+                            <GrLocation size={12} />
                             {candidato.localizacao}
                           </span>
                         </div>
                         <div className={styles.candidateCompatibility}>
                           <div className={styles.compatibilityScore}>
-                            <Star size={16} />
+                            <GrStar size={16} />
                             <span>{candidato.compatibilidade}%</span>
                           </div>
                           <div className={`${styles.candidateStatus} ${styles[getCandidateStatusColor(candidato.status)]}`}>
@@ -658,8 +635,8 @@ export default function AdminVagasPage() {
 
                       <div className={styles.candidateDetails}>
                         <div className={styles.candidateContact}>
-                          <span><Mail size={14} /> {candidato.email}</span>
-                          <span><Phone size={14} /> {candidato.telefone}</span>
+                          <span><GrMail size={14} /> {candidato.email}</span>
+                          <span><GrPhone size={14} /> {candidato.telefone}</span>
                         </div>
                         <div className={styles.candidateExperience}>
                           <span>Experiência: {candidato.experiencia}</span>
@@ -669,15 +646,15 @@ export default function AdminVagasPage() {
 
                       <div className={styles.candidateActions}>
                         <button className={`${styles.actionButton} ${styles.approve}`}>
-                          <UserCheck size={16} />
+                          <GrUser size={16} />
                           Aprovar
                         </button>
                         <button className={styles.actionButton}>
-                          <Eye size={16} />
+                          <GrView size={16} />
                           Ver Perfil
                         </button>
                         <button className={styles.actionButton}>
-                          <Mail size={16} />
+                          <GrMail size={16} />
                           Contatar
                         </button>
                       </div>

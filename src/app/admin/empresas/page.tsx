@@ -4,31 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Building2,
-  Search,
-  Filter,
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  MapPin,
-  Users,
-  Briefcase,
-  Globe,
-  Mail,
-  Phone,
-  Calendar,
-  Star,
-  Download,
-  X,
-  Check,
-  Ban
-} from 'lucide-react';
+import { GrOrganization, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrLocation, GrGroup, GrBriefcase, GrGlobe, GrMail, GrPhone, GrCalendar, GrStar, GrDownload, GrClose, GrCheckbox } from 'react-icons/gr';
 import styles from './empresas.module.css';
 
 interface Empresa {
@@ -224,11 +200,11 @@ export default function AdminEmpresasPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'ativa': return <CheckCircle size={14} />;
-      case 'inativa': return <XCircle size={14} />;
-      case 'pendente': return <Clock size={14} />;
-      case 'rejeitada': return <AlertTriangle size={14} />;
-      default: return <XCircle size={14} />;
+      case 'ativa': return <GrStatusGood size={14} />;
+      case 'inativa': return <GrStatusCritical size={14} />;
+      case 'pendente': return <GrClock size={14} />;
+      case 'rejeitada': return <GrStatusWarning size={14} />;
+      default: return <GrStatusCritical size={14} />;
     }
   };
 
@@ -279,7 +255,7 @@ export default function AdminEmpresasPage() {
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <Star 
+      <GrStar 
         key={i} 
         size={12} 
         className={i < rating ? styles.starFilled : styles.starEmpty}
@@ -317,7 +293,7 @@ export default function AdminEmpresasPage() {
                 onClick={exportarEmpresas}
                 className="btn btn-secondary"
               >
-                <Download size={16} />
+                <GrDownload size={16} />
                 Exportar
               </button>
             </div>
@@ -327,7 +303,7 @@ export default function AdminEmpresasPage() {
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Building2 size={24} />
+                <GrOrganization size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{empresas.length}</h3>
@@ -336,7 +312,7 @@ export default function AdminEmpresasPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <CheckCircle size={24} />
+                <GrStatusGood size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{empresas.filter(e => e.status === 'ativa').length}</h3>
@@ -345,7 +321,7 @@ export default function AdminEmpresasPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Clock size={24} />
+                <GrClock size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{empresas.filter(e => e.status === 'pendente').length}</h3>
@@ -354,7 +330,7 @@ export default function AdminEmpresasPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Briefcase size={24} />
+                <GrBriefcase size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{empresas.reduce((acc, e) => acc + e.vagasPublicadas, 0)}</h3>
@@ -366,7 +342,7 @@ export default function AdminEmpresasPage() {
           {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBox}>
-              <Search size={20} />
+              <GrSearch size={20} />
               <input
                 type="text"
                 placeholder="Buscar por nome, email ou setor..."
@@ -428,7 +404,7 @@ export default function AdminEmpresasPage() {
                             <h4>{empresa.nome}</h4>
                             <p>{empresa.email}</p>
                             <span className={styles.empresaLocation}>
-                              <MapPin size={12} />
+                              <GrLocation size={12} />
                               {empresa.localizacao}
                             </span>
                           </div>
@@ -476,7 +452,7 @@ export default function AdminEmpresasPage() {
                             className={styles.actionBtn}
                             title="Visualizar"
                           >
-                            <Eye size={16} />
+                            <GrView size={16} />
                           </button>
                           
                           {empresa.status === 'pendente' && (
@@ -486,14 +462,14 @@ export default function AdminEmpresasPage() {
                                 className={`${styles.actionBtn} ${styles.success}`}
                                 title="Aprovar"
                               >
-                                <Check size={16} />
+                                <GrCheckbox size={16} />
                               </button>
                               <button 
                                 onClick={() => handleRejectEmpresa(empresa)}
                                 className={`${styles.actionBtn} ${styles.danger}`}
                                 title="Rejeitar"
                               >
-                                <Ban size={16} />
+                                <GrBlock size={16} />
                               </button>
                             </>
                           )}
@@ -503,7 +479,7 @@ export default function AdminEmpresasPage() {
                             className={`${styles.actionBtn} ${styles.danger}`}
                             title="Excluir"
                           >
-                            <Trash2 size={16} />
+                            <GrTrash size={16} />
                           </button>
                         </div>
                       </td>
@@ -515,7 +491,7 @@ export default function AdminEmpresasPage() {
 
             {empresasFiltradas.length === 0 && (
               <div className={styles.emptyState}>
-                <Building2 size={48} />
+                <GrOrganization size={48} />
                 <h3>Nenhuma empresa encontrada</h3>
                 <p>Tente ajustar os filtros de busca.</p>
               </div>
@@ -539,7 +515,7 @@ export default function AdminEmpresasPage() {
                 onClick={() => setShowModal(false)}
                 className={styles.closeButton}
               >
-                <X size={20} />
+                <GrClose size={20} />
               </button>
             </div>
 
@@ -560,42 +536,42 @@ export default function AdminEmpresasPage() {
 
                   <div className={styles.empresaInfoGrid}>
                     <div className={styles.infoItem}>
-                      <Building2 size={16} />
+                      <GrOrganization size={16} />
                       <div>
                         <span className={styles.infoLabel}>CNPJ</span>
                         <span className={styles.infoValue}>{empresaSelecionada.cnpj}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <Phone size={16} />
+                      <GrPhone size={16} />
                       <div>
                         <span className={styles.infoLabel}>Telefone</span>
                         <span className={styles.infoValue}>{empresaSelecionada.telefone}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <MapPin size={16} />
+                      <GrLocation size={16} />
                       <div>
                         <span className={styles.infoLabel}>Localização</span>
                         <span className={styles.infoValue}>{empresaSelecionada.localizacao}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <Briefcase size={16} />
+                      <GrBriefcase size={16} />
                       <div>
                         <span className={styles.infoLabel}>Setor</span>
                         <span className={styles.infoValue}>{empresaSelecionada.setor}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <Users size={16} />
+                      <GrGroup size={16} />
                       <div>
                         <span className={styles.infoLabel}>Tamanho</span>
                         <span className={styles.infoValue}>{getTamanhoLabel(empresaSelecionada.tamanho)}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <Globe size={16} />
+                      <GrGlobe size={16} />
                       <div>
                         <span className={styles.infoLabel}>Website</span>
                         <span className={styles.infoValue}>{empresaSelecionada.website}</span>
@@ -619,7 +595,7 @@ export default function AdminEmpresasPage() {
               {modalType === 'approve' && (
                 <div className={styles.confirmationContent}>
                   <div className={styles.confirmationIcon}>
-                    <CheckCircle size={48} />
+                    <GrStatusGood size={48} />
                   </div>
                   <h3>Aprovar empresa {empresaSelecionada.nome}?</h3>
                   <p>
@@ -631,7 +607,7 @@ export default function AdminEmpresasPage() {
               {modalType === 'reject' && (
                 <div className={styles.confirmationContent}>
                   <div className={styles.warningIcon}>
-                    <Ban size={48} />
+                    <GrBlock size={48} />
                   </div>
                   <h3>Rejeitar empresa {empresaSelecionada.nome}?</h3>
                   <p>
@@ -643,7 +619,7 @@ export default function AdminEmpresasPage() {
               {modalType === 'delete' && (
                 <div className={styles.confirmationContent}>
                   <div className={styles.dangerIcon}>
-                    <AlertTriangle size={48} />
+                    <GrStatusWarning size={48} />
                   </div>
                   <h3>Excluir empresa {empresaSelecionada.nome}?</h3>
                   <p>
@@ -667,7 +643,7 @@ export default function AdminEmpresasPage() {
                   onClick={() => handleStatusChange(empresaSelecionada.id, 'ativa')}
                   className="btn btn-success"
                 >
-                  <Check size={16} />
+                  <GrCheckbox size={16} />
                   Aprovar Empresa
                 </button>
               )}
@@ -677,7 +653,7 @@ export default function AdminEmpresasPage() {
                   onClick={() => handleStatusChange(empresaSelecionada.id, 'rejeitada')}
                   className="btn btn-warning"
                 >
-                  <Ban size={16} />
+                  <GrBlock size={16} />
                   Rejeitar Empresa
                 </button>
               )}
@@ -690,7 +666,7 @@ export default function AdminEmpresasPage() {
                   }}
                   className="btn btn-danger"
                 >
-                  <Trash2 size={16} />
+                  <GrTrash size={16} />
                   Confirmar Exclusão
                 </button>
               )}

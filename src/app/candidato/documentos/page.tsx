@@ -4,42 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  Upload, 
-  FileText, 
-  Download, 
-  Eye, 
-  Trash2, 
-  Plus, 
-  Search,
-  Filter,
-  Calendar,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  XCircle,
-  User,
-  Bell,
-  Settings,
-  LogOut,
-  File,
-  FileImage,
-  FileSpreadsheet,
-  FileVideo,
-  Paperclip,
-  Send,
-  Inbox,
-  Archive,
-  Star,
-  MoreVertical,
-  Edit3,
-  Share2,
-  FolderOpen,
-  History,
-  TrendingUp,
-  Award
-} from 'lucide-react';
+import { GrUpload, GrDocument, GrDownload, GrView, GrTrash, GrAdd, GrSearch, GrFilter, GrCalendar, GrClock, GrStatusGood, GrStatusWarning, GrStatusCritical, GrUser, GrNotification, GrLogout, GrSend, GrStar, GrMore, GrShare, GrFolderOpen, GrLineChart, GrTrophy, GrEdit, GrImage, GrVideo, GrInbox } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './documentos.module.css';
@@ -242,39 +207,39 @@ export default function CandidatoDocumentos() {
   const getFileIcon = (format: string) => {
     switch (format.toLowerCase()) {
       case 'pdf':
-        return <FileText size={20} />;
+        return <GrDocument size={20} />;
       case 'doc':
       case 'docx':
-        return <FileText size={20} />;
+        return <GrDocument size={20} />;
       case 'xls':
       case 'xlsx':
-        return <FileSpreadsheet size={20} />;
+        return <GrDocument size={20} />;
       case 'jpg':
       case 'jpeg':
       case 'png':
       case 'gif':
-        return <FileImage size={20} />;
+        return <GrImage size={20} />;
       case 'mp4':
       case 'avi':
       case 'mov':
-        return <FileVideo size={20} />;
+        return <GrVideo size={20} />;
       default:
-        return <File size={20} />;
+        return <GrDocument size={20} />;
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'approved':
-        return <CheckCircle size={16} className={styles.statusApproved} />;
+        return <GrStatusGood size={16} className={styles.statusApproved} />;
       case 'rejected':
-        return <XCircle size={16} className={styles.statusRejected} />;
+        return <GrStatusCritical size={16} className={styles.statusRejected} />;
       case 'under_review':
-        return <Clock size={16} className={styles.statusReview} />;
+        return <GrClock size={16} className={styles.statusReview} />;
       case 'pending':
-        return <AlertCircle size={16} className={styles.statusPending} />;
+        return <GrStatusWarning size={16} className={styles.statusPending} />;
       default:
-        return <Clock size={16} />;
+        return <GrClock size={16} />;
     }
   };
 
@@ -341,7 +306,7 @@ export default function CandidatoDocumentos() {
                 className="btn btn-primary"
                 onClick={() => setShowUploadModal(true)}
               >
-                <Upload size={16} />
+                <GrUpload size={16} />
                 Enviar Documento
               </button>
             </div>
@@ -351,7 +316,7 @@ export default function CandidatoDocumentos() {
           <div className={styles.statsSection}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Send size={20} />
+                <GrSend size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.total}</h3>
@@ -361,7 +326,7 @@ export default function CandidatoDocumentos() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <CheckCircle size={20} />
+                <GrStatusGood size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.approved}</h3>
@@ -371,7 +336,7 @@ export default function CandidatoDocumentos() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Clock size={20} />
+                <GrClock size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.pending}</h3>
@@ -381,7 +346,7 @@ export default function CandidatoDocumentos() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Inbox size={20} />
+                <GrInbox size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.received}</h3>
@@ -397,7 +362,7 @@ export default function CandidatoDocumentos() {
                 className={`${styles.tab} ${activeTab === 'enviados' ? styles.active : ''}`}
                 onClick={() => setActiveTab('enviados')}
               >
-                <Send size={18} />
+                <GrSend size={18} />
                 Documentos Enviados
                 <span className={styles.tabBadge}>{stats.total}</span>
               </button>
@@ -406,7 +371,7 @@ export default function CandidatoDocumentos() {
                 className={`${styles.tab} ${activeTab === 'recebidos' ? styles.active : ''}`}
                 onClick={() => setActiveTab('recebidos')}
               >
-                <Inbox size={18} />
+                <GrInbox size={18} />
                 Documentos Recebidos
                 <span className={styles.tabBadge}>{stats.received}</span>
               </button>
@@ -417,7 +382,7 @@ export default function CandidatoDocumentos() {
           <div className={styles.filtersSection}>
             <div className={styles.searchBar}>
               <div className={styles.searchInput}>
-                <Search size={20} />
+                <GrSearch size={20} />
                 <input
                   type="text"
                   placeholder="Buscar documentos..."
@@ -455,7 +420,7 @@ export default function CandidatoDocumentos() {
             </div>
           </div>
 
-          {/* Documents List */}
+          {/* Documents GrList */}
           <div className={styles.documentsSection}>
             <div className={styles.documentsHeader}>
               <h2>
@@ -463,7 +428,7 @@ export default function CandidatoDocumentos() {
               </h2>
               <div className={styles.viewOptions}>
                 <button className={styles.viewBtn}>
-                  <FolderOpen size={16} />
+                  <GrFolderOpen size={16} />
                   Lista
                 </button>
               </div>
@@ -485,7 +450,7 @@ export default function CandidatoDocumentos() {
                         <span className={styles.docSize}>{doc.size}</span>
                         <span className={styles.docFormat}>{doc.format}</span>
                         <span className={styles.docDate}>
-                          <Calendar size={14} />
+                          <GrCalendar size={14} />
                           {new Date(doc.uploadDate).toLocaleDateString('pt-BR')}
                         </span>
                         {doc.version && (
@@ -516,28 +481,28 @@ export default function CandidatoDocumentos() {
                       
                       <div className={styles.actionButtons}>
                         <button className={styles.actionBtn} title="Visualizar">
-                          <Eye size={16} />
+                          <GrView size={16} />
                         </button>
                         
                         {doc.downloadUrl && (
                           <button className={styles.actionBtn} title="Download">
-                            <Download size={16} />
+                            <GrDownload size={16} />
                           </button>
                         )}
                         
                         {activeTab === 'enviados' && (
                           <>
                             <button className={styles.actionBtn} title="Editar">
-                              <Edit3 size={16} />
+                              <GrEdit size={16} />
                             </button>
                             <button className={styles.actionBtn} title="Excluir">
-                              <Trash2 size={16} />
+                              <GrTrash size={16} />
                             </button>
                           </>
                         )}
                         
                         <button className={styles.actionBtn} title="Mais opções">
-                          <MoreVertical size={16} />
+                          <GrMore size={16} />
                         </button>
                       </div>
                     </div>
@@ -546,7 +511,7 @@ export default function CandidatoDocumentos() {
                   {doc.feedback && (
                     <div className={styles.docFeedback}>
                       <div className={styles.feedbackHeader}>
-                        <Award size={16} />
+                        <GrTrophy size={16} />
                         <span>Feedback da Equipe</span>
                       </div>
                       <p>{doc.feedback}</p>
@@ -559,7 +524,7 @@ export default function CandidatoDocumentos() {
             {filteredDocuments.length === 0 && (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>
-                  <FileText size={48} />
+                  <GrDocument size={48} />
                 </div>
                 <h3>Nenhum documento encontrado</h3>
                 <p>
@@ -573,7 +538,7 @@ export default function CandidatoDocumentos() {
                     className="btn btn-primary"
                     onClick={() => setShowUploadModal(true)}
                   >
-                    <Upload size={16} />
+                    <GrUpload size={16} />
                     Enviar Primeiro Documento
                   </button>
                 )}
@@ -606,7 +571,7 @@ export default function CandidatoDocumentos() {
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
               >
-                <Upload size={48} />
+                <GrUpload size={48} />
                 <h3>Arraste arquivos aqui ou clique para selecionar</h3>
                 <p>Suportamos PDF, DOC, DOCX, JPG, PNG e ZIP até 25MB</p>
                 

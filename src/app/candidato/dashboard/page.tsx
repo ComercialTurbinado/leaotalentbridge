@@ -4,39 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  User, 
-  Briefcase, 
-  Calendar, 
-  TrendingUp, 
-  Star, 
-  MapPin, 
-  DollarSign, 
-  Clock, 
-  CheckCircle, 
-  AlertCircle,
-  Bell,
-  Settings,
-  LogOut,
-  Search,
-  Filter,
-  ArrowRight,
-  FileText,
-  Upload,
-  XCircle,
-  AlertTriangle,
-  Info,
-  Camera,
-  GraduationCap,
-  Award,
-  UserCheck,
-  Target,
-  Globe,
-  FileCheck,
-  Send,
-  Eye
-} from 'lucide-react';
+import { GrUser, GrBriefcase, GrCalendar, GrLineChart, GrStar, GrLocation, GrMoney, GrClock, GrStatusGood, GrStatusWarning, GrNotification, GrLogout, GrSearch, GrFilter, GrNext, GrDocument, GrUpload, GrStatusCritical, GrStatusInfo, GrCamera, GrGlobe, GrSend, GrView, GrTrophy, GrBook, GrTarget } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import styles from './dashboard.module.css';
@@ -238,7 +206,7 @@ function DashboardContent() {
       type: 'curriculum',
       required: true,
       completed: true, // Mock - viria do backend
-      icon: <FileText size={20} />
+      icon: <GrDocument size={20} />
     },
     {
       id: 'photo',
@@ -247,7 +215,7 @@ function DashboardContent() {
       type: 'photo',
       required: true,
       completed: false,
-      icon: <Camera size={20} />
+      icon: <GrCamera size={20} />
     },
     {
       id: 'diploma',
@@ -256,7 +224,7 @@ function DashboardContent() {
       type: 'diploma',
       required: true,
       completed: true,
-      icon: <GraduationCap size={20} />
+      icon: <GrBook size={20} />
     },
     {
       id: 'identity',
@@ -265,7 +233,7 @@ function DashboardContent() {
       type: 'identity',
       required: true,
       completed: false,
-      icon: <UserCheck size={20} />
+      icon: <GrUser size={20} />
     },
     {
       id: 'recommendations',
@@ -274,7 +242,7 @@ function DashboardContent() {
       type: 'recommendation',
       required: true,
       completed: false,
-      icon: <Award size={20} />
+      icon: <GrTrophy size={20} />
     },
     {
       id: 'experience_proof',
@@ -283,7 +251,7 @@ function DashboardContent() {
       type: 'certificate',
       required: false,
       completed: true,
-      icon: <Briefcase size={20} />
+      icon: <GrBriefcase size={20} />
     }
   ];
 
@@ -341,35 +309,35 @@ function DashboardContent() {
         return {
           label: 'Perfil Incompleto',
           color: 'warning',
-          icon: <AlertTriangle size={20} />,
+          icon: <GrStatusWarning size={20} />,
           message: 'Complete seu perfil para ser incluído no banco de talentos'
         };
       case 'pending_approval':
         return {
           label: 'Aguardando Aprovação',
           color: 'info',
-          icon: <Clock size={20} />,
+          icon: <GrClock size={20} />,
           message: 'Documentos em análise. Formatação para padrões UAE em andamento'
         };
       case 'approved':
         return {
           label: 'Perfil Aprovado',
           color: 'success',
-          icon: <CheckCircle size={20} />,
+          icon: <GrStatusGood size={20} />,
           message: 'Seu perfil está ativo e sendo oferecido para empresas'
         };
       case 'active':
         return {
           label: 'Ativo em Processos',
           color: 'primary',
-          icon: <TrendingUp size={20} />,
+          icon: <GrLineChart size={20} />,
           message: 'Participando ativamente de processos seletivos'
         };
       default:
         return {
           label: 'Status Indefinido',
           color: 'secondary',
-          icon: <Info size={20} />,
+          icon: <GrStatusInfo size={20} />,
           message: 'Entre em contato com o suporte'
         };
     }
@@ -500,7 +468,7 @@ function DashboardContent() {
           {/* Success Message */}
           {showSuccessMessage && (
             <div className={styles.successMessage}>
-              <CheckCircle size={20} />
+              <GrStatusGood size={20} />
               <span>Cadastro realizado com sucesso! Bem-vindo ao Leão Talent Bridge!</span>
             </div>
           )}
@@ -513,17 +481,17 @@ function DashboardContent() {
             </div>
             <div className={styles.headerActions}>
               <Link href="/candidato/vagas" className="btn btn-primary">
-                <Search size={16} />
+                <GrSearch size={16} />
                 Buscar Vagas
               </Link>
             </div>
           </div>
 
-          {/* Stats Grid */}
+          {/* Stats GrApps */}
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Send size={24} />
+                <GrSend size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.totalApplications}</h3>
@@ -534,7 +502,7 @@ function DashboardContent() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Calendar size={24} />
+                <GrCalendar size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.interviewsScheduled}</h3>
@@ -545,7 +513,7 @@ function DashboardContent() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <CheckCircle size={24} />
+                <GrStatusGood size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.jobOffers}</h3>
@@ -556,7 +524,7 @@ function DashboardContent() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Eye size={24} />
+                <GrView size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.profileViews}</h3>
@@ -566,7 +534,7 @@ function DashboardContent() {
             </div>
           </div>
 
-          {/* Content Grid */}
+          {/* Content GrApps */}
           <div className={styles.contentGrid}>
             {/* Recent Applications */}
             <div className={styles.applicationsSection}>
@@ -574,7 +542,7 @@ function DashboardContent() {
                 <h2>Candidaturas Recentes</h2>
                 <Link href="/candidato/candidaturas" className={styles.viewAll}>
                   Ver todas
-                  <ArrowRight size={16} />
+                  <GrNext size={16} />
                 </Link>
               </div>
               
@@ -587,11 +555,11 @@ function DashboardContent() {
                         <p>{application.jobId.companyId.name}</p>
                         <div className={styles.applicationMeta}>
                           <span className={styles.location}>
-                            <MapPin size={14} />
+                            <GrLocation size={14} />
                             {application.jobId.location.city}, {application.jobId.location.state}
                           </span>
                           <span className={styles.salary}>
-                            <DollarSign size={14} />
+                            <GrMoney size={14} />
                             {formatSalary(application.jobId.salary)}
                           </span>
                         </div>
@@ -606,7 +574,7 @@ function DashboardContent() {
                   ))
                 ) : (
                   <div className={styles.emptyState}>
-                    <Send size={48} />
+                    <GrSend size={48} />
                     <h3>Nenhuma candidatura ainda</h3>
                     <p>Comece explorando as vagas disponíveis</p>
                     <Link href="/candidato/vagas" className="btn btn-primary">
@@ -623,7 +591,7 @@ function DashboardContent() {
                 <h2>Vagas Recomendadas</h2>
                 <Link href="/candidato/vagas" className={styles.viewAll}>
                   Ver mais
-                  <ArrowRight size={16} />
+                  <GrNext size={16} />
                 </Link>
               </div>
               
@@ -636,12 +604,12 @@ function DashboardContent() {
                         <p>{job.companyId.name}</p>
                         <div className={styles.jobMeta}>
                           <span className={styles.location}>
-                            <MapPin size={14} />
+                            <GrLocation size={14} />
                             {job.location.city}, {job.location.state}
                             {job.location.isRemote && ' (Remoto)'}
                           </span>
                           <span className={styles.salary}>
-                            <DollarSign size={14} />
+                            <GrMoney size={14} />
                             {formatSalary(job.salary)}
                           </span>
                         </div>
@@ -672,20 +640,20 @@ function DashboardContent() {
                   ))
                 ) : (
                   <div className={styles.emptyState}>
-                    <Briefcase size={48} />
+                    <GrBriefcase size={48} />
                     <h3>Aguardando Liberação de Vagas</h3>
                     <p>Nossa equipe está analisando seu perfil e selecionando as melhores oportunidades para você. Vagas personalizadas aparecerão aqui em breve!</p>
                     <div className={styles.processSteps}>
                       <div className={styles.step}>
-                        <CheckCircle size={16} />
+                        <GrStatusGood size={16} />
                         <span>Perfil analisado</span>
                       </div>
                       <div className={styles.step}>
-                        <Clock size={16} />
+                        <GrClock size={16} />
                         <span>Documentos em verificação</span>
                       </div>
                       <div className={styles.step}>
-                        <Clock size={16} />
+                        <GrClock size={16} />
                         <span>Seleção de vagas compatíveis</span>
                       </div>
                     </div>
@@ -703,10 +671,10 @@ function DashboardContent() {
                 recentActivities.map((activity) => (
                   <div key={activity.id} className={styles.activityItem}>
                     <div className={styles.activityIcon}>
-                      {activity.type === 'application' && <Send size={16} />}
-                      {activity.type === 'interview' && <Calendar size={16} />}
-                      {activity.type === 'offer' && <CheckCircle size={16} />}
-                      {activity.type === 'profile_view' && <Eye size={16} />}
+                      {activity.type === 'application' && <GrSend size={16} />}
+                      {activity.type === 'interview' && <GrCalendar size={16} />}
+                      {activity.type === 'offer' && <GrStatusGood size={16} />}
+                      {activity.type === 'profile_view' && <GrView size={16} />}
                     </div>
                     <div className={styles.activityContent}>
                       <h4>{activity.title}</h4>
@@ -724,7 +692,7 @@ function DashboardContent() {
                 ))
               ) : (
                 <div className={styles.emptyState}>
-                  <Clock size={48} />
+                  <GrClock size={48} />
                   <h3>Nenhuma atividade recente</h3>
                   <p>Suas atividades aparecerão aqui</p>
                 </div>
@@ -737,25 +705,25 @@ function DashboardContent() {
             <h2>Ações Rápidas</h2>
             <div className={styles.actionsGrid}>
               <Link href="/candidato/vagas" className={styles.actionCard}>
-                <Search size={32} />
+                <GrSearch size={32} />
                 <h3>Buscar Vagas</h3>
                 <p>Encontre novas oportunidades</p>
               </Link>
 
               <Link href="/candidato/perfil" className={styles.actionCard}>
-                <User size={32} />
+                <GrUser size={32} />
                 <h3>Editar Perfil</h3>
                 <p>Mantenha seus dados atualizados</p>
               </Link>
 
               <Link href="/candidato/simulacoes" className={styles.actionCard}>
-                <Target size={32} />
+                <GrTarget size={32} />
                 <h3>Simulações</h3>
                 <p>Pratique para entrevistas</p>
               </Link>
 
               <Link href="/candidato/documentos" className={styles.actionCard}>
-                <FileText size={32} />
+                <GrDocument size={32} />
                 <h3>Documentos</h3>
                 <p>Gerencie seus documentos</p>
               </Link>

@@ -4,40 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  ArrowLeft,
-  ArrowRight,
-  Play, 
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize,
-  Settings,
-  SkipBack,
-  SkipForward,
-  RotateCcw,
-  Clock, 
-  CheckCircle,
-  Lock,
-  BookOpen,
-  FileText,
-  Video,
-  Download,
-  User,
-  Bell,
-  LogOut,
-  Target,
-  List,
-  MessageSquare,
-  ThumbsUp,
-  ThumbsDown,
-  Share2,
-  Bookmark,
-  Eye,
-  Users,
-  Star
-} from 'lucide-react';
+import { GrPrevious, GrNext, GrPlay, GrPause, GrVolume, GrVolumeMute, GrSettings, GrUndo, GrClock, GrStatusGood, GrLock, GrDocument, GrVideo, GrDownload, GrUser, GrNotification, GrLogout, GrShare, GrView, GrGroup, GrStar } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './modulo.module.css';
@@ -507,20 +474,20 @@ function Example() {
                     <div className={styles.controlsRow}>
                       <div className={styles.leftControls}>
                         <button onClick={togglePlayPause} className={styles.playBtn}>
-                          {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+                          {isPlaying ? <GrPause size={20} /> : <GrPlay size={20} />}
                         </button>
                         
                         <button onClick={() => skipTime(-10)} className={styles.skipBtn}>
-                          <SkipBack size={18} />
+                          <GrPrevious size={18} />
                         </button>
                         
                         <button onClick={() => skipTime(10)} className={styles.skipBtn}>
-                          <SkipForward size={18} />
+                          <GrNext size={18} />
                         </button>
                         
                         <div className={styles.volumeControl}>
                           <button onClick={toggleMute} className={styles.volumeBtn}>
-                            {isMuted || volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                            {isMuted || volume === 0 ? <GrVolumeMute size={18} /> : <GrVolume size={18} />}
                           </button>
                           <input
                             type="range"
@@ -553,7 +520,7 @@ function Example() {
                         </select>
                         
                         <button className={styles.fullscreenBtn}>
-                          <Maximize size={18} />
+                          <GrExpand size={18} />
                         </button>
                       </div>
                     </div>
@@ -569,7 +536,7 @@ function Example() {
               className={`${styles.tab} ${activeTab === 'content' ? styles.active : ''}`}
               onClick={() => setActiveTab('content')}
             >
-              <BookOpen size={16} />
+              <GrBook size={16} />
               Conteúdo
             </button>
             
@@ -578,7 +545,7 @@ function Example() {
                 className={`${styles.tab} ${activeTab === 'resources' ? styles.active : ''}`}
                 onClick={() => setActiveTab('resources')}
               >
-                <Download size={16} />
+                <GrDownload size={16} />
                 Recursos ({currentModule.resources.length})
               </button>
             )}
@@ -588,7 +555,7 @@ function Example() {
                 className={`${styles.tab} ${activeTab === 'quiz' ? styles.active : ''}`}
                 onClick={() => setActiveTab('quiz')}
               >
-                <Target size={16} />
+                <GrTarget size={16} />
                 Quiz ({currentModule.quiz.questions.length} questões)
               </button>
             )}
@@ -597,7 +564,7 @@ function Example() {
               className={`${styles.tab} ${activeTab === 'discussion' ? styles.active : ''}`}
               onClick={() => setActiveTab('discussion')}
             >
-              <MessageSquare size={16} />
+              <GrChat size={16} />
               Discussão
             </button>
           </div>
@@ -612,16 +579,16 @@ function Example() {
                   
                   <div className={styles.moduleStats}>
                     <div className={styles.statItem}>
-                      <Clock size={16} />
+                      <GrClock size={16} />
                       <span>{currentModule.duration} minutos</span>
                     </div>
                     <div className={styles.statItem}>
-                      <Eye size={16} />
+                      <GrView size={16} />
                       <span>1.2k visualizações</span>
                     </div>
                     {currentModule.completed && (
                       <div className={styles.statItem}>
-                        <CheckCircle size={16} className={styles.completed} />
+                        <GrStatusGood size={16} className={styles.completed} />
                         <span>Concluído</span>
                       </div>
                     )}
@@ -653,9 +620,9 @@ function Example() {
                   {currentModule.resources.map((resource, index) => (
                     <div key={index} className={styles.resourceItem}>
                       <div className={styles.resourceIcon}>
-                        {resource.type === 'pdf' && <FileText size={24} />}
-                        {resource.type === 'code' && <BookOpen size={24} />}
-                        {resource.type === 'link' && <Download size={24} />}
+                        {resource.type === 'pdf' && <GrDocument size={24} />}
+                        {resource.type === 'code' && <GrBook size={24} />}
+                        {resource.type === 'link' && <GrDownload size={24} />}
                       </div>
                       
                       <div className={styles.resourceInfo}>
@@ -664,7 +631,7 @@ function Example() {
                       </div>
                       
                       <a href={resource.url} className="btn btn-secondary btn-small" download>
-                        <Download size={16} />
+                        <GrDownload size={16} />
                         Download
                       </a>
                     </div>
@@ -739,11 +706,11 @@ function Example() {
                 
                 <div className={styles.discussionStats}>
                   <div className={styles.statItem}>
-                    <MessageSquare size={16} />
+                    <GrChat size={16} />
                     <span>24 comentários</span>
                   </div>
                   <div className={styles.statItem}>
-                    <Users size={16} />
+                    <GrGroup size={16} />
                     <span>18 participantes</span>
                   </div>
                 </div>
@@ -772,11 +739,11 @@ function Example() {
                       <p>Excelente explicação sobre hooks! Consegui entender melhor o conceito de useState.</p>
                       <div className={styles.commentActions}>
                         <button className={styles.commentAction}>
-                          <ThumbsUp size={14} />
+                          <GrLike size={14} />
                           12
                         </button>
                         <button className={styles.commentAction}>
-                          <MessageSquare size={14} />
+                          <GrChat size={14} />
                           Responder
                         </button>
                       </div>
@@ -805,7 +772,7 @@ function Example() {
             
             {!currentModule.completed && (
               <button onClick={markAsCompleted} className="btn btn-primary w-full">
-                <CheckCircle size={16} />
+                <GrStatusGood size={16} />
                 Marcar como Concluído
               </button>
             )}
@@ -820,7 +787,7 @@ function Example() {
                   href={`/candidato/cursos/${courseId}/modulo/${getPreviousModule()!.id}`}
                   className={styles.navButton}
                 >
-                  <ArrowLeft size={16} />
+                  <GrPrevious size={16} />
                   <div>
                     <span className={styles.navLabel}>Anterior</span>
                     <span className={styles.navTitle}>{getPreviousModule()!.title}</span>
@@ -837,13 +804,13 @@ function Example() {
                     <span className={styles.navLabel}>Próximo</span>
                     <span className={styles.navTitle}>{getNextModule()!.title}</span>
                   </div>
-                  <ArrowRight size={16} />
+                  <GrNext size={16} />
                 </Link>
               )}
             </div>
           </div>
 
-          {/* Course Modules List */}
+          {/* Course Modules GrList */}
           <div className={styles.sidebarCard}>
             <h3>Módulos do Curso</h3>
             <div className={styles.modulesList}>
@@ -857,9 +824,9 @@ function Example() {
                 >
                   <div className={styles.moduleNumber}>
                     {courseModule.completed ? (
-                      <CheckCircle size={16} className={styles.completed} />
+                      <GrStatusGood size={16} className={styles.completed} />
                     ) : courseModule.locked ? (
-                      <Lock size={16} />
+                      <GrLock size={16} />
                     ) : (
                       <span>{index + 1}</span>
                     )}

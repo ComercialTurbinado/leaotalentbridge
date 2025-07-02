@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Crown, Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { GrMail, GrLock, GrView, GrHide, GrNext, GrStatusWarning } from 'react-icons/gr';
 import { AuthService } from '@/lib/auth';
 import styles from './login.module.css';
 import Image from 'next/image';
@@ -73,14 +73,14 @@ export default function CandidatoLogin() {
           <form onSubmit={handleSubmit} className={styles.loginForm}>
             {error && (
               <div className={styles.errorMessage}>
-                <AlertCircle size={20} />
+                <GrStatusWarning size={20} />
                 <span>{error}</span>
               </div>
             )}
 
             <div className="form-group">
               <label className="form-label">
-                <Mail size={18} />
+                <GrMail size={18} />
                 Email
               </label>
               <input
@@ -97,7 +97,7 @@ export default function CandidatoLogin() {
 
             <div className="form-group">
               <label className="form-label">
-                <Lock size={18} />
+                <GrLock size={18} />
                 Senha
               </label>
               <div className={styles.passwordInput}>
@@ -117,7 +117,7 @@ export default function CandidatoLogin() {
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={isLoading}
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <GrHide size={18} /> : <GrView size={18} />}
                 </button>
               </div>
             </div>
@@ -140,7 +140,7 @@ export default function CandidatoLogin() {
               {!isLoading && (
                 <>
                   Entrar
-                  <ArrowRight size={20} />
+                  <GrNext size={20} />
                 </>
               )}
             </button>

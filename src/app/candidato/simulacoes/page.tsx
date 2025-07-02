@@ -4,40 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  Play, 
-  Clock, 
-  Video, 
-  Mic,
-  User, 
-  Bell, 
-  Settings, 
-  LogOut,
-  CheckCircle,
-  Star,
-  TrendingUp,
-  Filter,
-  Search,
-  Plus,
-  BookOpen,
-  Target,
-  Award,
-  Zap,
-  Brain,
-  Users,
-  Briefcase,
-  Code,
-  Palette,
-  BarChart3,
-  Shield,
-  Globe,
-  Camera,
-  PauseCircle,
-  SkipForward,
-  RotateCcw,
-  ChevronRight
-} from 'lucide-react';
+import { GrPlay, GrClock, GrVideo, GrMicrophone, GrUser, GrNotification, GrSettings, GrLogout, GrStatusGood, GrStar, GrLineChart, GrFilter, GrSearch, GrAdd, GrPower, GrGroup, GrBriefcase, GrBarChart, GrShield, GrGlobe, GrCamera, GrUndo, GrNext } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './simulacoes.module.css';
@@ -114,7 +81,7 @@ export default function SimulacoesPage() {
       id: 'comportamental',
       name: 'Entrevistas Comportamentais',
       description: 'Perguntas sobre experiências, motivações e fit cultural',
-      icon: <Users size={24} />,
+      icon: <GrGroup size={24} />,
       color: '#3B82F6',
       questionsCount: 25,
       avgDuration: 30,
@@ -125,7 +92,7 @@ export default function SimulacoesPage() {
       id: 'tecnica',
       name: 'Entrevistas Técnicas',
       description: 'Perguntas específicas da sua área de atuação',
-      icon: <Code size={24} />,
+      icon: <GrCode size={24} />,
       color: '#10B981',
       questionsCount: 40,
       avgDuration: 45,
@@ -136,7 +103,7 @@ export default function SimulacoesPage() {
       id: 'cultural',
       name: 'Adaptação Cultural',
       description: 'Preparação para trabalhar nos Emirados Árabes Unidos',
-      icon: <Globe size={24} />,
+      icon: <GrGlobe size={24} />,
       color: '#F59E0B',
       questionsCount: 20,
       avgDuration: 25,
@@ -147,7 +114,7 @@ export default function SimulacoesPage() {
       id: 'lideranca',
       name: 'Liderança e Gestão',
       description: 'Simulações para posições de liderança',
-      icon: <Award size={24} />,
+      icon: <GrTrophy size={24} />,
       color: '#8B5CF6',
       questionsCount: 30,
       avgDuration: 40,
@@ -158,7 +125,7 @@ export default function SimulacoesPage() {
       id: 'vendas',
       name: 'Vendas e Negociação',
       description: 'Técnicas de vendas e negociação comercial',
-      icon: <BarChart3 size={24} />,
+      icon: <GrBarChart size={24} />,
       color: '#EF4444',
       questionsCount: 35,
       avgDuration: 35,
@@ -169,7 +136,7 @@ export default function SimulacoesPage() {
       id: 'design',
       name: 'Design e Criatividade',
       description: 'Portfolio review e processo criativo',
-      icon: <Palette size={24} />,
+      icon: <GrPaint size={24} />,
       color: '#EC4899',
       questionsCount: 18,
       avgDuration: 50,
@@ -300,11 +267,11 @@ export default function SimulacoesPage() {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'comportamental': return <Users size={16} />;
-      case 'técnica': return <Code size={16} />;
-      case 'cultural': return <Globe size={16} />;
-      case 'situacional': return <Brain size={16} />;
-      default: return <BookOpen size={16} />;
+      case 'comportamental': return <GrGroup size={16} />;
+      case 'técnica': return <GrCode size={16} />;
+      case 'cultural': return <GrGlobe size={16} />;
+      case 'situacional': return <GrCode size={16} />;
+      default: return <GrBook size={16} />;
     }
   };
 
@@ -336,7 +303,7 @@ export default function SimulacoesPage() {
             
             <div className={styles.headerActions}>
               <Link href="/candidato/simulacoes/nova" className="btn btn-primary">
-                <Plus size={20} />
+                <GrAdd size={20} />
                 Nova Simulação
               </Link>
             </div>
@@ -346,7 +313,7 @@ export default function SimulacoesPage() {
           <div className={styles.statsSection}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Target size={20} />
+                <GrTarget size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.completed}/{stats.total}</h3>
@@ -356,7 +323,7 @@ export default function SimulacoesPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Star size={20} />
+                <GrStar size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.avgScore}%</h3>
@@ -366,7 +333,7 @@ export default function SimulacoesPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Clock size={20} />
+                <GrClock size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.hoursSpent}h</h3>
@@ -376,7 +343,7 @@ export default function SimulacoesPage() {
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <TrendingUp size={20} />
+                <GrLineChart size={20} />
               </div>
               <div className={styles.statContent}>
                 <h3>+12%</h3>
@@ -392,7 +359,7 @@ export default function SimulacoesPage() {
                 className={`${styles.tab} ${activeTab === 'categorias' ? styles.active : ''}`}
                 onClick={() => setActiveTab('categorias')}
               >
-                <BookOpen size={18} />
+                <GrBook size={18} />
                 Por Categoria
               </button>
               
@@ -400,7 +367,7 @@ export default function SimulacoesPage() {
                 className={`${styles.tab} ${activeTab === 'simulacoes' ? styles.active : ''}`}
                 onClick={() => setActiveTab('simulacoes')}
               >
-                <Play size={18} />
+                <GrPlay size={18} />
                 Todas as Simulações
                 <span className={styles.tabBadge}>{simulations.length}</span>
               </button>
@@ -409,7 +376,7 @@ export default function SimulacoesPage() {
                 className={`${styles.tab} ${activeTab === 'historico' ? styles.active : ''}`}
                 onClick={() => setActiveTab('historico')}
               >
-                <CheckCircle size={18} />
+                <GrStatusGood size={18} />
                 Histórico
                 <span className={styles.tabBadge}>{stats.completed}</span>
               </button>
@@ -432,7 +399,7 @@ export default function SimulacoesPage() {
                       </div>
                       {!category.unlocked && (
                         <div className={styles.lockIcon}>
-                          <Shield size={20} />
+                          <GrShield size={20} />
                         </div>
                       )}
                     </div>
@@ -465,12 +432,12 @@ export default function SimulacoesPage() {
                             setActiveTab('simulacoes');
                           }}
                         >
-                          <Play size={16} />
+                          <GrPlay size={16} />
                           Iniciar Simulação
                         </button>
                       ) : (
                         <button className="btn btn-secondary" disabled>
-                          <Shield size={16} />
+                          <GrShield size={16} />
                           Bloqueado
                         </button>
                       )}
@@ -487,7 +454,7 @@ export default function SimulacoesPage() {
               <div className={styles.filtersSection}>
                 <div className={styles.searchBar}>
                   <div className={styles.searchInput}>
-                    <Search size={20} />
+                    <GrSearch size={20} />
                     <input
                       type="text"
                       placeholder="Buscar simulações..."
@@ -520,7 +487,7 @@ export default function SimulacoesPage() {
                 </div>
               </div>
 
-              {/* Simulations List */}
+              {/* Simulations GrList */}
               <div className={styles.simulationsList}>
                 {filteredSimulations.map((simulation) => (
                   <div key={simulation.id} className={`${styles.simulationCard} ${simulation.completed ? styles.completed : ''}`}>
@@ -534,11 +501,11 @@ export default function SimulacoesPage() {
                               <span>{simulation.type}</span>
                             </div>
                             <div className={styles.metaItem}>
-                              <Clock size={14} />
+                              <GrClock size={14} />
                               <span>{simulation.duration}min</span>
                             </div>
                             <div className={styles.metaItem}>
-                              <BookOpen size={14} />
+                              <GrBook size={14} />
                               <span>{simulation.questionsCount} perguntas</span>
                             </div>
                           </div>
@@ -555,7 +522,7 @@ export default function SimulacoesPage() {
                         
                         {simulation.completed && (
                           <div className={styles.completedBadge}>
-                            <CheckCircle size={16} />
+                            <GrStatusGood size={16} />
                             <span>Concluída</span>
                           </div>
                         )}
@@ -576,7 +543,7 @@ export default function SimulacoesPage() {
                       {simulation.completed && simulation.score && (
                         <div className={styles.simulationResult}>
                           <div className={styles.scoreDisplay}>
-                            <Star size={16} />
+                            <GrStar size={16} />
                             <span className={styles.score}>{simulation.score}%</span>
                             <span className={styles.completedDate}>
                               Concluída em {new Date(simulation.completedAt!).toLocaleDateString('pt-BR')}
@@ -605,7 +572,7 @@ export default function SimulacoesPage() {
                             href={`/candidato/simulacoes/${simulation.id}`}
                             className="btn btn-primary btn-small"
                           >
-                            <RotateCcw size={16} />
+                            <GrUndo size={16} />
                             Refazer
                           </Link>
                         </>
@@ -614,7 +581,7 @@ export default function SimulacoesPage() {
                           href={`/candidato/simulacoes/${simulation.id}`}
                           className="btn btn-primary btn-small"
                         >
-                          <Play size={16} />
+                          <GrPlay size={16} />
                           Iniciar
                         </Link>
                       )}
@@ -626,7 +593,7 @@ export default function SimulacoesPage() {
               {filteredSimulations.length === 0 && (
                 <div className={styles.emptyState}>
                   <div className={styles.emptyIcon}>
-                    <Target size={48} />
+                    <GrTarget size={48} />
                   </div>
                   <h3>Nenhuma simulação encontrada</h3>
                   <p>
@@ -653,7 +620,7 @@ export default function SimulacoesPage() {
                 </div>
                 <div className={styles.chartPlaceholder}>
                   <div className={styles.chartMessage}>
-                    <BarChart3 size={48} />
+                    <GrBarChart size={48} />
                     <p>Gráfico de evolução será exibido após mais simulações</p>
                   </div>
                 </div>
@@ -685,7 +652,7 @@ export default function SimulacoesPage() {
               {simulations.filter(s => s.completed).length === 0 && (
                 <div className={styles.emptyState}>
                   <div className={styles.emptyIcon}>
-                    <CheckCircle size={48} />
+                    <GrStatusGood size={48} />
                   </div>
                   <h3>Nenhuma simulação concluída</h3>
                   <p>

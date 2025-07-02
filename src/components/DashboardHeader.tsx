@@ -6,11 +6,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import { 
-  Bell, 
-  Settings, 
-  LogOut,
-  User
-} from 'lucide-react';
+  GrNotification, 
+  GrLogout,
+  GrUser
+} from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import styles from './DashboardHeader.module.css';
 
@@ -104,7 +103,7 @@ export default function DashboardHeader({ user, userType }: DashboardHeaderProps
         
         <div className={styles.headerActions}>
           <button className={styles.notificationBtn}>
-            <Bell size={20} />
+            <GrNotification size={20} />
             <span className={styles.notificationBadge}>3</span>
           </button>
           
@@ -121,12 +120,12 @@ export default function DashboardHeader({ user, userType }: DashboardHeaderProps
             <div className={styles.userActions}>
               {userType !== 'admin' && (
                 <Link href={`/${userType}/perfil`} className={styles.userAction}>
-                  <User size={16} />
+                  <GrUser size={16} />
                   Perfil
                 </Link>
               )}
               <button onClick={handleLogout} className={styles.userAction}>
-                <LogOut size={16} />
+                <GrLogout size={16} />
                 Sair
               </button>
             </div>

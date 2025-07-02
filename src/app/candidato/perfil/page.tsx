@@ -4,40 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  Briefcase,
-  GraduationCap,
-  Award,
-  Star,
-  Edit3,
-  Save,
-  X,
-  Plus,
-  Trash2,
-  Bell,
-  Settings,
-  LogOut,
-  Camera,
-  Eye,
-  EyeOff,
-  Globe,
-  Linkedin,
-  Github,
-  ExternalLink,
-  Upload,
-  Download,
-  FileText,
-  Languages,
-  TrendingUp,
-  CheckCircle,
-  AlertCircle
-} from 'lucide-react';
+import { GrUser, GrMail, GrPhone, GrLocation, GrCalendar, GrBriefcase, GrStar, GrSave, GrClose, GrAdd, GrTrash, GrNotification, GrSettings, GrLogout, GrCamera, GrView, GrHide, GrGlobe, GrLinkExternal, GrUpload, GrDownload, GrDocument, GrLineChart, GrStatusGood, GrStatusWarning } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -463,14 +430,14 @@ export default function CandidatoPerfil() {
           {/* Success/Error Messages */}
           {successMessage && (
             <div className={styles.successMessage}>
-              <CheckCircle size={20} />
+              <GrStatusGood size={20} />
               <span>{successMessage}</span>
             </div>
           )}
           
           {errorMessage && (
             <div className={styles.errorMessage}>
-              <AlertCircle size={20} />
+              <GrStatusWarning size={20} />
               <span>{errorMessage}</span>
             </div>
           )}
@@ -489,7 +456,7 @@ export default function CandidatoPerfil() {
                     className="btn btn-outline"
                     disabled={saving}
                   >
-                    <X size={16} />
+                    <GrClose size={16} />
                     Cancelar
                   </button>
                   <button 
@@ -504,7 +471,7 @@ export default function CandidatoPerfil() {
                       </>
                     ) : (
                       <>
-                        <Save size={16} />
+                        <GrSave size={16} />
                         Salvar
                       </>
                     )}
@@ -515,7 +482,7 @@ export default function CandidatoPerfil() {
                   onClick={() => setEditMode(true)} 
                   className="btn btn-primary"
                 >
-                  <Edit3 size={16} />
+                  <GrEdit size={16} />
                   Editar Perfil
                 </button>
               )}
@@ -530,42 +497,42 @@ export default function CandidatoPerfil() {
                 className={`${styles.tabButton} ${activeTab === 'pessoal' ? styles.active : ''}`}
                 onClick={() => setActiveTab('pessoal')}
               >
-                <User size={16} />
+                <GrUser size={16} />
                 Dados Pessoais
               </button>
               <button 
                 className={`${styles.tabButton} ${activeTab === 'experiencia' ? styles.active : ''}`}
                 onClick={() => setActiveTab('experiencia')}
               >
-                <Briefcase size={16} />
+                <GrBriefcase size={16} />
                 Experiência
               </button>
               <button 
                 className={`${styles.tabButton} ${activeTab === 'educacao' ? styles.active : ''}`}
                 onClick={() => setActiveTab('educacao')}
               >
-                <GraduationCap size={16} />
+                <GrBook size={16} />
                 Educação
               </button>
               <button 
                 className={`${styles.tabButton} ${activeTab === 'habilidades' ? styles.active : ''}`}
                 onClick={() => setActiveTab('habilidades')}
               >
-                <Star size={16} />
+                <GrStar size={16} />
                 Habilidades
               </button>
               <button 
                 className={`${styles.tabButton} ${activeTab === 'idiomas' ? styles.active : ''}`}
                 onClick={() => setActiveTab('idiomas')}
               >
-                <Languages size={16} />
+                <GrLanguage size={16} />
                 Idiomas
               </button>
               <button 
                 className={`${styles.tabButton} ${activeTab === 'certificacoes' ? styles.active : ''}`}
                 onClick={() => setActiveTab('certificacoes')}
               >
-                <Award size={16} />
+                <GrTrophy size={16} />
                 Certificações
               </button>
             </div>
@@ -696,7 +663,7 @@ export default function CandidatoPerfil() {
                           {profileData.personalInfo.linkedin ? (
                             <a href={profileData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer">
                               {profileData.personalInfo.linkedin}
-                              <ExternalLink size={14} />
+                              <GrLinkExternal size={14} />
                             </a>
                           ) : (
                             'Não informado'
@@ -720,7 +687,7 @@ export default function CandidatoPerfil() {
                           {profileData.personalInfo.github ? (
                             <a href={profileData.personalInfo.github} target="_blank" rel="noopener noreferrer">
                               {profileData.personalInfo.github}
-                              <ExternalLink size={14} />
+                              <GrLinkExternal size={14} />
                             </a>
                           ) : (
                             'Não informado'
@@ -744,7 +711,7 @@ export default function CandidatoPerfil() {
                           {profileData.personalInfo.website ? (
                             <a href={profileData.personalInfo.website} target="_blank" rel="noopener noreferrer">
                               {profileData.personalInfo.website}
-                              <ExternalLink size={14} />
+                              <GrLinkExternal size={14} />
                             </a>
                           ) : (
                             'Não informado'
@@ -763,7 +730,7 @@ export default function CandidatoPerfil() {
                     <h2>Experiência Profissional</h2>
                     {editMode && (
                       <button onClick={addExperience} className="btn btn-outline btn-sm">
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                         Adicionar
                       </button>
                     )}
@@ -778,7 +745,7 @@ export default function CandidatoPerfil() {
                               onClick={() => removeExperience(exp.id)}
                               className={styles.removeButton}
                             >
-                              <Trash2 size={16} />
+                              <GrTrash size={16} />
                             </button>
                           )}
                           
@@ -871,12 +838,12 @@ export default function CandidatoPerfil() {
                       ))
                     ) : (
                       <div className={styles.emptyState}>
-                        <Briefcase size={48} />
+                        <GrBriefcase size={48} />
                         <h3>Nenhuma experiência cadastrada</h3>
                         <p>Adicione suas experiências profissionais</p>
                         {editMode && (
                           <button onClick={addExperience} className="btn btn-primary">
-                            <Plus size={16} />
+                            <GrAdd size={16} />
                             Adicionar Experiência
                           </button>
                         )}
@@ -893,7 +860,7 @@ export default function CandidatoPerfil() {
                     <h2>Educação</h2>
                     {editMode && (
                       <button onClick={addEducation} className="btn btn-outline btn-sm">
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                         Adicionar
                       </button>
                     )}
@@ -908,7 +875,7 @@ export default function CandidatoPerfil() {
                               onClick={() => removeEducation(edu.id)}
                               className={styles.removeButton}
                             >
-                              <Trash2 size={16} />
+                              <GrTrash size={16} />
                             </button>
                           )}
                           
@@ -1002,12 +969,12 @@ export default function CandidatoPerfil() {
                       ))
                     ) : (
                       <div className={styles.emptyState}>
-                        <GraduationCap size={48} />
+                        <GrBook size={48} />
                         <h3>Nenhuma formação cadastrada</h3>
                         <p>Adicione sua formação acadêmica</p>
                         {editMode && (
                           <button onClick={addEducation} className="btn btn-primary">
-                            <Plus size={16} />
+                            <GrAdd size={16} />
                             Adicionar Formação
                           </button>
                         )}
@@ -1024,7 +991,7 @@ export default function CandidatoPerfil() {
                     <h2>Habilidades</h2>
                     {editMode && (
                       <button onClick={addSkill} className="btn btn-outline btn-sm">
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                         Adicionar
                       </button>
                     )}
@@ -1039,7 +1006,7 @@ export default function CandidatoPerfil() {
                               onClick={() => removeSkill(skill.id)}
                               className={styles.removeButton}
                             >
-                              <Trash2 size={16} />
+                              <GrTrash size={16} />
                             </button>
                           )}
                           
@@ -1094,12 +1061,12 @@ export default function CandidatoPerfil() {
                       ))
                     ) : (
                       <div className={styles.emptyState}>
-                        <Star size={48} />
+                        <GrStar size={48} />
                         <h3>Nenhuma habilidade cadastrada</h3>
                         <p>Adicione suas principais habilidades</p>
                         {editMode && (
                           <button onClick={addSkill} className="btn btn-primary">
-                            <Plus size={16} />
+                            <GrAdd size={16} />
                             Adicionar Habilidade
                           </button>
                         )}
@@ -1116,7 +1083,7 @@ export default function CandidatoPerfil() {
                     <h2>Idiomas</h2>
                     {editMode && (
                       <button onClick={addLanguage} className="btn btn-outline btn-sm">
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                         Adicionar
                       </button>
                     )}
@@ -1130,7 +1097,7 @@ export default function CandidatoPerfil() {
                             onClick={() => removeLanguage(lang.id)}
                             className={styles.removeButton}
                           >
-                            <Trash2 size={16} />
+                            <GrTrash size={16} />
                           </button>
                         )}
                         
@@ -1179,7 +1146,7 @@ export default function CandidatoPerfil() {
                     <h2>Certificações</h2>
                     {editMode && (
                       <button onClick={addCertification} className="btn btn-outline btn-sm">
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                         Adicionar
                       </button>
                     )}
@@ -1194,7 +1161,7 @@ export default function CandidatoPerfil() {
                               onClick={() => removeCertification(cert.id)}
                               className={styles.removeButton}
                             >
-                              <Trash2 size={16} />
+                              <GrTrash size={16} />
                             </button>
                           )}
                           
@@ -1256,7 +1223,7 @@ export default function CandidatoPerfil() {
                                   {cert.url ? (
                                     <a href={cert.url} target="_blank" rel="noopener noreferrer">
                                       Ver Certificação
-                                      <ExternalLink size={14} />
+                                      <GrLinkExternal size={14} />
                                     </a>
                                   ) : (
                                     'Não informado'
@@ -1269,12 +1236,12 @@ export default function CandidatoPerfil() {
                       ))
                     ) : (
                       <div className={styles.emptyState}>
-                        <Award size={48} />
+                        <GrTrophy size={48} />
                         <h3>Nenhuma certificação cadastrada</h3>
                         <p>Adicione suas certificações profissionais</p>
                         {editMode && (
                           <button onClick={addCertification} className="btn btn-primary">
-                            <Plus size={16} />
+                            <GrAdd size={16} />
                             Adicionar Certificação
                           </button>
                         )}

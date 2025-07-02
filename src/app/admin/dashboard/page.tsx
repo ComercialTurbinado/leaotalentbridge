@@ -5,27 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Users, 
-  Building2, 
-  TrendingUp, 
-  Eye, 
-  UserCheck, 
-  UserX, 
-  Filter,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  BarChart3,
-  Activity,
-  Plus,
-  Download,
-  Settings,
-  FileText,
-  Briefcase,
-  Star
-} from 'lucide-react';
+import { GrGroup, GrOrganization, GrLineChart, GrView, GrFilter, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrBarChart, GrAdd, GrDownload, GrSettings, GrDocument, GrBriefcase, GrStar } from 'react-icons/gr';
 import styles from './dashboard.module.css';
 
 export default function AdminDashboard() {
@@ -162,7 +142,7 @@ export default function AdminDashboard() {
             <div className={styles.statsGrid}>
               <div className={styles.statCard}>
                 <div className={styles.statIcon}>
-                  <Users size={24} />
+                  <GrGroup size={24} />
                 </div>
                 <div className={styles.statContent}>
                   <h3>{mockData.stats.totalCandidates.toLocaleString()}</h3>
@@ -175,7 +155,7 @@ export default function AdminDashboard() {
 
               <div className={styles.statCard}>
                 <div className={styles.statIcon}>
-                  <Building2 size={24} />
+                  <GrOrganization size={24} />
                 </div>
                 <div className={styles.statContent}>
                   <h3>{mockData.stats.totalCompanies}</h3>
@@ -188,7 +168,7 @@ export default function AdminDashboard() {
 
               <div className={styles.statCard}>
                 <div className={styles.statIcon}>
-                  <TrendingUp size={24} />
+                  <GrLineChart size={24} />
                 </div>
                 <div className={styles.statContent}>
                   <h3>{mockData.stats.activeProcesses}</h3>
@@ -201,7 +181,7 @@ export default function AdminDashboard() {
 
               <div className={styles.statCard}>
                 <div className={styles.statIcon}>
-                  <Clock size={24} />
+                  <GrClock size={24} />
                 </div>
                 <div className={styles.statContent}>
                   <h3>{mockData.stats.pendingCandidates}</h3>
@@ -214,7 +194,7 @@ export default function AdminDashboard() {
             </div>
           </section>
 
-          {/* Dashboard Grid */}
+          {/* Dashboard GrApps */}
           <div className={styles.dashboardGrid}>
             {/* Recent Candidates */}
             <section className={styles.dashboardCard}>
@@ -222,7 +202,7 @@ export default function AdminDashboard() {
                 <h2>Candidatos Recentes</h2>
                 <div className={styles.cardActions}>
                   <button className={styles.actionBtn}>
-                    <Filter size={18} />
+                    <GrFilter size={18} />
                   </button>
                   <Link href="/admin/usuarios" className="btn btn-secondary btn-small">
                     Ver Todos
@@ -244,9 +224,9 @@ export default function AdminDashboard() {
                     
                     <div className={styles.candidateStatus}>
                       <span className={`${styles.status} ${styles[candidate.status]}`}>
-                        {candidate.status === 'pending' && <Clock size={14} />}
-                        {candidate.status === 'approved' && <CheckCircle size={14} />}
-                        {candidate.status === 'reviewing' && <Eye size={14} />}
+                        {candidate.status === 'pending' && <GrClock size={14} />}
+                        {candidate.status === 'approved' && <GrStatusGood size={14} />}
+                        {candidate.status === 'reviewing' && <GrView size={14} />}
                         {candidate.status === 'pending' ? 'Pendente' : 
                          candidate.status === 'approved' ? 'Aprovado' : 'Em Análise'}
                       </span>
@@ -257,15 +237,15 @@ export default function AdminDashboard() {
                       {candidate.status === 'pending' && (
                         <>
                           <button className={`${styles.actionButton} ${styles.approve}`}>
-                            <UserCheck size={16} />
+                            <GrUser size={16} />
                           </button>
                           <button className={`${styles.actionButton} ${styles.reject}`}>
-                            <UserX size={16} />
+                            <GrUser size={16} />
                           </button>
                         </>
                       )}
                       <button className={styles.actionButton}>
-                        <Eye size={16} />
+                        <GrView size={16} />
                       </button>
                     </div>
                   </div>
@@ -315,9 +295,9 @@ export default function AdminDashboard() {
                   {mockData.systemLogs.map((log) => (
                     <div key={log.id} className={styles.logItem}>
                       <div className={`${styles.logIcon} ${styles[log.type]}`}>
-                        {log.type === 'success' && <CheckCircle size={14} />}
-                        {log.type === 'info' && <Activity size={14} />}
-                        {log.type === 'warning' && <AlertTriangle size={14} />}
+                        {log.type === 'success' && <GrStatusGood size={14} />}
+                        {log.type === 'info' && <GrLineChart size={14} />}
+                        {log.type === 'warning' && <GrStatusWarning size={14} />}
                       </div>
                       
                       <div className={styles.logContent}>
@@ -339,27 +319,27 @@ export default function AdminDashboard() {
                 
                 <div className={styles.quickActions}>
                   <Link href="/admin/usuarios" className={styles.quickAction}>
-                    <Users size={20} />
+                    <GrGroup size={20} />
                     <span>Gerenciar Usuários</span>
                   </Link>
                   
                   <Link href="/admin/vagas" className={styles.quickAction}>
-                    <Briefcase size={20} />
+                    <GrBriefcase size={20} />
                     <span>Gerenciar Vagas</span>
                   </Link>
                   
                   <Link href="/admin/empresas" className={styles.quickAction}>
-                    <Building2 size={20} />
+                    <GrOrganization size={20} />
                     <span>Gerenciar Empresas</span>
                   </Link>
                   
                   <Link href="/admin/relatorios" className={styles.quickAction}>
-                    <BarChart3 size={20} />
+                    <GrBarChart size={20} />
                     <span>Ver Relatórios</span>
                   </Link>
                   
                   <button className={styles.quickAction}>
-                    <Download size={20} />
+                    <GrDownload size={20} />
                     <span>Exportar Dados</span>
                   </button>
                 </div>

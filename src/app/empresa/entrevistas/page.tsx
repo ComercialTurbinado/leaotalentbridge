@@ -5,20 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Calendar,
-  Clock,
-  Users,
-  MapPin,
-  Video,
-  Phone,
-  CheckCircle,
-  X,
-  Edit,
-  ChevronLeft,
-  ChevronRight,
-  Filter
-} from 'lucide-react';
+import { GrCalendar, GrClock, GrGroup, GrLocation, GrVideo, GrPhone, GrStatusGood, GrClose, GrEdit, GrPrevious, GrNext, GrFilter } from 'react-icons/gr';
 import styles from './entrevistas.module.css';
 
 interface Entrevista {
@@ -121,13 +108,13 @@ export default function EmpresaEntrevistasPage() {
   const getTipoIcon = (tipo: string) => {
     switch (tipo) {
       case 'video':
-        return <Video size={16} />;
+        return <GrVideo size={16} />;
       case 'telefone':
-        return <Phone size={16} />;
+        return <GrPhone size={16} />;
       case 'presencial':
-        return <MapPin size={16} />;
+        return <GrLocation size={16} />;
       default:
-        return <Calendar size={16} />;
+        return <GrCalendar size={16} />;
     }
   };
 
@@ -215,14 +202,14 @@ export default function EmpresaEntrevistasPage() {
                   className={viewMode === 'calendar' ? styles.active : ''}
                   onClick={() => setViewMode('calendar')}
                 >
-                  <Calendar size={16} />
+                  <GrCalendar size={16} />
                   Calendário
                 </button>
                 <button 
                   className={viewMode === 'list' ? styles.active : ''}
                   onClick={() => setViewMode('list')}
                 >
-                  <Users size={16} />
+                  <GrGroup size={16} />
                   Lista
                 </button>
               </div>
@@ -250,7 +237,7 @@ export default function EmpresaEntrevistasPage() {
             <div className={styles.calendarSection}>
               <div className={styles.calendarHeader}>
                 <button onClick={() => navigateMonth('prev')} className={styles.navButton}>
-                  <ChevronLeft size={20} />
+                  <GrPrevious size={20} />
                 </button>
                 <h2>
                   {currentDate.toLocaleDateString('pt-BR', { 
@@ -259,7 +246,7 @@ export default function EmpresaEntrevistasPage() {
                   })}
                 </h2>
                 <button onClick={() => navigateMonth('next')} className={styles.navButton}>
-                  <ChevronRight size={20} />
+                  <GrNext size={20} />
                 </button>
               </div>
 
@@ -309,12 +296,12 @@ export default function EmpresaEntrevistasPage() {
             </div>
           )}
 
-          {/* List View */}
+          {/* GrList View */}
           {viewMode === 'list' && (
             <div className={styles.listSection}>
               {filteredEntrevistas.length === 0 ? (
                 <div className={styles.emptyState}>
-                  <Calendar size={48} className={styles.emptyIcon} />
+                  <GrCalendar size={48} className={styles.emptyIcon} />
                   <h3>Nenhuma entrevista encontrada</h3>
                   <p>Não há entrevistas agendadas com os filtros selecionados.</p>
                 </div>
@@ -336,11 +323,11 @@ export default function EmpresaEntrevistasPage() {
 
                       <div className={styles.entrevistaMeta}>
                         <div className={styles.metaItem}>
-                          <Calendar size={16} />
+                          <GrCalendar size={16} />
                           <span>{formatDate(entrevista.data)}</span>
                         </div>
                         <div className={styles.metaItem}>
-                          <Clock size={16} />
+                          <GrClock size={16} />
                           <span>{entrevista.horario}</span>
                         </div>
                         <div className={styles.metaItem}>
@@ -357,13 +344,13 @@ export default function EmpresaEntrevistasPage() {
                         <div className={styles.entrevistaLocal}>
                           {entrevista.localizacao && (
                             <div className={styles.localInfo}>
-                              <MapPin size={16} />
+                              <GrLocation size={16} />
                               <span>{entrevista.localizacao}</span>
                             </div>
                           )}
                           {entrevista.linkVideo && (
                             <div className={styles.linkInfo}>
-                              <Video size={16} />
+                              <GrVideo size={16} />
                               <a href={entrevista.linkVideo} target="_blank" rel="noopener noreferrer">
                                 Acessar Videoconferência
                               </a>
@@ -381,18 +368,18 @@ export default function EmpresaEntrevistasPage() {
 
                       <div className={styles.entrevistaActions}>
                         <button className="btn btn-secondary btn-small">
-                          <Edit size={14} />
+                          <GrEdit size={14} />
                           Editar
                         </button>
                         {entrevista.status === 'agendada' && (
                           <button className="btn btn-primary btn-small">
-                            <CheckCircle size={14} />
+                            <GrStatusGood size={14} />
                             Confirmar
                           </button>
                         )}
                         {entrevista.status !== 'cancelada' && entrevista.status !== 'realizada' && (
                           <button className="btn btn-danger btn-small">
-                            <X size={14} />
+                            <GrClose size={14} />
                             Cancelar
                           </button>
                         )}

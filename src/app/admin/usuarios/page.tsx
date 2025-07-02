@@ -4,32 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Users,
-  Search,
-  Filter,
-  Plus,
-  Edit,
-  Trash2,
-  Eye,
-  UserCheck,
-  UserX,
-  Mail,
-  Phone,
-  Calendar,
-  MapPin,
-  Briefcase,
-  Building2,
-  Crown,
-  Download,
-  Upload,
-  MoreVertical,
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  X
-} from 'lucide-react';
+import { GrGroup, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrMail, GrPhone, GrCalendar, GrLocation, GrBriefcase, GrOrganization, GrDownload, GrUpload, GrMore, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrClose } from 'react-icons/gr';
 import styles from './usuarios.module.css';
 
 interface Usuario {
@@ -181,20 +156,20 @@ export default function AdminUsuariosPage() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'ativo': return <CheckCircle size={14} />;
-      case 'inativo': return <XCircle size={14} />;
-      case 'pendente': return <Clock size={14} />;
-      case 'bloqueado': return <AlertTriangle size={14} />;
-      default: return <XCircle size={14} />;
+      case 'ativo': return <GrStatusGood size={14} />;
+      case 'inativo': return <GrStatusCritical size={14} />;
+      case 'pendente': return <GrClock size={14} />;
+      case 'bloqueado': return <GrStatusWarning size={14} />;
+      default: return <GrStatusCritical size={14} />;
     }
   };
 
   const getTipoIcon = (tipo: string) => {
     switch (tipo) {
-      case 'candidato': return <Users size={16} />;
-      case 'empresa': return <Building2 size={16} />;
-      case 'admin': return <Crown size={16} />;
-      default: return <Users size={16} />;
+      case 'candidato': return <GrGroup size={16} />;
+      case 'empresa': return <GrOrganization size={16} />;
+      case 'admin': return <GrStar size={16} />;
+      default: return <GrGroup size={16} />;
     }
   };
 
@@ -263,14 +238,14 @@ export default function AdminUsuariosPage() {
                 onClick={exportarUsuarios}
                 className="btn btn-secondary"
               >
-                <Download size={16} />
+                <GrDownload size={16} />
                 Exportar
               </button>
               <button 
                 onClick={handleCreateUser}
                 className="btn btn-primary"
               >
-                <Plus size={16} />
+                <GrAdd size={16} />
                 Novo Usuário
               </button>
             </div>
@@ -280,7 +255,7 @@ export default function AdminUsuariosPage() {
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Users size={24} />
+                <GrGroup size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{usuarios.filter(u => u.tipo === 'candidato').length}</h3>
@@ -289,7 +264,7 @@ export default function AdminUsuariosPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Building2 size={24} />
+                <GrOrganization size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{usuarios.filter(u => u.tipo === 'empresa').length}</h3>
@@ -298,7 +273,7 @@ export default function AdminUsuariosPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <CheckCircle size={24} />
+                <GrStatusGood size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{usuarios.filter(u => u.status === 'ativo').length}</h3>
@@ -307,7 +282,7 @@ export default function AdminUsuariosPage() {
             </div>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <Clock size={24} />
+                <GrClock size={24} />
               </div>
               <div className={styles.statContent}>
                 <h3>{usuarios.filter(u => u.status === 'pendente').length}</h3>
@@ -319,7 +294,7 @@ export default function AdminUsuariosPage() {
           {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBox}>
-              <Search size={20} />
+              <GrSearch size={20} />
               <input
                 type="text"
                 placeholder="Buscar por nome, email ou empresa..."
@@ -379,7 +354,7 @@ export default function AdminUsuariosPage() {
                             <p>{usuario.email}</p>
                             {usuario.empresa && (
                               <span className={styles.userCompany}>
-                                <Building2 size={12} />
+                                <GrOrganization size={12} />
                                 {usuario.empresa}
                               </span>
                             )}
@@ -415,14 +390,14 @@ export default function AdminUsuariosPage() {
                             className={styles.actionBtn}
                             title="Visualizar"
                           >
-                            <Eye size={16} />
+                            <GrView size={16} />
                           </button>
                           <button 
                             onClick={() => handleEditUser(usuario)}
                             className={styles.actionBtn}
                             title="Editar"
                           >
-                            <Edit size={16} />
+                            <GrEdit size={16} />
                           </button>
                           {usuario.status === 'ativo' ? (
                             <button 
@@ -430,7 +405,7 @@ export default function AdminUsuariosPage() {
                               className={`${styles.actionBtn} ${styles.danger}`}
                               title="Desativar"
                             >
-                              <UserX size={16} />
+                              <GrUser size={16} />
                             </button>
                           ) : (
                             <button 
@@ -438,7 +413,7 @@ export default function AdminUsuariosPage() {
                               className={`${styles.actionBtn} ${styles.success}`}
                               title="Ativar"
                             >
-                              <UserCheck size={16} />
+                              <GrUser size={16} />
                             </button>
                           )}
                           <button 
@@ -446,7 +421,7 @@ export default function AdminUsuariosPage() {
                             className={`${styles.actionBtn} ${styles.danger}`}
                             title="Excluir"
                           >
-                            <Trash2 size={16} />
+                            <GrTrash size={16} />
                           </button>
                         </div>
                       </td>
@@ -458,7 +433,7 @@ export default function AdminUsuariosPage() {
 
             {usuariosFiltrados.length === 0 && (
               <div className={styles.emptyState}>
-                <Users size={48} />
+                <GrGroup size={48} />
                 <h3>Nenhum usuário encontrado</h3>
                 <p>Tente ajustar os filtros ou criar um novo usuário.</p>
               </div>
@@ -482,7 +457,7 @@ export default function AdminUsuariosPage() {
                 onClick={() => setShowModal(false)}
                 className={styles.closeButton}
               >
-                <X size={20} />
+                <GrClose size={20} />
               </button>
             </div>
 
@@ -503,14 +478,14 @@ export default function AdminUsuariosPage() {
 
                   <div className={styles.userInfoGrid}>
                     <div className={styles.infoItem}>
-                      <Phone size={16} />
+                      <GrPhone size={16} />
                       <div>
                         <span className={styles.infoLabel}>Telefone</span>
                         <span className={styles.infoValue}>{usuarioSelecionado.telefone}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <MapPin size={16} />
+                      <GrLocation size={16} />
                       <div>
                         <span className={styles.infoLabel}>Localização</span>
                         <span className={styles.infoValue}>{usuarioSelecionado.localizacao}</span>
@@ -518,7 +493,7 @@ export default function AdminUsuariosPage() {
                     </div>
                     {usuarioSelecionado.empresa && (
                       <div className={styles.infoItem}>
-                        <Building2 size={16} />
+                        <GrOrganization size={16} />
                         <div>
                           <span className={styles.infoLabel}>Empresa</span>
                           <span className={styles.infoValue}>{usuarioSelecionado.empresa}</span>
@@ -526,14 +501,14 @@ export default function AdminUsuariosPage() {
                       </div>
                     )}
                     <div className={styles.infoItem}>
-                      <Briefcase size={16} />
+                      <GrBriefcase size={16} />
                       <div>
                         <span className={styles.infoLabel}>Cargo</span>
                         <span className={styles.infoValue}>{usuarioSelecionado.cargo}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <Calendar size={16} />
+                      <GrCalendar size={16} />
                       <div>
                         <span className={styles.infoLabel}>Data de Cadastro</span>
                         <span className={styles.infoValue}>
@@ -542,7 +517,7 @@ export default function AdminUsuariosPage() {
                       </div>
                     </div>
                     <div className={styles.infoItem}>
-                      <Clock size={16} />
+                      <GrClock size={16} />
                       <div>
                         <span className={styles.infoLabel}>Último Acesso</span>
                         <span className={styles.infoValue}>
@@ -557,7 +532,7 @@ export default function AdminUsuariosPage() {
               {modalType === 'delete' && usuarioSelecionado && (
                 <div className={styles.deleteConfirmation}>
                   <div className={styles.warningIcon}>
-                    <AlertTriangle size={48} />
+                    <GrStatusWarning size={48} />
                   </div>
                   <h3>Tem certeza que deseja excluir este usuário?</h3>
                   <p>
@@ -585,7 +560,7 @@ export default function AdminUsuariosPage() {
                   }}
                   className="btn btn-danger"
                 >
-                  <Trash2 size={16} />
+                  <GrTrash size={16} />
                   Confirmar Exclusão
                 </button>
               )}

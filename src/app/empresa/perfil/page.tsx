@@ -4,15 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  Building2,
-  Save,
-  MapPin,
-  Users,
-  Camera,
-  X,
-  Plus
-} from 'lucide-react';
+import { GrOrganization, GrSave, GrLocation, GrGroup, GrCamera, GrClose, GrAdd } from 'react-icons/gr';
 import styles from './perfil.module.css';
 
 interface EmpresaProfile {
@@ -176,12 +168,12 @@ export default function EmpresaPerfilPage() {
                   <img src={profile.logoUrl} alt="Logo da empresa" />
                 ) : (
                   <div className={styles.logoPlaceholder}>
-                    <Building2 size={48} />
+                    <GrOrganization size={48} />
                     <span>Logo da Empresa</span>
                   </div>
                 )}
                 <button className={styles.uploadBtn}>
-                  <Camera size={16} />
+                  <GrCamera size={16} />
                   Alterar Logo
                 </button>
               </div>
@@ -411,7 +403,7 @@ export default function EmpresaPerfilPage() {
                         onClick={() => addItem('valores', newValor, setNewValor)}
                         className={styles.addBtn}
                       >
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                       </button>
                     </div>
                     <div className={styles.listTags}>
@@ -422,7 +414,7 @@ export default function EmpresaPerfilPage() {
                             type="button"
                             onClick={() => removeItem('valores', index)}
                           >
-                            <X size={12} />
+                            <GrClose size={12} />
                           </button>
                         </span>
                       ))}
@@ -444,7 +436,7 @@ export default function EmpresaPerfilPage() {
                         onClick={() => addItem('cultura', newCultura, setNewCultura)}
                         className={styles.addBtn}
                       >
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                       </button>
                     </div>
                     <div className={styles.listTags}>
@@ -455,7 +447,7 @@ export default function EmpresaPerfilPage() {
                             type="button"
                             onClick={() => removeItem('cultura', index)}
                           >
-                            <X size={12} />
+                            <GrClose size={12} />
                           </button>
                         </span>
                       ))}
@@ -477,7 +469,7 @@ export default function EmpresaPerfilPage() {
                         onClick={() => addItem('beneficios', newBenefit, setNewBenefit)}
                         className={styles.addBtn}
                       >
-                        <Plus size={16} />
+                        <GrAdd size={16} />
                       </button>
                     </div>
                     <div className={styles.listTags}>
@@ -488,7 +480,7 @@ export default function EmpresaPerfilPage() {
                             type="button"
                             onClick={() => removeItem('beneficios', index)}
                           >
-                            <X size={12} />
+                            <GrClose size={12} />
                           </button>
                         </span>
                       ))}
@@ -510,7 +502,7 @@ export default function EmpresaPerfilPage() {
                     </>
                   ) : (
                     <>
-                      <Save size={16} />
+                      <GrSave size={16} />
                       Salvar Alterações
                     </>
                   )}

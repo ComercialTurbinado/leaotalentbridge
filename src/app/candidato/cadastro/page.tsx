@@ -5,23 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ApiService } from '@/lib/api';
 import { AuthService } from '@/lib/auth';
-import { 
-  Crown, 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Briefcase, 
-  GraduationCap,
-  Eye,
-  EyeOff,
-  ArrowLeft,
-  CheckCircle,
-  FileText,
-  Calendar,
-  Globe,
-  Linkedin
-} from 'lucide-react';
+import { GrUser, GrMail, GrPhone, GrLocation, GrBriefcase, GrView, GrHide, GrPrevious, GrStatusGood, GrDocument, GrCalendar, GrGlobe } from 'react-icons/gr';
 import styles from './cadastro.module.css';
 
 export default function CandidatoCadastroPage() {
@@ -229,12 +213,12 @@ export default function CandidatoCadastroPage() {
         {/* Header */}
         <div className={styles.cadastroHeader}>
           <Link href="/" className={styles.backButton}>
-            <ArrowLeft size={20} />
+            <GrPrevious size={20} />
             Voltar ao Início
           </Link>
           
           <div className={styles.logo}>
-            <Crown size={32} />
+            <GrStar size={32} />
             <span>Leão Talent Bridge</span>
           </div>
         </div>
@@ -250,7 +234,7 @@ export default function CandidatoCadastroPage() {
             {/* Dados Pessoais */}
             <div className={styles.formSection}>
               <h3>
-                <User size={20} />
+                <GrUser size={20} />
                 Dados Pessoais
               </h3>
               
@@ -339,7 +323,7 @@ export default function CandidatoCadastroPage() {
             {/* Endereço */}
             <div className={styles.formSection}>
               <h3>
-                <MapPin size={20} />
+                <GrLocation size={20} />
                 Endereço Atual
               </h3>
               
@@ -427,7 +411,7 @@ export default function CandidatoCadastroPage() {
             {/* Informações Profissionais */}
             <div className={styles.formSection}>
               <h3>
-                <Briefcase size={20} />
+                <GrBriefcase size={20} />
                 Informações Profissionais
               </h3>
               
@@ -521,7 +505,7 @@ export default function CandidatoCadastroPage() {
             {/* Educação */}
             <div className={styles.formSection}>
               <h3>
-                <GraduationCap size={20} />
+                <GrBook size={20} />
                 Educação
               </h3>
               
@@ -588,7 +572,7 @@ export default function CandidatoCadastroPage() {
             {/* Idiomas */}
             <div className={styles.formSection}>
               <h3>
-                <Globe size={20} />
+                <GrGlobe size={20} />
                 Idiomas
               </h3>
               
@@ -645,7 +629,7 @@ export default function CandidatoCadastroPage() {
             {/* Documentos */}
             <div className={styles.formSection}>
               <h3>
-                <FileText size={20} />
+                <GrDocument size={20} />
                 Documentos
               </h3>
               
@@ -710,7 +694,7 @@ export default function CandidatoCadastroPage() {
             {/* Redes Sociais */}
             <div className={styles.formSection}>
               <h3>
-                <Linkedin size={20} />
+                <GrLinkedin size={20} />
                 Redes Sociais e Portfolio
               </h3>
               
@@ -744,7 +728,7 @@ export default function CandidatoCadastroPage() {
             {/* Habilidades */}
             <div className={styles.formSection}>
               <h3>
-                <CheckCircle size={20} />
+                <GrStatusGood size={20} />
                 Habilidades e Competências
               </h3>
               
@@ -784,7 +768,7 @@ export default function CandidatoCadastroPage() {
             {/* Sobre Você */}
             <div className={styles.formSection}>
               <h3>
-                <User size={20} />
+                <GrUser size={20} />
                 Sobre Você
               </h3>
               
@@ -818,7 +802,7 @@ export default function CandidatoCadastroPage() {
             {/* Senha */}
             <div className={styles.formSection}>
               <h3>
-                <CheckCircle size={20} />
+                <GrStatusGood size={20} />
                 Segurança
               </h3>
               
@@ -841,7 +825,7 @@ export default function CandidatoCadastroPage() {
                       onClick={() => setShowPassword(!showPassword)}
                       className={styles.passwordToggle}
                     >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      {showPassword ? <GrHide size={20} /> : <GrView size={20} />}
                     </button>
                   </div>
                 </div>
@@ -864,7 +848,7 @@ export default function CandidatoCadastroPage() {
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className={styles.passwordToggle}
                     >
-                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      {showConfirmPassword ? <GrHide size={20} /> : <GrView size={20} />}
                     </button>
                   </div>
                 </div>

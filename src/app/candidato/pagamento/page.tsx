@@ -4,26 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Crown, 
-  Check, 
-  CreditCard, 
-  Shield, 
-  ArrowLeft,
-  Star,
-  Users,
-  FileText,
-  Video,
-  BookOpen,
-  Award,
-  Zap,
-  Calendar,
-  MessageCircle,
-  UserCheck,
-  Globe,
-  Briefcase,
-  Target
-} from 'lucide-react';
+import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrDocument, GrVideo, GrPower, GrCalendar, GrChat, GrGlobe, GrBriefcase } from 'react-icons/gr';
 import styles from './pagamento.module.css';
 
 export default function CandidatoPagamentoPage() {
@@ -75,7 +56,7 @@ export default function CandidatoPagamentoPage() {
       description: 'Plataforma disponível 24/7'
     },
     {
-      icon: Target,
+      icon: GrTarget,
       title: 'Todos os recursos da plataforma',
       description: 'Funcionalidades premium incluídas'
     },
@@ -90,7 +71,7 @@ export default function CandidatoPagamentoPage() {
       description: 'CV, carta de apresentação e mais'
     },
     {
-      icon: BookOpen,
+      icon: GrBook,
       title: 'E-book cultural completo dos Emirados',
       description: 'Guia essencial para adaptação'
     },
@@ -100,7 +81,7 @@ export default function CandidatoPagamentoPage() {
       description: 'Atendimento exclusivo e rápido'
     },
     {
-      icon: UserCheck,
+      icon: GrUser,
       title: 'Mentoria mensal com especialistas',
       description: 'Sessões 1:1 com profissionais'
     },
@@ -115,7 +96,7 @@ export default function CandidatoPagamentoPage() {
       description: 'Conexões diretas no mercado'
     },
     {
-      icon: Award,
+      icon: GrTrophy,
       title: 'Certificado de conclusão',
       description: 'Reconhecimento oficial do programa'
     }
@@ -153,7 +134,7 @@ export default function CandidatoPagamentoPage() {
         {/* Header */}
         <div className={styles.pagamentoHeader}>
           <Link href="/" className={styles.backButton}>
-            <ArrowLeft size={20} />
+            <GrPrevious size={20} />
             Voltar ao Início
           </Link>
           
@@ -180,7 +161,7 @@ export default function CandidatoPagamentoPage() {
           <div className={styles.commonFeaturesSection}>
             <div className={styles.commonFeaturesCard}>
               <div className={styles.featuresHeader}>
-                <Crown size={32} className={styles.crownIcon} />
+                <GrStar size={32} className={styles.crownIcon} />
                 <h3>O que você terá acesso:</h3>
                 <p>Todos os recursos premium incluídos em qualquer plano</p>
               </div>
@@ -203,7 +184,7 @@ export default function CandidatoPagamentoPage() {
             </div>
           </div>
 
-          {/* Plans Grid */}
+          {/* Plans GrApps */}
           <div className={styles.plansGrid}>
             {plans.map((plan) => (
               <div 
@@ -213,7 +194,7 @@ export default function CandidatoPagamentoPage() {
               >
                 {plan.popular && (
                   <div className={styles.popularBadge}>
-                    <Star size={16} />
+                    <GrStar size={16} />
                     Mais Popular
                   </div>
                 )}
@@ -266,7 +247,7 @@ export default function CandidatoPagamentoPage() {
                   className={`${styles.paymentMethod} ${paymentMethod === 'credit' ? styles.active : ''}`}
                   onClick={() => setPaymentMethod('credit')}
                 >
-                  <CreditCard size={20} />
+                  <GrCreditCard size={20} />
                   <span>Cartão de Crédito</span>
                   <div className={styles.paymentBadges}>
                     <span>Visa</span>
@@ -279,7 +260,7 @@ export default function CandidatoPagamentoPage() {
                     className={`${styles.paymentMethod} ${paymentMethod === 'pix' ? styles.active : ''}`}
                     onClick={() => setPaymentMethod('pix')}
                   >
-                    <Zap size={20} />
+                    <GrPower size={20} />
                     <span>PIX</span>
                     <div className={styles.paymentBadge}>
                       <span>Instantâneo</span>
@@ -327,14 +308,14 @@ export default function CandidatoPagamentoPage() {
                   </>
                 ) : (
                   <>
-                    <Shield size={20} />
+                    <GrShield size={20} />
                     Finalizar Pagamento Seguro
                   </>
                 )}
               </button>
 
               <div className={styles.securityNote}>
-                <Shield size={16} />
+                <GrShield size={16} />
                 <span>Pagamento 100% seguro e criptografado</span>
               </div>
             </div>

@@ -70,7 +70,7 @@ export default function SkeletonLoader({
       case 'dashboard':
         return (
           <div className={`${styles.skeletonDashboard} ${className}`}>
-            {/* Stats Grid */}
+            {/* Stats GrApps */}
             <div className={styles.skeletonStatsGrid}>
               {[...Array(4)].map((_, i) => (
                 <div key={i} className={styles.skeletonStatCard}>
@@ -83,7 +83,7 @@ export default function SkeletonLoader({
               ))}
             </div>
             
-            {/* Content Grid */}
+            {/* Content GrApps */}
             <div className={styles.skeletonContentGrid}>
               <div className={styles.skeletonSection}>
                 <div className={styles.skeletonLine} style={{ width: '30%', marginBottom: '20px' }}></div>

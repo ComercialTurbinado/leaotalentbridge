@@ -8,18 +8,7 @@ import { ApiService } from '@/lib/api';
 import { useJobs } from '@/lib/hooks/useApiData';
 import DashboardHeader from '@/components/DashboardHeader';
 import SkeletonLoader from '@/components/SkeletonLoader';
-import { 
-  Search,
-  MapPin,
-  DollarSign,
-  Briefcase,
-  Clock,
-  Building2,
-  Filter,
-  Heart,
-  Send,
-  CheckCircle
-} from 'lucide-react';
+import { GrSearch, GrLocation, GrMoney, GrBriefcase, GrClock, GrOrganization, GrFilter, GrFavorite, GrSend, GrStatusGood } from 'react-icons/gr';
 import styles from './vagas.module.css';
 
 interface Job {
@@ -250,7 +239,7 @@ export default function CandidatoVagasPage() {
           {/* Barra de busca e filtros */}
           <div className={styles.searchSection}>
             <div className={styles.searchBar}>
-              <Search size={20} />
+              <GrSearch size={20} />
               <input
                 type="text"
                 placeholder="Buscar vagas por título, empresa ou habilidades..."
@@ -263,7 +252,7 @@ export default function CandidatoVagasPage() {
               className={`${styles.filterButton} ${showFilters ? styles.active : ''}`}
               onClick={() => setShowFilters(!showFilters)}
             >
-              <Filter size={18} />
+              <GrFilter size={18} />
               Filtros
             </button>
           </div>
@@ -351,7 +340,7 @@ export default function CandidatoVagasPage() {
                     <div className={styles.vagaHeader}>
                       <div className={styles.empresaInfo}>
                         <div className={styles.empresaLogo}>
-                          <Building2 size={24} />
+                          <GrOrganization size={24} />
                         </div>
                         <div>
                           <h3 className={styles.vagaTitulo}>{job.title}</h3>
@@ -361,7 +350,7 @@ export default function CandidatoVagasPage() {
                       
                       {isApplied(job._id) ? (
                         <div className={styles.appliedBadge}>
-                          <CheckCircle size={16} />
+                          <GrStatusGood size={16} />
                           Candidatura Enviada
                         </div>
                       ) : (
@@ -374,7 +363,7 @@ export default function CandidatoVagasPage() {
                             <>Enviando...</>
                           ) : (
                             <>
-                              <Send size={16} />
+                              <GrSend size={16} />
                               Candidatar-se
                             </>
                           )}
@@ -384,22 +373,22 @@ export default function CandidatoVagasPage() {
 
                     <div className={styles.vagaInfo}>
                       <div className={styles.infoItem}>
-                        <MapPin size={16} />
+                        <GrLocation size={16} />
                         <span>{getLocationLabel(job.location)}</span>
                       </div>
                       
                       <div className={styles.infoItem}>
-                        <DollarSign size={16} />
+                        <GrMoney size={16} />
                         <span>{formatSalary(job.salary)}</span>
                       </div>
                       
                       <div className={styles.infoItem}>
-                        <Briefcase size={16} />
+                        <GrBriefcase size={16} />
                         <span>{getWorkTypeLabel(job.workType)}</span>
                       </div>
                       
                       <div className={styles.infoItem}>
-                        <Clock size={16} />
+                        <GrClock size={16} />
                         <span>Publicada em {new Date(job.publishedAt).toLocaleDateString('pt-BR')}</span>
                       </div>
                     </div>
@@ -447,7 +436,7 @@ export default function CandidatoVagasPage() {
                 {/* Mensagem quando não há vagas */}
                 {!loading && jobs.length === 0 && (
                   <div className={styles.emptyState}>
-                    <Briefcase size={48} />
+                    <GrBriefcase size={48} />
                     <h3>Nenhuma vaga encontrada</h3>
                     <p>Não encontramos vagas que correspondem aos seus critérios de busca.</p>
                     <button 
