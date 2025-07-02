@@ -131,7 +131,7 @@ export default function EmpresaDashboardPage() {
         activities.push({
           id: app._id,
           type: 'candidato',
-          title: 'Nova candidatura',
+          title: 'Talentos recomendados',
           description: `${app.candidateId.name} se candidatou para ${app.jobId.title}`,
           date: new Date(app.appliedAt).toLocaleDateString('pt-BR')
         });
@@ -207,8 +207,8 @@ export default function EmpresaDashboardPage() {
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.candidatosIndicados}</h3>
-                <p>Candidatos Indicados</p>
-                <span className={styles.statDetail}>Total de candidaturas</span>
+                <p>Talentos Indicados</p>
+                <span className={styles.statDetail}>Este mês</span>
               </div>
             </div>
 
@@ -308,8 +308,8 @@ export default function EmpresaDashboardPage() {
 
               <Link href="/empresa/candidatos" className={styles.actionCard}>
                 <GrGroup size={32} />
-                <h3>Ver Candidatos</h3>
-                <p>Analisar perfis indicados para suas vagas</p>
+                <h3>Ver Talentos</h3>
+                <p>Avalie os melhores perfis indicados para suas posições</p>
               </Link>
 
               <Link href="/empresa/entrevistas" className={styles.actionCard}>

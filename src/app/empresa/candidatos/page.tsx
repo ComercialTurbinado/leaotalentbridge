@@ -255,7 +255,7 @@ function CandidatosContent() {
           <div className={styles.pageHeader}>
             <div className={styles.headerContent}>
               <h1>Candidaturas Recebidas</h1>
-              <p>Gerencie e avalie os candidatos para suas vagas</p>
+              <p>Descubra os melhores profissionais qualificados para as suas vagas</p>
             </div>
             <div className={styles.headerStats}>
               <div className={styles.statItem}>
@@ -432,7 +432,7 @@ function CandidatosContent() {
                           ) : (
                             <>
                               <GrUser size={16} />
-                              Analisar
+                              Selecionar Talento
                             </>
                           )}
                         </button>
