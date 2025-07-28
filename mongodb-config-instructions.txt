@@ -1,0 +1,28 @@
+INSTRUÇÕES PARA CONFIGURAR O MONGODB ATLAS
+
+1. Edite o arquivo .env.local com o seguinte conteúdo:
+
+# Configurações do Banco de Dados
+MONGODB_URI=mongodb+srv://comercialturbinado:Pikopiko2212@cluster0.vryeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+# Configurações JWT
+JWT_SECRET=chave-secreta-local-desenvolvimento
+JWT_EXPIRES_IN=7d
+
+# Configurações da Aplicação
+NODE_ENV=development
+PORT=3000
+NEXTAUTH_URL=http://localhost:3001
+NEXTAUTH_SECRET=chave-nextauth-local-desenvolvimento
+
+# URL da API (para frontend)
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+
+2. Reinicie o servidor Next.js após salvar as alterações:
+   npx next dev -p 3001
+   
+   ou para produção:
+   npx next start -p 3001
+
+3. Verifique no console se a conexão com o MongoDB foi estabelecida com sucesso.
+   Você deve ver a mensagem "Conectado ao MongoDB" sem os avisos de duplicação de índices. 

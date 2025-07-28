@@ -1,0 +1,27 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci --include=dev
+        - npm list typescript @types/react @types/node || npm install typescript @types/react @types/node
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*
+  environment:
+    variables:
+      MONGODB_URI: mongodb+srv://comercialturbinado:Pikopiko2212@cluster0.vryeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      NODE_ENV: production
+      NEXTAUTH_URL: https://main.d34ynwi1hnilao.amplifyapp.com
+      NEXT_PUBLIC_API_URL: https://main.d34ynwi1hnilao.amplifyapp.com/api
+      JWT_SECRET: super-secret-jwt-key-production-leao-careers-2024-mongodb-atlas
+      JWT_EXPIRES_IN: 7d
+      NEXTAUTH_SECRET: super-secret-nextauth-key-production-leao-careers-2024 
