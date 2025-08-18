@@ -5,6 +5,14 @@ export interface User {
   email: string;
   name: string;
   type: 'candidato' | 'empresa' | 'admin';
+  status: 'pending' | 'approved' | 'rejected' | 'suspended';
+  permissions?: {
+    canAccessJobs: boolean;
+    canApplyToJobs: boolean;
+    canViewCourses: boolean;
+    canAccessSimulations: boolean;
+    canContactCompanies: boolean;
+  };
   profile?: {
     completed: boolean;
     avatar?: string;
@@ -12,6 +20,9 @@ export interface User {
     company?: string;
     position?: string;
   };
+  profileVerified?: boolean;
+  documentsVerified?: boolean;
+  companyVerified?: boolean;
 }
 
 export interface AuthResponse {

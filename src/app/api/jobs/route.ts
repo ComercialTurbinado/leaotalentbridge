@@ -26,9 +26,10 @@ async function verifyAuth(request: NextRequest) {
   }
 }
 
-// GET - Listar vagas
+// GET - Listar vagas (com controle de acesso para candidatos)
 export async function GET(request: NextRequest) {
   try {
+    const user = await verifyAuth(request);
     await connectMongoDB();
     
     const { searchParams } = new URL(request.url);
@@ -43,7 +44,7 @@ export async function GET(request: NextRequest) {
     const salaryMin = searchParams.get('salaryMin');
     const salaryMax = searchParams.get('salaryMax');
     
-    // Construir filtro
+    // Construir filtro base
     const filter: any = {};
     if (status) filter.status = status;
     if (category) filter.category = category;
@@ -68,6 +69,45 @@ export async function GET(request: NextRequest) {
       filter['salary.min'] = {};
       if (salaryMin) filter['salary.min'].$gte = parseInt(salaryMin);
       if (salaryMax) filter['salary.max'] = { $lte: parseInt(salaryMax) };
+    }
+
+    // Controle de acesso para candidatos
+    if (user && user.type === 'candidato') {
+      // Verificar se o candidato está aprovado
+      if (user.status !== 'approved') {
+        return NextResponse.json({
+          success: false,
+          message: 'Sua conta ainda está pendente de aprovação pelo administrador',
+          statusCode: 'ACCOUNT_NOT_APPROVED'
+        }, { status: 403 });
+      }
+
+      // Verificar permissões
+      if (!user.permissions?.canAccessJobs) {
+        return NextResponse.json({
+          success: false,
+          message: 'Você não tem permissão para acessar vagas. Entre em contato com o administrador.',
+          statusCode: 'PERMISSION_DENIED'
+        }, { status: 403 });
+      }
+
+      // Filtrar apenas vagas liberadas para este candidato
+      if (user.permissions.releasedJobs && user.permissions.releasedJobs.length > 0) {
+        filter._id = { $in: user.permissions.releasedJobs };
+      } else {
+        // Se não tem vagas liberadas, retornar vazio
+        return NextResponse.json({
+          success: true,
+          data: [],
+          message: 'Nenhuma vaga liberada para você ainda. Aguarde o admin liberar vagas específicas.',
+          pagination: {
+            page,
+            limit,
+            total: 0,
+            pages: 0
+          }
+        });
+      }
     }
     
     const skip = (page - 1) * limit;
