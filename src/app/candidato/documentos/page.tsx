@@ -6,18 +6,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { GrUpload, GrDocument, GrDownload, GrView, GrTrash, GrAdd, GrSearch, GrFilter, GrCalendar, GrClock, GrStatusGood, GrStatusWarning, GrStatusCritical, GrUser, GrNotification, GrLogout, GrSend, GrStar, GrMore, GrShare, GrFolderOpen, GrLineChart, GrTrophy, GrEdit, GrImage, GrVideo, GrInbox } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
+import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './documentos.module.css';
 
 interface Document {
-  id: number;
+  id: string;
   name: string;
-  type: 'curriculum' | 'certificate' | 'diploma' | 'portfolio' | 'other';
-  category: 'sent' | 'received';
-  size: string;
-  format: string;
+  type: string;
+  category?: 'sent' | 'received';
+  size?: string;
+  format?: string;
   uploadDate: string;
-  status: 'pending' | 'approved' | 'rejected' | 'under_review';
+  status: 'pending' | 'approved' | 'rejected';
   description?: string;
   feedback?: string;
   downloadUrl?: string;
@@ -37,115 +38,8 @@ export default function CandidatoDocumentos() {
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [documents, setDocuments] = useState<Document[]>([
-    // Documentos Enviados
-    {
-      id: 1,
-      name: 'Currículo_João_Silva_2024.pdf',
-      type: 'curriculum',
-      category: 'sent',
-      size: '2.3 MB',
-      format: 'PDF',
-      uploadDate: '2024-01-15',
-      status: 'approved',
-      description: 'Currículo atualizado com experiências mais recentes',
-      feedback: 'Excelente estrutura e apresentação. Aprovado para processos seletivos.',
-      version: 3,
-      tags: ['currículo', 'principal', 'aprovado']
-    },
-    {
-      id: 2,
-      name: 'Certificado_AWS_Solutions_Architect.pdf',
-      type: 'certificate',
-      category: 'sent',
-      size: '1.8 MB',
-      format: 'PDF',
-      uploadDate: '2024-01-10',
-      status: 'approved',
-      description: 'Certificação AWS Solutions Architect Associate',
-      feedback: 'Certificação válida e relevante para posições em cloud.',
-      tags: ['certificação', 'aws', 'cloud']
-    },
-    {
-      id: 3,
-      name: 'Portfólio_Projetos_2024.zip',
-      type: 'portfolio',
-      category: 'sent',
-      size: '15.7 MB',
-      format: 'ZIP',
-      uploadDate: '2024-01-08',
-      status: 'under_review',
-      description: 'Portfólio com projetos desenvolvidos nos últimos 2 anos',
-      tags: ['portfolio', 'projetos', 'desenvolvimento']
-    },
-    {
-      id: 4,
-      name: 'Diploma_Ciencia_Computacao_USP.pdf',
-      type: 'diploma',
-      category: 'sent',
-      size: '3.1 MB',
-      format: 'PDF',
-      uploadDate: '2024-01-05',
-      status: 'approved',
-      description: 'Diploma de Bacharelado em Ciência da Computação - USP',
-      feedback: 'Documento validado com sucesso.',
-      tags: ['diploma', 'graduação', 'usp']
-    },
-    
-    // Documentos Recebidos
-    {
-      id: 5,
-      name: 'Feedback_Currículo_Análise_Detalhada.pdf',
-      type: 'other',
-      category: 'received',
-      size: '1.2 MB',
-      format: 'PDF',
-      uploadDate: '2024-01-16',
-      status: 'approved',
-      description: 'Análise detalhada do currículo com sugestões de melhoria',
-      downloadUrl: '#',
-      tags: ['feedback', 'análise', 'currículo']
-    },
-    {
-      id: 6,
-      name: 'Guia_Preparação_Entrevistas_Dubai.pdf',
-      type: 'other',
-      category: 'received',
-      size: '2.8 MB',
-      format: 'PDF',
-      uploadDate: '2024-01-12',
-      status: 'approved',
-      description: 'Guia completo para preparação de entrevistas no mercado de Dubai',
-      downloadUrl: '#',
-      tags: ['guia', 'entrevistas', 'dubai', 'preparação']
-    },
-    {
-      id: 7,
-      name: 'Template_Currículo_Internacional.docx',
-      type: 'other',
-      category: 'received',
-      size: '856 KB',
-      format: 'DOCX',
-      uploadDate: '2024-01-09',
-      status: 'approved',
-      description: 'Template otimizado para currículos internacionais',
-      downloadUrl: '#',
-      tags: ['template', 'currículo', 'internacional']
-    },
-    {
-      id: 8,
-              name: 'Checklist_Documentação_Visto_EAU.pdf',
-      type: 'other',
-      category: 'received',
-      size: '1.5 MB',
-      format: 'PDF',
-      uploadDate: '2024-01-07',
-      status: 'approved',
-              description: 'Lista completa de documentos necessários para visto de trabalho nos EAU',
-      downloadUrl: '#',
-              tags: ['checklist', 'visto', 'eau', 'documentação']
-    }
-  ]);
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -154,8 +48,49 @@ export default function CandidatoDocumentos() {
       return;
     }
     setUser(currentUser);
-    setLoading(false);
+    loadDocuments();
   }, [router]);
+
+  const loadDocuments = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      if (!user?.id) return;
+
+      const response = await ApiService.getCandidateDocuments(user.id) as any;
+      
+      if (response.success) {
+        // Converter dados da API para o formato esperado pela interface
+        const apiDocuments = response.data.map((doc: any) => ({
+          id: doc.id || doc._id,
+          name: doc.name,
+          type: doc.type,
+          category: 'sent', // Documentos enviados pelo candidato
+          size: doc.size || '',
+          format: doc.format || '',
+          uploadDate: new Date(doc.uploadedAt).toISOString().split('T')[0],
+          status: doc.status,
+          description: doc.description || '',
+          feedback: doc.feedback || '',
+          downloadUrl: doc.url,
+          version: doc.version || 1,
+          tags: doc.tags || []
+        }));
+
+        setDocuments(apiDocuments);
+      } else {
+        setError('Erro ao carregar documentos');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar documentos:', error);
+      setError('Erro ao carregar documentos');
+      // Fallback para array vazio em caso de erro
+      setDocuments([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     AuthService.logout();
@@ -186,7 +121,7 @@ export default function CandidatoDocumentos() {
     Array.from(files).forEach(file => {
       // Simular upload
       const newDoc: Document = {
-        id: Date.now() + Math.random(),
+        id: Date.now() + Math.random().toString(), // Gerar um ID único para simulação
         name: file.name,
         type: 'other',
         category: 'sent',
@@ -243,29 +178,45 @@ export default function CandidatoDocumentos() {
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved': return '#10B981';
+      case 'pending': return '#F59E0B';
+      case 'rejected': return '#EF4444';
+      default: return '#6B7280';
+    }
+  };
+
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'approved':
-        return 'Aprovado';
-      case 'rejected':
-        return 'Reprovado';
-      case 'under_review':
-        return 'Em Análise';
-      case 'pending':
-        return 'Pendente';
-      default:
-        return 'Desconhecido';
+      case 'approved': return 'Aprovado';
+      case 'pending': return 'Em Análise';
+      case 'rejected': return 'Rejeitado';
+      default: return 'Desconhecido';
+    }
+  };
+
+  const getTypeText = (type: string) => {
+    switch (type) {
+      case 'curriculum': return 'Currículo';
+      case 'certificate': return 'Certificado';
+      case 'portfolio': return 'Portfólio';
+      case 'diploma': return 'Diploma';
+      case 'other': return 'Outro';
+      default: return type;
     }
   };
 
   const filteredDocuments = documents.filter(doc => {
-    const matchesTab = activeTab === 'enviados' ? doc.category === 'sent' : doc.category === 'received';
     const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.description?.toLowerCase().includes(searchTerm.toLowerCase());
+                         doc.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    
     const matchesType = !selectedType || doc.type === selectedType;
     const matchesStatus = !selectedStatus || doc.status === selectedStatus;
+    const matchesCategory = activeTab === 'enviados' ? doc.category === 'sent' : doc.category === 'received';
     
-    return matchesTab && matchesSearch && matchesType && matchesStatus;
+    return matchesSearch && matchesType && matchesStatus && matchesCategory;
   });
 
   const stats = {
@@ -298,7 +249,7 @@ export default function CandidatoDocumentos() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Meus Documentos</h1>
-              <p>Gerencie seu currículo, certificados e demais documentos aprovados pela nossa equipe</p>
+              <p>Gerencie seus documentos e acompanhe o status de análise</p>
             </div>
             
             <div className={styles.headerActions}>
@@ -306,7 +257,7 @@ export default function CandidatoDocumentos() {
                 className="btn btn-primary"
                 onClick={() => setShowUploadModal(true)}
               >
-                <GrUpload size={16} />
+                <GrUpload size={20} />
                 Enviar Documento
               </button>
             </div>
@@ -316,11 +267,11 @@ export default function CandidatoDocumentos() {
           <div className={styles.statsSection}>
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <GrSend size={20} />
+                <GrDocument size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{stats.total}</h3>
-                <p>Documentos Enviados</p>
+                <h3>{documents.length}</h3>
+                <p>Total de Documentos</p>
               </div>
             </div>
 
@@ -329,7 +280,7 @@ export default function CandidatoDocumentos() {
                 <GrStatusGood size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{stats.approved}</h3>
+                <h3>{documents.filter(d => d.status === 'approved').length}</h3>
                 <p>Aprovados</p>
               </div>
             </div>
@@ -339,18 +290,18 @@ export default function CandidatoDocumentos() {
                 <GrClock size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{stats.pending}</h3>
-                <p>Pendentes</p>
+                <h3>{documents.filter(d => d.status === 'pending').length}</h3>
+                <p>Em Análise</p>
               </div>
             </div>
 
             <div className={styles.statCard}>
               <div className={styles.statIcon}>
-                <GrInbox size={20} />
+                <GrStatusWarning size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{stats.received}</h3>
-                <p>Recebidos</p>
+                <h3>{documents.filter(d => d.status === 'rejected').length}</h3>
+                <p>Rejeitados</p>
               </div>
             </div>
           </div>
@@ -362,23 +313,23 @@ export default function CandidatoDocumentos() {
                 className={`${styles.tab} ${activeTab === 'enviados' ? styles.active : ''}`}
                 onClick={() => setActiveTab('enviados')}
               >
-                <GrSend size={18} />
+                <GrUpload size={18} />
                 Documentos Enviados
-                <span className={styles.tabBadge}>{stats.total}</span>
+                <span className={styles.tabBadge}>{documents.filter(d => d.category === 'sent').length}</span>
               </button>
               
               <button 
                 className={`${styles.tab} ${activeTab === 'recebidos' ? styles.active : ''}`}
                 onClick={() => setActiveTab('recebidos')}
               >
-                <GrInbox size={18} />
+                <GrDownload size={18} />
                 Documentos Recebidos
-                <span className={styles.tabBadge}>{stats.received}</span>
+                <span className={styles.tabBadge}>{documents.filter(d => d.category === 'received').length}</span>
               </button>
             </div>
           </div>
 
-          {/* Filters and Search */}
+          {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBar}>
               <div className={styles.searchInput}>
@@ -399,129 +350,36 @@ export default function CandidatoDocumentos() {
                   <option value="">Todos os tipos</option>
                   <option value="curriculum">Currículo</option>
                   <option value="certificate">Certificado</option>
-                  <option value="diploma">Diploma</option>
                   <option value="portfolio">Portfólio</option>
-                  <option value="other">Outros</option>
+                  <option value="diploma">Diploma</option>
+                  <option value="other">Outro</option>
                 </select>
                 
-                {activeTab === 'enviados' && (
-                  <select 
-                    value={selectedStatus}
-                    onChange={(e) => setSelectedStatus(e.target.value)}
-                  >
-                    <option value="">Todos os status</option>
-                    <option value="pending">Pendente</option>
-                    <option value="under_review">Em Análise</option>
-                    <option value="approved">Aprovado</option>
-                    <option value="rejected">Reprovado</option>
-                  </select>
-                )}
+                <select 
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  <option value="">Todos os status</option>
+                  <option value="approved">Aprovado</option>
+                  <option value="pending">Em Análise</option>
+                  <option value="rejected">Rejeitado</option>
+                </select>
               </div>
             </div>
           </div>
 
-          {/* Documents GrList */}
-          <div className={styles.documentsSection}>
-            <div className={styles.documentsHeader}>
-              <h2>
-                {filteredDocuments.length} {filteredDocuments.length === 1 ? 'documento' : 'documentos'}
-              </h2>
-              <div className={styles.viewOptions}>
-                <button className={styles.viewBtn}>
-                  <GrFolderOpen size={16} />
-                  Lista
+          {/* Documents List */}
+          <div className={styles.documentsList}>
+            {error && (
+              <div className={styles.errorMessage}>
+                <p>{error}</p>
+                <button onClick={loadDocuments} className="btn btn-secondary btn-small">
+                  Tentar Novamente
                 </button>
               </div>
-            </div>
+            )}
 
-            <div className={styles.documentsList}>
-              {filteredDocuments.map((doc) => (
-                <div key={doc.id} className={styles.documentCard}>
-                  <div className={styles.docHeader}>
-                    <div className={styles.docIcon}>
-                      {getFileIcon(doc.format)}
-                    </div>
-                    
-                    <div className={styles.docInfo}>
-                      <h3>{doc.name}</h3>
-                      <p className={styles.docDescription}>{doc.description}</p>
-                      
-                      <div className={styles.docMeta}>
-                        <span className={styles.docSize}>{doc.size}</span>
-                        <span className={styles.docFormat}>{doc.format}</span>
-                        <span className={styles.docDate}>
-                          <GrCalendar size={14} />
-                          {new Date(doc.uploadDate).toLocaleDateString('pt-BR')}
-                        </span>
-                        {doc.version && (
-                          <span className={styles.docVersion}>v{doc.version}</span>
-                        )}
-                      </div>
-                      
-                      {doc.tags && (
-                        <div className={styles.docTags}>
-                          {doc.tags.map((tag, index) => (
-                            <span key={index} className={styles.tag}>
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className={styles.docActions}>
-                      {activeTab === 'enviados' && (
-                        <div className={styles.docStatus}>
-                          {getStatusIcon(doc.status)}
-                          <span className={styles.statusText}>
-                            {getStatusText(doc.status)}
-                          </span>
-                        </div>
-                      )}
-                      
-                      <div className={styles.actionButtons}>
-                        <button className={styles.actionBtn} title="Visualizar">
-                          <GrView size={16} />
-                        </button>
-                        
-                        {doc.downloadUrl && (
-                          <button className={styles.actionBtn} title="Download">
-                            <GrDownload size={16} />
-                          </button>
-                        )}
-                        
-                        {activeTab === 'enviados' && (
-                          <>
-                            <button className={styles.actionBtn} title="Editar">
-                              <GrEdit size={16} />
-                            </button>
-                            <button className={styles.actionBtn} title="Excluir">
-                              <GrTrash size={16} />
-                            </button>
-                          </>
-                        )}
-                        
-                        <button className={styles.actionBtn} title="Mais opções">
-                          <GrMore size={16} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {doc.feedback && (
-                    <div className={styles.docFeedback}>
-                      <div className={styles.feedbackHeader}>
-                        <GrTrophy size={16} />
-                        <span>Feedback da Equipe</span>
-                      </div>
-                      <p>{doc.feedback}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {filteredDocuments.length === 0 && (
+            {filteredDocuments.length === 0 && !error && (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>
                   <GrDocument size={48} />
@@ -529,8 +387,8 @@ export default function CandidatoDocumentos() {
                 <h3>Nenhum documento encontrado</h3>
                 <p>
                   {activeTab === 'enviados' 
-                    ? 'Você ainda não enviou nenhum documento. Clique em "Enviar Documento" para começar.'
-                    : 'Você ainda não recebeu nenhum documento da nossa equipe.'
+                    ? 'Você ainda não enviou nenhum documento. Comece enviando seu currículo ou certificados.'
+                    : 'Você ainda não recebeu nenhum documento do admin.'
                   }
                 </p>
                 {activeTab === 'enviados' && (
@@ -544,6 +402,91 @@ export default function CandidatoDocumentos() {
                 )}
               </div>
             )}
+
+            {filteredDocuments.map((document) => (
+              <div key={document.id} className={styles.documentCard}>
+                <div className={styles.documentHeader}>
+                  <div className={styles.documentInfo}>
+                    <div className={styles.documentTitle}>
+                      <h3>{document.name}</h3>
+                      <div className={styles.documentMeta}>
+                        <div className={styles.metaItem}>
+                          <GrDocument size={14} />
+                          <span>{document.type}</span>
+                        </div>
+                        <div className={styles.metaItem}>
+                          <GrClock size={14} />
+                          <span>{document.uploadDate}</span>
+                        </div>
+                        {document.size && (
+                          <div className={styles.metaItem}>
+                            <span>{document.size}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.documentStatus}>
+                    <div 
+                      className={styles.statusBadge}
+                      style={{ backgroundColor: getStatusColor(document.status) }}
+                    >
+                      {getStatusText(document.status)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.documentContent}>
+                  {document.description && (
+                    <p>{document.description}</p>
+                  )}
+                  
+                  {document.tags && document.tags.length > 0 && (
+                    <div className={styles.documentTags}>
+                      {document.tags.map((tag, index) => (
+                        <span key={index} className={styles.tag}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {document.feedback && (
+                    <div className={styles.feedback}>
+                      <h4>Feedback do Admin:</h4>
+                      <p>&ldquo;{document.feedback}&rdquo;</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.documentActions}>
+                  {document.downloadUrl && (
+                    <a 
+                      href={document.downloadUrl}
+                      className="btn btn-secondary btn-small"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <GrDownload size={16} />
+                      Download
+                    </a>
+                  )}
+                  
+                  <button className="btn btn-primary btn-small">
+                    <GrView size={16} />
+                    Visualizar
+                  </button>
+                  
+                  {document.category === 'sent' && (
+                    <button className="btn btn-danger btn-small">
+                      <GrTrash size={16} />
+                      Remover
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </main>

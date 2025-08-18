@@ -436,4 +436,30 @@ export class ApiService {
       body: JSON.stringify(data),
     });
   }
+
+  // === CANDIDATO ESPECÍFICO ===
+  static async getCandidateDocuments(candidateId: string) {
+    return this.request(`/candidates/${candidateId}/documents`, {}, true);
+  }
+
+  static async addCandidateDocument(candidateId: string, documentData: any) {
+    // Limpar cache após adição
+    this.clearCache();
+    return this.request(`/candidates/${candidateId}/documents`, {
+      method: 'POST',
+      body: JSON.stringify(documentData),
+    });
+  }
+
+  static async getCandidateInterviews(candidateId: string) {
+    return this.request(`/candidates/${candidateId}/interviews`, {}, true);
+  }
+
+  static async getCandidateApplications(candidateId: string) {
+    return this.request(`/candidates/${candidateId}/applications`, {}, true);
+  }
+
+  static async getCandidateDashboard(candidateId: string) {
+    return this.request(`/candidates/${candidateId}/dashboard`, {}, true);
+  }
 } 
