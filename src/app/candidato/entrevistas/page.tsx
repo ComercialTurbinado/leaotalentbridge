@@ -8,6 +8,7 @@ import { GrCalendar, GrClock, GrLocation, GrVideo, GrPhone, GrUser, GrNotificati
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
 import styles from './entrevistas.module.css';
+import { ApiService } from '@/lib/api';
 
 interface Interview {
   id: number;
@@ -41,101 +42,9 @@ export default function EntrevistasPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedType, setSelectedType] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const [interviews, setInterviews] = useState<Interview[]>([
-    {
-      id: 1,
-      title: 'Entrevista Técnica - Desenvolvedor Full Stack',
-      position: 'Desenvolvedor Full Stack Sênior',
-      type: 'online',
-      date: '2024-12-20',
-      time: '14:00',
-      duration: 60,
-      status: 'confirmada',
-      meetingLink: 'https://meet.google.com/abc-defg-hij',
-      interviewer: 'Sarah Johnson',
-      interviewerRole: 'Tech Lead',
-      description: 'Entrevista técnica focada em React, Node.js e arquitetura de sistemas. Será uma conversa sobre sua experiência e alguns desafios técnicos.',
-      requirements: [
-        'Conhecimento em React e Node.js',
-        'Experiência com APIs REST',
-        'Conceitos de arquitetura de software',
-        'Experiência com bancos de dados'
-      ],
-      companyCode: 'TECH-001',
-      matchScore: 92,
-      preparationMaterials: [
-        'Guia de Preparação Técnica',
-        'Exercícios de Coding',
-        'Perguntas Comportamentais'
-      ]
-    },
-    {
-      id: 2,
-      title: 'Entrevista Cultural - Product Manager',
-      position: 'Product Manager',
-      type: 'online',
-      date: '2024-12-22',
-      time: '10:00',
-      duration: 45,
-      status: 'agendada',
-      meetingLink: 'https://zoom.us/j/123456789',
-      interviewer: 'Ahmed Al-Rashid',
-      interviewerRole: 'Head of Product',
-      description: 'Conversa sobre fit cultural, experiência em gestão de produtos e visão estratégica. Foco em adaptação ao mercado do Oriente Médio.',
-      requirements: [
-        'Experiência em gestão de produtos',
-        'Conhecimento de metodologias ágeis',
-        'Visão estratégica de negócios',
-        'Adaptabilidade cultural'
-      ],
-      companyCode: 'INNOV-002',
-      matchScore: 88,
-      preparationMaterials: [
-        'Guia Cultural - Emirados Árabes',
-        'Metodologias de Product Management',
-        'Casos de Estudo'
-      ]
-    },
-    {
-      id: 3,
-      title: 'Entrevista Final - UX Designer',
-      position: 'UX/UI Designer Sênior',
-      type: 'presencial',
-      date: '2024-12-18',
-      time: '16:00',
-      duration: 90,
-      status: 'concluida',
-              location: 'Dubai, EAU',
-      interviewer: 'Maria Santos',
-      interviewerRole: 'Design Director',
-              description: 'Apresentação de portfólio e discussão sobre projetos. Entrevista final com a equipe de design.',
-              feedback: 'Excelente apresentação do portfólio. Demonstrou forte conhecimento em UX research e design systems. Aprovado para próxima fase.',
-      rating: 5,
-      nextSteps: 'Aguardando proposta comercial. Previsão: 3-5 dias úteis.',
-      companyCode: 'DESIGN-003',
-      matchScore: 95
-    },
-    {
-      id: 4,
-      title: 'Entrevista Técnica - DevOps Engineer',
-      position: 'DevOps Engineer',
-      type: 'online',
-      date: '2024-12-15',
-      time: '11:00',
-      duration: 75,
-      status: 'concluida',
-      meetingLink: 'https://teams.microsoft.com/l/meetup-join/...',
-      interviewer: 'Carlos Rodriguez',
-      interviewerRole: 'DevOps Manager',
-      description: 'Avaliação técnica em AWS, Docker, Kubernetes e CI/CD. Discussão sobre infraestrutura como código.',
-      feedback: 'Bom conhecimento técnico, mas precisa aprofundar em Kubernetes. Recomendado para segunda entrevista.',
-      rating: 4,
-      nextSteps: 'Segunda entrevista agendada para próxima semana.',
-      companyCode: 'CLOUD-004',
-      matchScore: 85
-    }
-  ]);
+  const [interviews, setInterviews] = useState<Interview[]>([]);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -144,8 +53,57 @@ export default function EntrevistasPage() {
       return;
     }
     setUser(currentUser);
-    setLoading(false);
+    loadInterviews();
   }, [router]);
+
+  const loadInterviews = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      if (!user?.id) return;
+
+      const response = await ApiService.getCandidateInterviews(user.id) as any;
+      
+      if (response.success) {
+        // Converter dados da API para o formato esperado pela interface
+        const apiInterviews = response.data.map((interview: any) => ({
+          id: interview.id || interview._id,
+          title: interview.title,
+          position: interview.position,
+          type: interview.type,
+          date: interview.date,
+          time: interview.time,
+          duration: interview.duration,
+          status: interview.status,
+          location: interview.location,
+          meetingLink: interview.meetingLink,
+          phone: interview.phone,
+          interviewer: interview.interviewer,
+          interviewerRole: interview.interviewerRole,
+          description: interview.description,
+          requirements: interview.requirements || [],
+          feedback: interview.feedback,
+          rating: interview.rating,
+          nextSteps: interview.nextSteps,
+          companyCode: interview.companyCode,
+          matchScore: interview.matchScore,
+          preparationMaterials: interview.preparationMaterials || []
+        }));
+
+        setInterviews(apiInterviews);
+      } else {
+        setError('Erro ao carregar entrevistas');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar entrevistas:', error);
+      setError('Erro ao carregar entrevistas');
+      // Fallback para array vazio em caso de erro
+      setInterviews([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     AuthService.logout();

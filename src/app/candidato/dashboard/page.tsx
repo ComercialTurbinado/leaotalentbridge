@@ -97,6 +97,7 @@ function DashboardContent() {
   const searchParams = useSearchParams();
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     totalApplications: 0,
@@ -117,79 +118,111 @@ function DashboardContent() {
     }
     setUser(currentUser);
     loadDashboardData();
-
-    // Verificar se veio do cadastro
-    if (searchParams?.get('cadastro') === 'sucesso') {
-      setShowSuccessMessage(true);
-      setTimeout(() => setShowSuccessMessage(false), 5000);
-    }
-  }, [router, searchParams]);
+  }, [router]);
 
   const loadDashboardData = async () => {
     try {
-      // Carregar candidaturas do usuário
-      const applicationsResponse = await ApiService.getApplications({
-        limit: 50,
-        page: 1
-      }) as any;
+      setLoading(true);
+      setError(null);
       
-      const applications = applicationsResponse.data || [];
-      setRecentApplications(applications.slice(0, 5)); // Últimas 5 candidaturas
+      if (!user?.id) return;
 
-      // Carregar vagas recomendadas (todas as vagas ativas por enquanto)
+      // Carregar dados do candidato
+      const [applicationsResponse, documentsResponse] = await Promise.all([
+        ApiService.getCandidateApplications(user.id),
+        ApiService.getCandidateDocuments(user.id)
+      ]) as any[];
+      
+      // Calcular estatísticas baseadas nos dados reais
+      const applications = applicationsResponse.success ? applicationsResponse.data : [];
+      const documents = documentsResponse.success ? documentsResponse.data : [];
+      
+      const stats = {
+        profileCompletion: calculateProfileCompletion(user),
+        documentsCompletion: calculateDocumentsCompletion(documents),
+        interviews: 0, // TODO: Implementar quando tivermos modelo de entrevistas
+        processes: applications.filter((app: any) => app.status === 'applied' || app.status === 'reviewing').length
+      };
+
+      // Carregar oportunidades recentes (vagas recomendadas)
       const jobsResponse = await ApiService.getJobs({ 
-        status: 'active',
-        limit: 10,
-        page: 1 
+        limit: 5,
+        page: 1,
+        status: 'ativa'
       }) as any;
+
+      const recentOpportunities = jobsResponse.success ? jobsResponse.data.map((job: any) => ({
+        id: job._id,
+        title: job.title,
+        company: job.companyId?.name || 'Empresa não informada',
+        location: `${job.location?.city || 'Localização não informada'}, ${job.location?.state || ''}`,
+        salary: `${job.salary?.min || 0} - ${job.salary?.max || 0} ${job.salary?.currency || 'AED'}`,
+        matchScore: Math.floor(Math.random() * 30) + 70, // Score simulado por enquanto
+        postedAt: new Date(job.createdAt).toLocaleDateString('pt-BR'),
+        featured: Math.random() > 0.7
+      })) : [];
+
+      // Atividades recentes baseadas em candidaturas e documentos
+      const recentActivity = [];
       
-      const jobs = jobsResponse.data || [];
-      // Filtrar vagas que o usuário ainda não se candidatou
-      const appliedJobIds = applications.map((app: Application) => app.jobId._id);
-      const availableJobs = jobs.filter((job: any) => !appliedJobIds.includes(job._id));
-      setRecommendedJobs(availableJobs.slice(0, 3));
-
-      // Calcular estatísticas
-      const totalApplications = applications.length;
-      const activeApplications = applications.filter((app: Application) => 
-        ['applied', 'screening', 'interview_scheduled', 'interviewing'].includes(app.status)
-      ).length;
-      const interviewsScheduled = applications.filter((app: Application) => 
-        app.status === 'interview_scheduled' || app.status === 'interviewing'
-      ).length;
-      const jobOffers = applications.filter((app: Application) => 
-        app.status === 'offer_made'
-      ).length;
-
-      setStats({
-        totalApplications,
-        activeApplications,
-        interviewsScheduled,
-        jobOffers,
-        profileViews: Math.floor(Math.random() * 50) + 10 // Mock para views do perfil
-      });
-
-      // Gerar atividades recentes
-      const activities: RecentActivity[] = [];
-      
-      applications.slice(0, 5).forEach((app: Application) => {
-        activities.push({
+      // Adicionar candidaturas recentes
+      applications.slice(0, 3).forEach((app: any) => {
+        recentActivity.push({
           id: app._id,
-          type: 'application',
-          title: 'Candidatura enviada',
-          description: `${app.jobId.title} na ${app.jobId.companyId.name}`,
-          date: new Date(app.appliedAt).toLocaleDateString('pt-BR'),
+          action: 'Candidatura enviada',
+          target: app.jobId?.title || 'Vaga',
+          company: app.jobId?.companyId?.name || '',
+          timestamp: new Date(app.appliedAt).toLocaleDateString('pt-BR'),
           status: app.status
         });
       });
 
-      setRecentActivities(activities);
+      // Adicionar documentos recentes
+      documents.slice(0, 2).forEach((doc: any) => {
+        recentActivity.push({
+          id: doc.id || doc._id,
+          action: 'Documento enviado',
+          target: doc.name,
+          company: '',
+          timestamp: new Date(doc.uploadedAt).toLocaleDateString('pt-BR'),
+          status: doc.status
+        });
+      });
+
+      // Ordenar por data mais recente
+      recentActivity.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+      setDashboardData({
+        stats,
+        recentOpportunities,
+        upcomingInterviews: [], // TODO: Implementar quando tivermos modelo de entrevistas
+        recentActivity: recentActivity.slice(0, 5)
+      });
 
     } catch (error) {
       console.error('Erro ao carregar dados do dashboard:', error);
+      setError('Erro ao carregar dados do dashboard');
     } finally {
       setLoading(false);
     }
+  };
+
+  const calculateProfileCompletion = (user: UserType) => {
+    if (!user.profile) return 0;
+    
+    const requiredFields = ['phone', 'company', 'position', 'linkedin', 'experience'];
+    const completedFields = requiredFields.filter(field => user.profile[field as keyof typeof user.profile]);
+    
+    return Math.round((completedFields.length / requiredFields.length) * 100);
+  };
+
+  const calculateDocumentsCompletion = (documents: any[]) => {
+    const requiredDocuments = ['curriculum', 'certificate'];
+    const hasRequiredDocs = requiredDocuments.some(type => 
+      documents.some(doc => doc.type === type && doc.status === 'approved')
+    );
+    
+    return hasRequiredDocs ? 100 : 0;
   };
 
   const handleLogout = () => {

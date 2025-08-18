@@ -71,114 +71,57 @@ export default function CandidaturasPage() {
     }
     setUser(currentUser);
     loadApplications();
-  }, [router]);
+  }, [router, user?.id]); // Adicionado user?.id para garantir que a função seja chamada quando o usuário for carregado
 
   const loadApplications = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const currentUser = AuthService.getUser();
-      if (!currentUser) return;
+      if (!user?.id) return;
 
-      const response = await ApiService.getApplications({
-        candidateId: currentUser.id,
-        limit: 50,
-        page: 1
-      }) as any;
+      const response = await ApiService.getCandidateApplications(user.id) as any;
       
-      // Simulando dados de candidaturas
-      const mockApplications: Application[] = [
-        {
-          _id: '1',
+      if (response.success) {
+        // Converter dados da API para o formato esperado pela interface
+        const apiApplications = response.data.map((app: any) => ({
+          _id: app._id,
           jobId: {
-            _id: '6862df4283eeeb3fcefe8586',
-            title: 'Desenvolvedor Full Stack',
+            _id: app.jobId._id,
+            title: app.jobId.title,
             companyId: {
-              name: 'Tech Solutions EAU',
-              logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=80&h=80&fit=crop&crop=face'
+              name: app.jobId.companyId?.name || 'Empresa não informada',
+              logo: app.jobId.companyId?.logo || 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=80&h=80&fit=crop&crop=face'
             },
             location: {
-              city: 'Dubai',
-              state: 'Dubai',
-              isRemote: false
+              city: app.jobId.location?.city || 'Localização não informada',
+              state: app.jobId.location?.state || '',
+              isRemote: app.jobId.location?.isRemote || false
             },
             salary: {
-              min: 8000,
-              max: 12000,
-              currency: 'AED'
+              min: app.jobId.salary?.min || 0,
+              max: app.jobId.salary?.max || 0,
+              currency: app.jobId.salary?.currency || 'AED'
             },
-            workType: 'full-time',
-            status: 'ativa'
+            workType: app.jobId.workType || 'full-time',
+            status: app.jobId.status || 'ativa'
           },
-          status: 'applied',
-          appliedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          coverLetter: 'Candidatura enviada através da plataforma Leão Talent Bridge.',
-          source: 'platform'
-        },
-        {
-          _id: '2',
-          jobId: {
-            _id: '6862df4283eeeb3fcefe8587',
-            title: 'Engenheiro de Software',
-            companyId: {
-              name: 'Emirates Digital',
-              logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=80&h=80&fit=crop&crop=face'
-            },
-            location: {
-              city: 'Abu Dhabi',
-              state: 'Abu Dhabi',
-              isRemote: true
-            },
-            salary: {
-              min: 10000,
-              max: 15000,
-              currency: 'AED'
-            },
-            workType: 'full-time',
-            status: 'ativa'
-          },
-          status: 'reviewing',
-          appliedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-          coverLetter: 'Candidatura enviada através da plataforma Leão Talent Bridge.',
-          source: 'platform'
-        },
-        {
-          _id: '3',
-          jobId: {
-            _id: '6862df4283eeeb3fcefe8588',
-            title: 'Analista de Dados',
-            companyId: {
-              name: 'Data Analytics EAU',
-              logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=80&h=80&fit=crop&crop=face'
-            },
-            location: {
-              city: 'Sharjah',
-              state: 'Sharjah',
-              isRemote: false
-            },
-            salary: {
-              min: 7000,
-              max: 10000,
-              currency: 'AED'
-            },
-            workType: 'full-time',
-            status: 'ativa'
-          },
-          status: 'rejected',
-          appliedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-          updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-          coverLetter: 'Candidatura enviada através da plataforma Leão Talent Bridge.',
-          source: 'platform'
-        }
-      ];
-      
-      setApplications(mockApplications);
+          status: app.status,
+          appliedAt: app.appliedAt,
+          updatedAt: app.updatedAt,
+          coverLetter: app.coverLetter || 'Candidatura enviada através da plataforma Leão Talent Bridge.',
+          source: app.source || 'platform'
+        }));
+
+        setApplications(apiApplications);
+      } else {
+        setError('Erro ao carregar candidaturas');
+      }
     } catch (error) {
       console.error('Erro ao carregar candidaturas:', error);
       setError('Erro ao carregar candidaturas');
+      // Fallback para array vazio em caso de erro
+      setApplications([]);
     } finally {
       setLoading(false);
     }
