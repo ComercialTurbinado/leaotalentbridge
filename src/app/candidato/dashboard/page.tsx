@@ -209,7 +209,14 @@ function DashboardContent() {
       
       setRecentApplications(applications.slice(0, 5));
       setRecommendedJobs(recentOpportunities);
-      setRecentActivities(recentActivity.slice(0, 5));
+      setRecentActivities(recentActivity.slice(0, 5).map(activity => ({
+        id: activity.id,
+        type: 'application' as const,
+        title: activity.action,
+        description: `${activity.action} para ${activity.target}`,
+        date: activity.timestamp,
+        status: activity.status
+      })));
 
     } catch (error) {
       console.error('Erro ao carregar dados do dashboard:', error);
