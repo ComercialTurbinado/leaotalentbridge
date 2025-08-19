@@ -1,6 +1,6 @@
 .aprovacaoPage {
   min-height: 100vh;
-  background: var(--uae-gradient-background);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .mainContent {
@@ -12,18 +12,14 @@
 }
 
 .titleSection h1 {
-  color: var(--uae-black);
+  color: #1a365d;
   margin-bottom: 0.5rem;
   font-size: 2.5rem;
   font-weight: 700;
-  background: var(--uae-gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .titleSection p {
-  color: var(--uae-black-light);
+  color: #4a5568;
   font-size: 1.1rem;
 }
 
@@ -48,12 +44,12 @@
 .statIcon {
   width: 48px;
   height: 48px;
-  background: var(--uae-gradient-primary);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--uae-white);
+  color: white;
 }
 
 .statContent h3 {
@@ -125,12 +121,12 @@
   min-width: 150px;
 }
 
-.usersList {
+.documentsList {
   display: grid;
   gap: 1rem;
 }
 
-.userCard {
+.documentCard {
   background: white;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
@@ -138,12 +134,12 @@
   transition: all 0.2s;
 }
 
-.userCard:hover {
+.documentCard:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.userHeader {
+.documentHeader {
   padding: 1.5rem;
   display: flex;
   align-items: center;
@@ -152,14 +148,14 @@
   gap: 1rem;
 }
 
-.userInfo {
+.documentInfo {
   display: flex;
   align-items: center;
   gap: 1rem;
   flex: 1;
 }
 
-.userIcon {
+.documentIcon {
   width: 48px;
   height: 48px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -170,35 +166,26 @@
   color: white;
 }
 
-.userDetails h3 {
+.documentDetails h3 {
   margin: 0;
   color: #1a365d;
   font-size: 1.2rem;
   font-weight: 600;
 }
 
-.userDetails p {
+.documentDetails p {
   margin: 0.25rem 0;
   color: #4a5568;
 }
 
-.userMeta {
+.documentMeta {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-top: 0.5rem;
 }
 
-.userType {
-  background: #e6fffa;
-  color: #0d9488;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.userDate {
+.metaItem {
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -206,27 +193,68 @@
   font-size: 0.875rem;
 }
 
-.userActions {
+.documentStatus {
   display: flex;
-  gap: 0.5rem;
   align-items: center;
-  flex-wrap: wrap;
 }
 
-.userProfile {
-  padding: 0 1.5rem 1.5rem;
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.documentFeedback {
+  padding: 0 1.5rem 1rem;
+  margin-top: -0.5rem;
+  border-top: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.documentFeedback h4 {
+  margin: 1rem 0 0.5rem;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.documentFeedback p {
+  margin: 0;
+  color: #4b5563;
+  font-style: italic;
+}
+
+.documentFeedback small {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.documentActions {
+  padding: 1rem 1.5rem;
   border-top: 1px solid #f1f5f9;
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.profileItem {
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
-  color: #4a5568;
-  font-size: 0.875rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .emptyState {
@@ -307,11 +335,11 @@
   padding: 1.5rem;
 }
 
-.userDetailSection {
+.documentDetailSection {
   margin-bottom: 2rem;
 }
 
-.userDetailSection h3 {
+.documentDetailSection h3 {
   color: #1a365d;
   margin-bottom: 1rem;
   font-size: 1.1rem;
@@ -340,57 +368,14 @@
   color: #4a5568;
 }
 
-.documentsList {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.documentItem {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background: #f8fafc;
-  border-radius: 8px;
-}
-
-.documentItem .status {
-  margin-left: auto;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.status.pending {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.status.approved {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.status.rejected {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.rejectionSection {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.rejectionSection h3 {
-  color: #dc2626;
+.feedbackSection h3 {
+  color: #1a365d;
   margin-bottom: 1rem;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
-.rejectionInput {
+.feedbackInput {
   width: 100%;
   padding: 0.75rem;
   border: 2px solid #e5e7eb;
@@ -400,9 +385,9 @@
   min-height: 100px;
 }
 
-.rejectionInput:focus {
+.feedbackInput:focus {
   outline: none;
-  border-color: #dc2626;
+  border-color: #667eea;
 }
 
 .modalActions {
@@ -411,6 +396,7 @@
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .loadingContainer {
@@ -457,15 +443,26 @@
   border: 1px solid #ef4444;
 }
 
+.statusApproved {
+  color: #10b981;
+}
+
+.statusRejected {
+  color: #ef4444;
+}
+
+.statusPending {
+  color: #f59e0b;
+}
+
 @media (max-width: 768px) {
-  .userHeader {
+  .documentHeader {
     flex-direction: column;
     align-items: flex-start;
   }
   
-  .userActions {
-    width: 100%;
-    justify-content: flex-start;
+  .documentActions {
+    flex-direction: column;
   }
   
   .searchBar {

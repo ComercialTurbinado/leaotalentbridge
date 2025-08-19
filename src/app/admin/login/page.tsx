@@ -55,7 +55,7 @@ export default function AdminLogin() {
         {/* Logo */}
         <div className={styles.logo}>
           <Image 
-            src="/images/leao-talent-briddge-branco.svg" 
+            src="/images/UAECareers-ow.svg" 
             alt="Leão Talent Bridge" 
             width={32} 
             height={32}

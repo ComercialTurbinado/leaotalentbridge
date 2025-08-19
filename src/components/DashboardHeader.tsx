@@ -77,7 +77,7 @@ export default function DashboardHeader({ user, userType }: DashboardHeaderProps
         <div className={styles.logo}>
           <Link href="/" className={styles.logoLink}>
             <Image 
-              src="/images/leao-talent-briddge-preto.svg" 
+              src="/images/UAECareers-orig.svg" 
               alt="Leão Talent Bridge" 
               width={200} 
               height={140}

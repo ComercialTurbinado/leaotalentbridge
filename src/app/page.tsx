@@ -475,12 +475,12 @@ export default function HomePage() {
           <div className={styles.footerContent}>
             <div className={styles.footerLogo}>
               <Image 
-                src="/images/leao-talent-briddge-branco.svg" 
+                src="/images/UAECareers-white-icon.svg" 
                 alt="Leão Talent Bridge" 
                 width={24} 
                 height={24}
               />
-              <span>Leão <span className="text-gold">Careers</span></span>
+              <span>UAE <span className="text-gold">Careers</span></span>
             </div>
             
             <div className={styles.footerLinks}>
@@ -491,7 +491,7 @@ export default function HomePage() {
             </div>
             
             <div className={styles.footerCopyright}>
-              <p>&copy; 2024 Leão Careers. Todos os direitos reservados.</p>
+              <p>&copy; 2024 UAE Careers. Todos os direitos reservados.</p>
             </div>
           </div>
         </div>

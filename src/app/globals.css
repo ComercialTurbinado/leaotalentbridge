@@ -1,3 +1,6 @@
+/* Import das cores da bandeira dos EAU */
+@import '../styles/uae-colors.css';
+
 /* Reset e Estilo Global */
 * {
   box-sizing: border-box;
@@ -186,9 +189,9 @@ p {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #D4AF37 0%, #F4E7A1 50%, #D4AF37 100%);
-  color: #000000 !important;
-  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+  background: var(--uae-gradient-primary);
+  color: var(--uae-white) !important;
+  box-shadow: 0 4px 16px var(--uae-red-200);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -196,16 +199,16 @@ p {
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #F4E7A1 0%, #D4AF37 50%, #F4E7A1 100%);
+  background: var(--uae-gradient-danger);
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
-  color: #000000 !important;
+  box-shadow: 0 8px 24px var(--uae-red-300);
+  color: var(--uae-white) !important;
 }
 
 .btn-secondary {
   background: transparent;
-  color: var(--primary-gold) !important;
-  border: 2px solid var(--primary-gold);
+  color: var(--uae-green) !important;
+  border: 2px solid var(--uae-green);
   font-weight: 700;
   position: relative;
   z-index: 1;
@@ -219,15 +222,15 @@ p {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #D4AF37, #F4E7A1);
+  background: var(--uae-gradient-success);
   transition: all 0.3s ease;
   z-index: -1;
 }
 
 .btn-secondary:hover {
-  color: #000000 !important;
+  color: var(--uae-white) !important;
   transform: translateY(-3px);
-  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 16px var(--uae-green-200);
 }
 
 .btn-secondary:hover::after {
@@ -258,6 +261,45 @@ p {
   padding: var(--spacing-lg) var(--spacing-xl);
   font-size: 1.125rem;
   font-weight: 700;
+}
+
+/* Botões específicos com cores UAE */
+.btn-success {
+  background: var(--uae-gradient-success);
+  color: var(--uae-white) !important;
+  border: none;
+  box-shadow: 0 4px 12px var(--uae-green-200);
+}
+
+.btn-success:hover {
+  background: var(--uae-green-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--uae-green-300);
+}
+
+.btn-danger {
+  background: var(--uae-gradient-danger);
+  color: var(--uae-white) !important;
+  border: none;
+  box-shadow: 0 4px 12px var(--uae-red-200);
+}
+
+.btn-danger:hover {
+  background: var(--uae-red-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--uae-red-300);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--uae-black) !important;
+  border: 2px solid var(--uae-black-light);
+}
+
+.btn-outline:hover {
+  background: var(--uae-black-light);
+  color: var(--uae-white) !important;
+  transform: translateY(-2px);
 }
 
 /* Form Styles - INPUTS SEMPRE BRANCOS */

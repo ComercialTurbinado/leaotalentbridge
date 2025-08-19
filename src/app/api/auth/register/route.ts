@@ -43,16 +43,28 @@ export async function POST(request: NextRequest) {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Criar novo usuário
+    // Criar novo usuário com status pending e sem permissões iniciais
     const newUser = new User({
       email: email.toLowerCase(),
       password: hashedPassword,
       name: name.trim(),
       type,
+      status: 'pending', // Usuário fica pendente até aprovação do admin
       profile: {
         completed: false,
         ...profile
-      }
+      },
+      permissions: {
+        canAccessJobs: false,
+        canApplyToJobs: false,
+        canViewCourses: true, // Cursos são públicos
+        canAccessSimulations: false,
+        canContactCompanies: false,
+        releasedJobs: []
+      },
+      profileVerified: false,
+      documentsVerified: false,
+      ...(type === 'empresa' && { companyVerified: false })
     });
 
     await newUser.save();
@@ -74,14 +86,20 @@ export async function POST(request: NextRequest) {
       email: newUser.email,
       name: newUser.name,
       type: newUser.type,
-      profile: newUser.profile
+      status: newUser.status,
+      permissions: newUser.permissions,
+      profile: newUser.profile,
+      profileVerified: newUser.profileVerified,
+      documentsVerified: newUser.documentsVerified,
+      ...(newUser.type === 'empresa' && { companyVerified: newUser.companyVerified })
     };
 
     return NextResponse.json({
       success: true,
       user: userData,
       token,
-      message: 'Cadastro realizado com sucesso'
+      message: 'Cadastro realizado com sucesso! Sua conta está pendente de aprovação pelo administrador. Você será notificado quando for aprovado.',
+      statusCode: 'REGISTRATION_SUCCESS_PENDING'
     }, { status: 201 });
 
   } catch (error) {

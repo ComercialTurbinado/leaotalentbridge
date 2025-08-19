@@ -21,8 +21,8 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <title>Leão Careers - Conectando Talentos a Oportunidades nos Emirados Árabes</title>
-        <meta name="description" content="A Leão Careers conecta profissionais brasileiros às melhores oportunidades de trabalho nos Emirados Árabes Unidos." />
+        <title>UAE Careers - Conectando Talentos a Oportunidades nos Emirados Árabes</title>
+        <meta name="description" content="A UAE Careers conecta profissionais brasileiros às melhores oportunidades de trabalho nos Emirados Árabes Unidos." />
       </head>
       <body suppressHydrationWarning className={`${inter.className} ${montserrat.variable}`}>
         {children}

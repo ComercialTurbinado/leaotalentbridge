@@ -70,7 +70,12 @@ export async function POST(request: NextRequest) {
       email: user.email,
       name: user.name,
       type: user.type,
-      profile: user.profile
+      status: user.status,
+      permissions: user.permissions,
+      profile: user.profile,
+      profileVerified: user.profileVerified,
+      documentsVerified: user.documentsVerified,
+      ...(user.type === 'empresa' && { companyVerified: user.companyVerified })
     };
 
     return NextResponse.json({
