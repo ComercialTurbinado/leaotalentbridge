@@ -397,7 +397,7 @@ export default function AdminAprovacaoDocumentosPage() {
                   {document.feedback && (
                     <div className={styles.documentFeedback}>
                       <h4>Feedback:</h4>
-                      <p>"{document.feedback}"</p>
+                      <p>&ldquo;{document.feedback}&rdquo;</p>
                       <small>
                         Por {document.reviewedBy} em {new Date(document.reviewedAt!).toLocaleDateString('pt-BR')}
                       </small>

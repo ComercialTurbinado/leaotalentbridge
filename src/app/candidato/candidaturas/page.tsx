@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
@@ -63,17 +63,7 @@ export default function CandidaturasPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('date');
 
-  useEffect(() => {
-    const currentUser = AuthService.getUser();
-    if (!currentUser || currentUser.type !== 'candidato') {
-      router.push('/candidato/login');
-      return;
-    }
-    setUser(currentUser);
-    loadApplications();
-  }, [router, user?.id]); // Adicionado user?.id para garantir que a função seja chamada quando o usuário for carregado
-
-  const loadApplications = async () => {
+  const loadApplications = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -125,7 +115,17 @@ export default function CandidaturasPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    const currentUser = AuthService.getUser();
+    if (!currentUser || currentUser.type !== 'candidato') {
+      router.push('/candidato/login');
+      return;
+    }
+    setUser(currentUser);
+    loadApplications();
+  }, [router, loadApplications]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {

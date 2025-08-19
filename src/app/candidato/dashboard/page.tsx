@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -110,17 +110,7 @@ function DashboardContent() {
   const [recommendedJobs, setRecommendedJobs] = useState<RecommendedJob[]>([]);
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
 
-  useEffect(() => {
-    const currentUser = AuthService.getUser();
-    if (!currentUser || currentUser.type !== 'candidato') {
-      router.push('/candidato/login');
-      return;
-    }
-    setUser(currentUser);
-    loadDashboardData();
-  }, [router]);
-
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -224,7 +214,17 @@ function DashboardContent() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    const currentUser = AuthService.getUser();
+    if (!currentUser || currentUser.type !== 'candidato') {
+      router.push('/candidato/login');
+      return;
+    }
+    setUser(currentUser);
+    loadDashboardData();
+  }, [router, loadDashboardData]);
 
   const calculateProfileCompletion = (user: UserType) => {
     if (!user.profile) return 0;
