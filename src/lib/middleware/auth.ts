@@ -38,7 +38,25 @@ export async function verifyAuth(request: NextRequest): Promise<AuthenticatedUse
       return null;
     }
 
-    return user as AuthenticatedUser;
+    // Converter documento MongoDB para AuthenticatedUser
+    const userData = user as any;
+    return {
+      _id: userData._id.toString(),
+      email: userData.email || '',
+      name: userData.name || '',
+      type: userData.type || 'candidato',
+      status: userData.status || 'pending',
+      permissions: userData.permissions || {
+        canAccessJobs: false,
+        canApplyToJobs: false,
+        canViewCourses: true,
+        canAccessSimulations: true,
+        canContactCompanies: false,
+      },
+      profileVerified: userData.profileVerified || false,
+      documentsVerified: userData.documentsVerified || false,
+      companyVerified: userData.companyVerified || false,
+    } as AuthenticatedUser;
   } catch (error) {
     console.error('Erro na verificação de auth:', error);
     return null;
