@@ -224,7 +224,7 @@ function DashboardContent() {
     }
     setUser(currentUser);
     loadDashboardData();
-  }, [router, loadDashboardData]);
+  }, [router]); // Removido loadDashboardData para evitar loop infinito
 
   const calculateProfileCompletion = (user: UserType) => {
     if (!user.profile) return 0;

@@ -125,7 +125,7 @@ export default function CandidaturasPage() {
     }
     setUser(currentUser);
     loadApplications();
-  }, [router, loadApplications]);
+  }, [router]); // Removido loadApplications para evitar loop infinito
 
   const getStatusIcon = (status: string) => {
     switch (status) {

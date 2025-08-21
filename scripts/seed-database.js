@@ -73,6 +73,18 @@ const initialUsers = [
       phone: '+55 11 77777-7777',
       position: 'Administrador'
     }
+  },
+  {
+    email: 'cjdamasco@gmail.com',
+    password: '12341234',
+    name: 'Claudio Damasco',
+    type: 'candidato',
+    profile: {
+      completed: true,
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+      phone: '+55 11 99999-9999',
+      position: 'Desenvolvedor'
+    }
   }
 ];
 
