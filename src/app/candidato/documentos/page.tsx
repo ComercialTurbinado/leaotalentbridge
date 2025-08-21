@@ -56,9 +56,9 @@ export default function CandidatoDocumentos() {
       setLoading(true);
       setError(null);
       
-      if (!user?.id) return;
+      if (!user?._id) return;
 
-      const response = await ApiService.getCandidateDocuments(user.id) as any;
+      const response = await ApiService.getCandidateDocuments(user._id) as any;
       
       if (response.success) {
         // Converter dados da API para o formato esperado pela interface

@@ -580,7 +580,7 @@
 
 @media (max-width: 768px) {
   .heroSection {
-    padding-top: 100px;
+    padding-top: 140px; /* Aumentado para compensar header maior (120px + margem) */
   }
   
   .heroBackground {

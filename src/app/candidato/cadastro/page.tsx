@@ -193,7 +193,7 @@ export default function CandidatoCadastroPage() {
 
       // Verificar se o login foi bem-sucedido
       if (loginData.success && loginData.user) {
-        await ApiService.updateUser(loginData.user.id, profileData);
+        await ApiService.updateUser(loginData.user._id, profileData);
         // Redirecionar para dashboard
         router.push('/candidato/dashboard?cadastro=sucesso');
       } else {

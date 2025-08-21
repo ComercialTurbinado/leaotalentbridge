@@ -115,12 +115,12 @@ function DashboardContent() {
       setLoading(true);
       setError(null);
       
-      if (!user?.id) return;
+      if (!user?._id) return;
 
       // Carregar dados do candidato
       const [applicationsResponse, documentsResponse] = await Promise.all([
-        ApiService.getCandidateApplications(user.id),
-        ApiService.getCandidateDocuments(user.id)
+        ApiService.getCandidateApplications(user._id),
+        ApiService.getCandidateDocuments(user._id)
       ]) as any[];
       
       // Calcular estatísticas baseadas nos dados reais

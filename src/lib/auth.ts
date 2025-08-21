@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 
 export interface User {
-  id: string;
+  _id: string;
   email: string;
   name: string;
   type: 'candidato' | 'empresa' | 'admin';

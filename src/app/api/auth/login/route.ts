@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     // Retornar dados do usuário (sem a senha)
     const userData = {
-      id: user._id,
+      _id: user._id.toString(),
       email: user.email,
       name: user.name,
       type: user.type,

@@ -77,7 +77,7 @@ export default function CandidatoVagasPage() {
     clearSearch
   } = useJobs({
     status: 'active',
-    ...(user && { candidateId: user.id }),
+    ...(user && { candidateId: user._id }),
     ...(selectedCategory && { category: selectedCategory }),
     ...(selectedLocation && { location: selectedLocation }),
     ...(selectedWorkType && { workType: selectedWorkType })

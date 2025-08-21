@@ -180,7 +180,7 @@
   
   .headerContent {
     padding: var(--spacing-sm) 0;
-    min-height: 60px;
+    min-height: 120px; /* Aumentado para acomodar logo maior */
   }
   
   .logo {
@@ -188,8 +188,9 @@
   }
   
   .logoIcon {
-    width: 24px;
-    height: 24px;
+    width: auto;
+    height: 100px; /* Altura mínima de 100px conforme solicitado */
+    max-width: 200px;
   }
 }
 
@@ -199,8 +200,13 @@
   }
   
   .logoIcon {
-    width: 20px;
-    height: 20px;
+    width: auto;
+    height: 100px; /* Mantém altura de 100px no mobile pequeno */
+    max-width: 180px;
+  }
+  
+  .headerContent {
+    min-height: 120px; /* Mantém altura adequada */
   }
 }
 
