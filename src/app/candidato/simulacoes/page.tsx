@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GrPlay, GrClock, GrVideo, GrMicrophone, GrUser, GrNotification, GrLogout, GrStatusGood, GrStar, GrLineChart, GrFilter, GrSearch, GrAdd, GrPower, GrGroup, GrBriefcase, GrBarChart, GrShield, GrGlobe, GrCamera, GrUndo, GrNext, GrCode, GrTrophy, GrPaint, GrBook, GrTarget } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
+import { ApiService } from '@/lib/api';
 import styles from './simulacoes.module.css';
 
 interface SimulationCategory {
@@ -22,20 +23,22 @@ interface SimulationCategory {
 }
 
 interface Simulation {
-  id: number;
+  _id: string;
   title: string;
   description: string;
   category: string;
-  duration: number;
+  estimatedTime: number;
   questionsCount: number;
-  difficulty: 'básico' | 'intermediário' | 'avançado';
-  type: 'comportamental' | 'técnica' | 'cultural' | 'situacional';
+  difficulty: 'basic' | 'intermediate' | 'advanced';
   completed: boolean;
   score?: number;
   completedAt?: string;
-  feedback?: string;
-  nextSimulation?: number;
-  tags: string[];
+  status: 'not_started' | 'in_progress' | 'completed';
+  progress: {
+    answeredQuestions: number;
+    totalQuestions: number;
+    percentage: number;
+  };
 }
 
 interface SimulationAttempt {
@@ -60,6 +63,33 @@ export default function SimulacoesPage() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState('');
+  const [simulations, setSimulations] = useState<Simulation[]>([]);
+  const [statistics, setStatistics] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Função para carregar simulações dinâmicas
+  const loadSimulations = useCallback(async () => {
+    if (!user?._id) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await ApiService.getCandidateSimulations(user._id) as any;
+      
+      if (response.success) {
+        setSimulations(response.data.simulations || []);
+        setStatistics(response.data.statistics || {});
+      } else {
+        setError('Erro ao carregar simulações');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar simulações:', error);
+      setError('Erro ao carregar dados');
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -68,192 +98,122 @@ export default function SimulacoesPage() {
       return;
     }
     setUser(currentUser);
-    setLoading(false);
   }, [router]);
+
+  useEffect(() => {
+    if (user) {
+      loadSimulations();
+    }
+  }, [user, loadSimulations]);
 
   const handleLogout = () => {
     AuthService.logout();
     router.push('/');
   };
 
-  const categories: SimulationCategory[] = [
-    {
-      id: 'comportamental',
-      name: 'Entrevistas Comportamentais',
-      description: 'Perguntas sobre experiências, motivações e fit cultural',
-      icon: <GrGroup size={24} />,
-      color: '#3B82F6',
-      questionsCount: 25,
-      avgDuration: 30,
-      difficulty: 'básico',
-      unlocked: true
-    },
-    {
-      id: 'tecnica',
-      name: 'Entrevistas Técnicas',
-      description: 'Perguntas específicas da sua área de atuação',
-      icon: <GrCode size={24} />,
-      color: '#10B981',
-      questionsCount: 40,
-      avgDuration: 45,
-      difficulty: 'intermediário',
-      unlocked: true
-    },
-    {
-      id: 'cultural',
-      name: 'Adaptação Cultural',
-      description: 'Preparação para trabalhar nos Emirados Árabes Unidos',
-      icon: <GrGlobe size={24} />,
-      color: '#F59E0B',
-      questionsCount: 20,
-      avgDuration: 25,
-      difficulty: 'intermediário',
-      unlocked: true
-    },
-    {
-      id: 'lideranca',
-      name: 'Liderança e Gestão',
-      description: 'Simulações para posições de liderança',
-      icon: <GrTrophy size={24} />,
-      color: '#8B5CF6',
-      questionsCount: 30,
-      avgDuration: 40,
-      difficulty: 'avançado',
-      unlocked: false
-    },
-    {
-      id: 'vendas',
-      name: 'Vendas e Negociação',
-      description: 'Técnicas de vendas e negociação comercial',
-      icon: <GrBarChart size={24} />,
-      color: '#EF4444',
-      questionsCount: 35,
-      avgDuration: 35,
-      difficulty: 'intermediário',
-      unlocked: false
-    },
-    {
-      id: 'design',
-      name: 'Design e Criatividade',
-      description: 'Análise de portfólio e processo criativo',
-      icon: <GrPaint size={24} />,
-      color: '#EC4899',
-      questionsCount: 18,
-      avgDuration: 50,
-      difficulty: 'intermediário',
-      unlocked: true
-    }
-  ];
+  // Categorias dinâmicas baseadas nas simulações carregadas
+  const getCategoriesFromSimulations = () => {
+    const categoryMap = new Map<string, SimulationCategory>();
+    
+    simulations.forEach(sim => {
+      if (!categoryMap.has(sim.category)) {
+        categoryMap.set(sim.category, {
+          id: sim.category,
+          name: getCategoryName(sim.category),
+          description: getCategoryDescription(sim.category),
+          icon: getCategoryIcon(sim.category),
+          color: getCategoryColor(sim.category),
+          questionsCount: 0,
+          avgDuration: 0,
+          difficulty: 'básico',
+          unlocked: true
+        });
+      }
+      
+      const category = categoryMap.get(sim.category)!;
+      category.questionsCount += sim.questionsCount;
+    });
+    
+    // Calcular médias
+    Array.from(categoryMap.values()).forEach(category => {
+      const categorySimulations = simulations.filter(s => s.category === category.id);
+      if (categorySimulations.length > 0) {
+        category.avgDuration = Math.round(
+          categorySimulations.reduce((sum, s) => sum + s.estimatedTime, 0) / categorySimulations.length
+        );
+      }
+    });
+    
+    return Array.from(categoryMap.values());
+  };
 
-  const simulations: Simulation[] = [
-    {
-      id: 1,
-      title: 'Apresentação Pessoal e Motivações',
-      description: 'Pratique como se apresentar e explicar suas motivações profissionais',
-      category: 'comportamental',
-      duration: 20,
-      questionsCount: 8,
-      difficulty: 'básico',
-      type: 'comportamental',
-      completed: true,
-      score: 85,
-      completedAt: '2024-12-10',
-      feedback: 'Excelente apresentação! Trabalhe na conexão emocional com suas experiências.',
-      tags: ['apresentação', 'motivação', 'primeira impressão']
-    },
-    {
-      id: 2,
-      title: 'Experiências e Conquistas',
-      description: 'Como destacar suas principais experiências e conquistas profissionais',
-      category: 'comportamental',
-      duration: 25,
-      questionsCount: 10,
-      difficulty: 'básico',
-      type: 'comportamental',
-      completed: false,
-      tags: ['experiência', 'conquistas', 'resultados']
-    },
-    {
-      id: 3,
-      title: 'Desafios e Resolução de Problemas',
-      description: 'Demonstre como você lida com desafios e resolve problemas complexos',
-      category: 'comportamental',
-      duration: 30,
-      questionsCount: 12,
-      difficulty: 'intermediário',
-      type: 'situacional',
-      completed: false,
-      tags: ['problemas', 'desafios', 'soluções']
-    },
-    {
-      id: 4,
-      title: 'Conhecimentos Técnicos - Frontend',
-      description: 'Avaliação de conhecimentos em React, JavaScript, CSS e desenvolvimento web',
-      category: 'tecnica',
-      duration: 45,
-      questionsCount: 15,
-      difficulty: 'intermediário',
-      type: 'técnica',
-      completed: true,
-      score: 78,
-      completedAt: '2024-12-08',
-      feedback: 'Bom conhecimento técnico. Recomendo estudar mais sobre performance e otimização.',
-      tags: ['react', 'javascript', 'css', 'frontend']
-    },
-    {
-      id: 5,
-      title: 'Conhecimentos Técnicos - Backend',
-      description: 'APIs, bancos de dados, arquitetura de sistemas e segurança',
-      category: 'tecnica',
-      duration: 50,
-      questionsCount: 18,
-      difficulty: 'avançado',
-      type: 'técnica',
-      completed: false,
-      tags: ['api', 'database', 'arquitetura', 'backend']
-    },
-    {
-      id: 6,
-      title: 'Cultura e Etiqueta nos Emirados',
-              description: 'Entenda a cultura empresarial e etiqueta profissional nos EAU',
-      category: 'cultural',
-      duration: 25,
-      questionsCount: 10,
-      difficulty: 'intermediário',
-      type: 'cultural',
-      completed: false,
-      tags: ['cultura', 'emirados', 'etiqueta', 'negócios']
-    },
-    {
-      id: 7,
-      title: 'Portfólio e Processo Criativo',
-      description: 'Apresentação de portfólio e explicação do processo criativo',
-      category: 'design',
-      duration: 40,
-      questionsCount: 12,
-      difficulty: 'intermediário',
-      type: 'comportamental',
-      completed: false,
-      tags: ['portfolio', 'design', 'criatividade', 'processo']
-    }
-  ];
+  const getCategoryName = (category: string) => {
+    const names: Record<string, string> = {
+      'behavioral': 'Entrevistas Comportamentais',
+      'technical': 'Entrevistas Técnicas', 
+      'situational': 'Situações e Problemas',
+      'general': 'Conhecimentos Gerais'
+    };
+    return names[category] || category;
+  };
+
+  const getCategoryDescription = (category: string) => {
+    const descriptions: Record<string, string> = {
+      'behavioral': 'Perguntas sobre experiências, motivações e fit cultural',
+      'technical': 'Perguntas específicas da sua área de atuação',
+      'situational': 'Situações hipotéticas e resolução de problemas',
+      'general': 'Conhecimentos gerais e cultura organizacional'
+    };
+    return descriptions[category] || 'Simulações de entrevista';
+  };
+
+  const getCategoryIcon = (category: string) => {
+    const icons: Record<string, React.ReactNode> = {
+      'behavioral': <GrGroup size={24} />,
+      'technical': <GrCode size={24} />,
+      'situational': <GrTarget size={24} />,
+      'general': <GrBook size={24} />
+    };
+    return icons[category] || <GrPlay size={24} />;
+  };
+
+  const getCategoryColor = (category: string) => {
+    const colors: Record<string, string> = {
+      'behavioral': '#3B82F6',
+      'technical': '#10B981',
+      'situational': '#F59E0B', 
+      'general': '#8B5CF6'
+    };
+    return colors[category] || '#6B7280';
+  };
+
+  const categories: SimulationCategory[] = getCategoriesFromSimulations();
+
+  // Funções auxiliares para renderização dinâmica
+  const getDifficultyDisplayName = (difficulty: string) => {
+    const map: Record<string, string> = {
+      'basic': 'básico',
+      'intermediate': 'intermediário', 
+      'advanced': 'avançado'
+    };
+    return map[difficulty] || difficulty;
+  };
 
   const filteredSimulations = simulations.filter(simulation => {
     const matchesSearch = simulation.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         simulation.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         simulation.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+                         simulation.description.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesCategory = !selectedCategory || simulation.category === selectedCategory;
-    const matchesDifficulty = !selectedDifficulty || simulation.difficulty === selectedDifficulty;
+    const matchesDifficulty = !selectedDifficulty || getDifficultyDisplayName(simulation.difficulty) === selectedDifficulty;
     
     return matchesSearch && matchesCategory && matchesDifficulty;
   });
 
-  const stats = {
+  const stats = statistics || {
     total: simulations.length,
     completed: simulations.filter(s => s.completed).length,
-    avgScore: Math.round(simulations.filter(s => s.score).reduce((acc, s) => acc + (s.score || 0), 0) / simulations.filter(s => s.score).length) || 0,
-    hoursSpent: Math.round(simulations.filter(s => s.completed).reduce((acc, s) => acc + s.duration, 0) / 60 * 10) / 10
+    averageScore: 0,
+    completionRate: 0
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -279,12 +239,25 @@ export default function SimulacoesPage() {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.spinner}></div>
+        <p>Carregando suas simulações...</p>
       </div>
     );
   }
 
   if (!user) {
     return null;
+  }
+
+  if (error) {
+    return (
+      <div className={styles.errorContainer}>
+        <h3>Erro ao carregar simulações</h3>
+        <p>{error}</p>
+        <button onClick={loadSimulations} className="btn btn-primary">
+          Tentar Novamente
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -326,7 +299,7 @@ export default function SimulacoesPage() {
                 <GrStar size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{stats.avgScore}%</h3>
+                <h3>{stats.averageScore || 0}%</h3>
                 <p>Desempenho Médio</p>
               </div>
             </div>
@@ -336,8 +309,8 @@ export default function SimulacoesPage() {
                 <GrClock size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{stats.hoursSpent} h</h3>
-                <p>Tempo de Prática</p>
+                <h3>{Math.round((stats.total * 25) / 60 * 10) / 10} h</h3>
+                <p>Tempo Estimado</p>
               </div>
             </div>
 
@@ -346,8 +319,8 @@ export default function SimulacoesPage() {
                 <GrLineChart size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>+12%</h3>
-                <p>Melhoria Geral</p>
+                <h3>{stats.completionRate || 0}%</h3>
+                <p>Taxa de Conclusão</p>
               </div>
             </div>
           </div>
@@ -490,19 +463,19 @@ export default function SimulacoesPage() {
               {/* Simulations GrList */}
               <div className={styles.simulationsList}>
                 {filteredSimulations.map((simulation) => (
-                  <div key={simulation.id} className={`${styles.simulationCard} ${simulation.completed ? styles.completed : ''}`}>
+                  <div key={simulation._id} className={`${styles.simulationCard} ${simulation.completed ? styles.completed : ''}`}>
                     <div className={styles.simulationHeader}>
                       <div className={styles.simulationInfo}>
                         <div className={styles.simulationTitle}>
                           <h3>{simulation.title}</h3>
                           <div className={styles.simulationMeta}>
                             <div className={styles.metaItem}>
-                              {getTypeIcon(simulation.type)}
-                              <span>{simulation.type}</span>
+                              <GrBook size={14} />
+                              <span>{getCategoryName(simulation.category)}</span>
                             </div>
                             <div className={styles.metaItem}>
                               <GrClock size={14} />
-                              <span>{simulation.duration} min</span>
+                              <span>{simulation.estimatedTime} min</span>
                             </div>
                             <div className={styles.metaItem}>
                               <GrBook size={14} />
@@ -515,9 +488,9 @@ export default function SimulacoesPage() {
                       <div className={styles.simulationStatus}>
                         <div 
                           className={styles.difficultyBadge}
-                          style={{ backgroundColor: getDifficultyColor(simulation.difficulty) }}
+                          style={{ backgroundColor: getDifficultyColor(getDifficultyDisplayName(simulation.difficulty)) }}
                         >
-                          {simulation.difficulty}
+                          {getDifficultyDisplayName(simulation.difficulty)}
                         </div>
                         
                         {simulation.completed && (
@@ -532,29 +505,32 @@ export default function SimulacoesPage() {
                     <div className={styles.simulationContent}>
                       <p>{simulation.description}</p>
                       
-                      <div className={styles.simulationTags}>
-                        {simulation.tags.map((tag, index) => (
-                          <span key={index} className={styles.tag}>
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                      {simulation.status !== 'not_started' && (
+                        <div className={styles.progressSection}>
+                          <div className={styles.progressInfo}>
+                            <span>Progresso: {simulation.progress.percentage}%</span>
+                            <span>{simulation.progress.answeredQuestions}/{simulation.progress.totalQuestions} perguntas</span>
+                          </div>
+                          <div className={styles.progressBar}>
+                            <div 
+                              className={styles.progressFill}
+                              style={{ width: `${simulation.progress.percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
 
                       {simulation.completed && simulation.score && (
                         <div className={styles.simulationResult}>
                           <div className={styles.scoreDisplay}>
                             <GrStar size={16} />
                             <span className={styles.score}>{simulation.score}%</span>
-                            <span className={styles.completedDate}>
-                              Concluída em {new Date(simulation.completedAt!).toLocaleDateString('pt-BR')}
-                            </span>
+                            {simulation.completedAt && (
+                              <span className={styles.completedDate}>
+                                Concluída em {new Date(simulation.completedAt).toLocaleDateString('pt-BR')}
+                              </span>
+                            )}
                           </div>
-                          
-                          {simulation.feedback && (
-                            <div className={styles.feedback}>
-                              <p>&ldquo;{simulation.feedback}&rdquo;</p>
-                            </div>
-                          )}
                         </div>
                       )}
                     </div>
@@ -563,13 +539,13 @@ export default function SimulacoesPage() {
                       {simulation.completed ? (
                         <>
                           <Link 
-                            href={`/candidato/simulacoes/${simulation.id}/resultado`}
+                            href={`/candidato/simulacoes/${simulation._id}/resultado`}
                             className="btn btn-secondary btn-small"
                           >
                             Ver Resultado
                           </Link>
                           <Link 
-                            href={`/candidato/simulacoes/${simulation.id}`}
+                            href={`/candidato/simulacoes/${simulation._id}`}
                             className="btn btn-primary btn-small"
                           >
                             <GrUndo size={16} />
@@ -578,7 +554,7 @@ export default function SimulacoesPage() {
                         </>
                       ) : (
                         <Link 
-                          href={`/candidato/simulacoes/${simulation.id}`}
+                          href={`/candidato/simulacoes/${simulation._id}`}
                           className="btn btn-primary btn-small"
                         >
                           <GrPlay size={16} />
@@ -628,13 +604,17 @@ export default function SimulacoesPage() {
 
               <div className={styles.historicoList}>
                 {simulations.filter(s => s.completed).map((simulation) => (
-                  <div key={simulation.id} className={styles.historicoItem}>
+                  <div key={simulation._id} className={styles.historicoItem}>
                     <div className={styles.historicoInfo}>
                       <h4>{simulation.title}</h4>
                       <div className={styles.historicoMeta}>
-                        <span>Concluída em {new Date(simulation.completedAt!).toLocaleDateString('pt-BR')}</span>
-                        <span>•</span>
-                        <span>{simulation.duration} minutos</span>
+                        {simulation.completedAt && (
+                          <>
+                            <span>Concluída em {new Date(simulation.completedAt).toLocaleDateString('pt-BR')}</span>
+                            <span>•</span>
+                          </>
+                        )}
+                        <span>{simulation.estimatedTime} minutos</span>
                         <span>•</span>
                         <span>{simulation.questionsCount} perguntas</span>
                       </div>

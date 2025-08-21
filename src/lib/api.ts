@@ -462,4 +462,22 @@ export class ApiService {
   static async getCandidateDashboard(candidateId: string) {
     return this.request(`/candidates/${candidateId}/dashboard`, {}, true);
   }
+
+  // Métodos específicos para simulações do candidato
+  static async getCandidateSimulations(candidateId: string) {
+    return this.request(`/candidates/${candidateId}/simulations`, {}, true);
+  }
+
+  static async getSimulationWithProgress(simulationId: string) {
+    return this.request(`/simulations/${simulationId}/user-progress`, {}, true);
+  }
+
+  static async saveSimulationProgress(simulationId: string, answers: any[], isCompleted = false) {
+    // Limpar cache após salvar
+    this.clearCache();
+    return this.request(`/simulations/${simulationId}/user-progress`, {
+      method: 'POST',
+      body: JSON.stringify({ answers, isCompleted })
+    });
+  }
 } 

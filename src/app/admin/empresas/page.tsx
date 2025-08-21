@@ -1,33 +1,50 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
+import { ApiService } from '@/lib/api';
 import { GrOrganization, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrLocation, GrGroup, GrBriefcase, GrGlobe, GrMail, GrPhone, GrCalendar, GrStar, GrDownload, GrClose, GrCheckbox } from 'react-icons/gr';
 import styles from './empresas.module.css';
 
 interface Empresa {
-  id: string;
-  nome: string;
+  _id: string;
+  name: string;
   email: string;
-  cnpj: string;
-  status: 'ativa' | 'inativa' | 'pendente' | 'rejeitada';
-  dataCadastro: string;
-  ultimoAcesso: string;
-  telefone?: string;
-  localizacao: string;
-  setor: string;
-  tamanho: 'startup' | 'pequena' | 'media' | 'grande';
+  cnpj?: string;
+  registrationNumber?: string;
+  status: 'pending' | 'active' | 'inactive' | 'suspended' | 'rejected';
+  createdAt: string;
+  lastLogin?: string;
+  phone?: string;
+  address: {
+    city: string;
+    state: string;
+    country: string;
+    street: string;
+  };
+  industry: string;
+  size: 'startup' | 'small' | 'medium' | 'large' | 'enterprise';
   website?: string;
   logo?: string;
-  vagasPublicadas: number;
-  candidatosContratados: number;
-  avaliacaoMedia: number;
-  responsavel: {
-    nome: string;
-    cargo: string;
+  totalJobs: number;
+  activeJobs: number;
+  totalHires: number;
+  averageRating: number;
+  totalReviews: number;
+  isVerified: boolean;
+  verificationDate?: string;
+  plan: {
+    type: 'basic' | 'premium' | 'enterprise';
+    isActive: boolean;
+    maxJobs: number;
+  };
+  primaryContact: {
+    name: string;
+    position: string;
     email: string;
+    phone?: string;
   };
 }
 
@@ -42,6 +59,57 @@ export default function AdminEmpresasPage() {
   const [empresaSelecionada, setEmpresaSelecionada] = useState<Empresa | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'view' | 'approve' | 'reject' | 'delete'>('view');
+  const [error, setError] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    pages: 0
+  });
+
+  // Função para carregar empresas do banco de dados
+  const loadEmpresas = useCallback(async (filters?: any) => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const queryParams: any = {
+        page: pagination.page,
+        limit: pagination.limit
+      };
+      
+      if (filtroStatus !== 'todas') {
+        queryParams.status = filtroStatus;
+      }
+      
+      if (filtroTamanho !== 'todos') {
+        queryParams.size = filtroTamanho;
+      }
+      
+      if (busca.trim()) {
+        queryParams.search = busca.trim();
+      }
+      
+      const response = await ApiService.getCompanies(queryParams) as any;
+      
+      if (response.success) {
+        setEmpresas(response.data || []);
+        setPagination({
+          page: response.pagination?.page || 1,
+          limit: response.pagination?.limit || 10,
+          total: response.pagination?.total || 0,
+          pages: response.pagination?.pages || 0
+        });
+      } else {
+        setError('Erro ao carregar empresas');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar empresas:', error);
+      setError('Erro ao conectar com o servidor');
+    } finally {
+      setLoading(false);
+    }
+  }, [pagination.page, pagination.limit, filtroStatus, filtroTamanho, busca]);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -50,171 +118,58 @@ export default function AdminEmpresasPage() {
       return;
     }
     setUser(currentUser);
-    loadEmpresas();
-    setLoading(false);
   }, [router]);
+  
+  useEffect(() => {
+    if (user) {
+      loadEmpresas();
+    }
+  }, [user, loadEmpresas]);
 
-  const loadEmpresas = () => {
-    // Dados simulados de empresas
-    const empresasSimuladas: Empresa[] = [
-      {
-        id: '1',
-        nome: 'TechCorp Dubai',
-        email: 'contato@techcorp.ae',
-        cnpj: '12.345.678/0001-90',
-        status: 'ativa',
-        dataCadastro: '2024-01-10',
-        ultimoAcesso: '2024-06-13',
-        telefone: '+971 50 123-4567',
-        localizacao: 'Dubai, EAU',
-        setor: 'Tecnologia',
-        tamanho: 'media',
-        website: 'https://techcorp.ae',
-        logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=60&h=60&fit=crop',
-        vagasPublicadas: 15,
-        candidatosContratados: 8,
-        avaliacaoMedia: 4.5,
-        responsavel: {
-          nome: 'Maria Santos',
-          cargo: 'Recrutadora Sênior',
-          email: 'maria.santos@techcorp.ae'
-        }
-      },
-      {
-        id: '2',
-        nome: 'Innovation Hub',
-        email: 'rh@innovhub.ae',
-        cnpj: '98.765.432/0001-10',
-        status: 'ativa',
-        dataCadastro: '2024-02-20',
-        ultimoAcesso: '2024-06-11',
-        telefone: '+971 55 987-6543',
-        localizacao: 'Abu Dhabi, EAU',
-        setor: 'Consultoria',
-        tamanho: 'grande',
-        website: 'https://innovhub.ae',
-        logo: 'https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=60&h=60&fit=crop',
-        vagasPublicadas: 32,
-        candidatosContratados: 18,
-        avaliacaoMedia: 4.8,
-        responsavel: {
-          nome: 'Ana Costa',
-          cargo: 'HR Manager',
-          email: 'ana.costa@innovhub.ae'
-        }
-      },
-      {
-        id: '3',
-        nome: 'StartupXYZ',
-        email: 'team@startupxyz.ae',
-        cnpj: '11.222.333/0001-44',
-        status: 'pendente',
-        dataCadastro: '2024-06-10',
-        ultimoAcesso: '2024-06-12',
-        telefone: '+971 52 456-7890',
-        localizacao: 'Sharjah, EAU',
-        setor: 'Fintech',
-        tamanho: 'startup',
-        website: 'https://startupxyz.ae',
-        logo: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=60&h=60&fit=crop',
-        vagasPublicadas: 3,
-        candidatosContratados: 0,
-        avaliacaoMedia: 0,
-        responsavel: {
-          nome: 'Carlos Silva',
-          cargo: 'Founder & CEO',
-          email: 'carlos@startupxyz.ae'
-        }
-      },
-      {
-        id: '4',
-        nome: 'Global Solutions',
-        email: 'hr@globalsolutions.ae',
-        cnpj: '55.666.777/0001-88',
-        status: 'inativa',
-        dataCadastro: '2024-03-15',
-        ultimoAcesso: '2024-05-20',
-        telefone: '+971 50 111-2222',
-        localizacao: 'Dubai, EAU',
-        setor: 'Logística',
-        tamanho: 'grande',
-        website: 'https://globalsolutions.ae',
-        logo: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=60&h=60&fit=crop',
-        vagasPublicadas: 8,
-        candidatosContratados: 3,
-        avaliacaoMedia: 3.2,
-        responsavel: {
-          nome: 'Roberto Lima',
-          cargo: 'HR Director',
-          email: 'roberto@globalsolutions.ae'
-        }
-      },
-      {
-        id: '5',
-        nome: 'HealthTech Solutions',
-        email: 'contact@healthtech.ae',
-        cnpj: '99.888.777/0001-66',
-        status: 'rejeitada',
-        dataCadastro: '2024-05-05',
-        ultimoAcesso: '2024-05-06',
-        telefone: '+971 54 333-4444',
-        localizacao: 'Dubai, EAU',
-        setor: 'Saúde',
-        tamanho: 'pequena',
-        website: 'https://healthtech.ae',
-        logo: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=60&h=60&fit=crop',
-        vagasPublicadas: 0,
-        candidatosContratados: 0,
-        avaliacaoMedia: 0,
-        responsavel: {
-          nome: 'Dra. Fernanda Costa',
-          cargo: 'CTO',
-          email: 'fernanda@healthtech.ae'
-        }
-      }
-    ];
-
-    setEmpresas(empresasSimuladas);
-  };
-
-  const empresasFiltradas = empresas.filter(empresa => {
-    const matchStatus = filtroStatus === 'todas' || empresa.status === filtroStatus;
-    const matchTamanho = filtroTamanho === 'todos' || empresa.tamanho === filtroTamanho;
-    const matchBusca = busca === '' || 
-      empresa.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      empresa.email.toLowerCase().includes(busca.toLowerCase()) ||
-      empresa.setor.toLowerCase().includes(busca.toLowerCase());
-    
-    return matchStatus && matchTamanho && matchBusca;
-  });
+  // Empresas já são filtradas pelo backend, mas aplicamos filtros locais se necessário
+  const empresasFiltradas = empresas;
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ativa': return 'green';
-      case 'inativa': return 'gray';
-      case 'pendente': return 'yellow';
-      case 'rejeitada': return 'red';
+      case 'active': return 'green';
+      case 'inactive': return 'gray';
+      case 'pending': return 'yellow';
+      case 'rejected': return 'red';
+      case 'suspended': return 'orange';
       default: return 'gray';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'ativa': return <GrStatusGood size={14} />;
-      case 'inativa': return <GrStatusCritical size={14} />;
-      case 'pendente': return <GrClock size={14} />;
-      case 'rejeitada': return <GrStatusWarning size={14} />;
+      case 'active': return <GrStatusGood size={14} />;
+      case 'inactive': return <GrStatusCritical size={14} />;
+      case 'pending': return <GrClock size={14} />;
+      case 'rejected': return <GrStatusWarning size={14} />;
+      case 'suspended': return <GrStatusWarning size={14} />;
       default: return <GrStatusCritical size={14} />;
     }
   };
 
-  const getTamanhoLabel = (tamanho: string) => {
-    switch (tamanho) {
+  const getStatusDisplayName = (status: string) => {
+    switch (status) {
+      case 'active': return 'Ativa';
+      case 'inactive': return 'Inativa';
+      case 'pending': return 'Pendente';
+      case 'rejected': return 'Rejeitada';
+      case 'suspended': return 'Suspensa';
+      default: return status;
+    }
+  };
+
+  const getSizeDisplayName = (size: string) => {
+    switch (size) {
       case 'startup': return 'Startup';
-      case 'pequena': return 'Pequena';
-      case 'media': return 'Média';
-      case 'grande': return 'Grande';
-      default: return tamanho;
+      case 'small': return 'Pequena';
+      case 'medium': return 'Média';
+      case 'large': return 'Grande';
+      case 'enterprise': return 'Enterprise';
+      default: return size;
     }
   };
 
@@ -242,11 +197,33 @@ export default function AdminEmpresasPage() {
     setShowModal(true);
   };
 
-  const handleStatusChange = (empresaId: string, novoStatus: string) => {
-    setEmpresas(prev => 
-      prev.map(e => e.id === empresaId ? { ...e, status: novoStatus as any } : e)
-    );
-    setShowModal(false);
+  const handleStatusChange = async (empresaId: string, novoStatus: string) => {
+    try {
+      const response = await ApiService.updateCompany(empresaId, {
+        status: novoStatus,
+        ...(novoStatus === 'active' && { isVerified: true, verificationDate: new Date().toISOString() })
+      }) as any;
+      
+      if (response.success) {
+        loadEmpresas();
+        setShowModal(false);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar status:', error);
+    }
+  };
+
+  const confirmDeleteEmpresa = async (empresa: Empresa) => {
+    try {
+      const response = await ApiService.deleteCompany(empresa._id) as any;
+      
+      if (response.success) {
+        loadEmpresas();
+        setShowModal(false);
+      }
+    } catch (error) {
+      console.error('Erro ao deletar empresa:', error);
+    }
   };
 
   const exportarEmpresas = () => {
@@ -315,7 +292,7 @@ export default function AdminEmpresasPage() {
                 <GrStatusGood size={24} />
               </div>
               <div className={styles.statContent}>
-                <h3>{empresas.filter(e => e.status === 'ativa').length}</h3>
+                <h3>{empresas.filter(e => e.status === 'active').length}</h3>
                 <p>Ativas</p>
               </div>
             </div>
@@ -324,7 +301,7 @@ export default function AdminEmpresasPage() {
                 <GrClock size={24} />
               </div>
               <div className={styles.statContent}>
-                <h3>{empresas.filter(e => e.status === 'pendente').length}</h3>
+                <h3>{empresas.filter(e => e.status === 'pending').length}</h3>
                 <p>Pendentes</p>
               </div>
             </div>
@@ -333,7 +310,7 @@ export default function AdminEmpresasPage() {
                 <GrBriefcase size={24} />
               </div>
               <div className={styles.statContent}>
-                <h3>{empresas.reduce((acc, e) => acc + e.vagasPublicadas, 0)}</h3>
+                <h3>{empresas.reduce((acc, e) => acc + e.totalJobs, 0)}</h3>
                 <p>Vagas Publicadas</p>
               </div>
             </div>
@@ -397,16 +374,16 @@ export default function AdminEmpresasPage() {
                 </thead>
                 <tbody>
                   {empresasFiltradas.map((empresa) => (
-                    <tr key={empresa.id}>
+                    <tr key={empresa._id}>
                       <td>
                         <div className={styles.empresaInfo}>
-                          <img src={empresa.logo} alt={empresa.nome} />
+                          <img src={empresa.logo || '/default-company-logo.png'} alt={empresa.name} />
                           <div className={styles.empresaDetails}>
-                            <h4>{empresa.nome}</h4>
+                            <h4>{empresa.name}</h4>
                             <p>{empresa.email}</p>
                             <span className={styles.empresaLocation}>
                               <GrLocation size={12} />
-                              {empresa.localizacao}
+                              {empresa.address?.city}, {empresa.address?.country}
                             </span>
                           </div>
                         </div>
@@ -414,39 +391,39 @@ export default function AdminEmpresasPage() {
                       <td>
                         <div className={`${styles.statusBadge} ${styles[getStatusColor(empresa.status)]}`}>
                           {getStatusIcon(empresa.status)}
-                          <span>{empresa.status}</span>
+                          <span>{getStatusDisplayName(empresa.status)}</span>
                         </div>
                       </td>
                       <td>
-                        <span className={styles.setorText}>{empresa.setor}</span>
+                        <span className={styles.setorText}>{empresa.industry}</span>
                       </td>
                       <td>
-                        <span className={styles.tamanhoText}>{getTamanhoLabel(empresa.tamanho)}</span>
+                        <span className={styles.tamanhoText}>{getSizeDisplayName(empresa.size)}</span>
                       </td>
                       <td>
                         <div className={styles.vagasInfo}>
-                          <span className={styles.vagasCount}>{empresa.vagasPublicadas}</span>
+                          <span className={styles.vagasCount}>{empresa.totalJobs}</span>
                         </div>
                       </td>
                       <td>
                         <div className={styles.contratacoesInfo}>
-                          <span className={styles.contratacoesCount}>{empresa.candidatosContratados}</span>
+                          <span className={styles.contratacoesCount}>{empresa.totalHires}</span>
                           <span className={styles.contratacoesLabel}>contratações</span>
                         </div>
                       </td>
                       <td>
                         <div className={styles.avaliacaoInfo}>
                           <div className={styles.stars}>
-                            {renderStars(empresa.avaliacaoMedia)}
+                            {renderStars(empresa.averageRating)}
                           </div>
                           <span className={styles.avaliacaoNumero}>
-                            {empresa.avaliacaoMedia > 0 ? empresa.avaliacaoMedia.toFixed(1) : 'N/A'}
+                            {empresa.averageRating > 0 ? empresa.averageRating.toFixed(1) : 'N/A'}
                           </span>
                         </div>
                       </td>
                       <td>
                         <span className={styles.dateText}>
-                          {new Date(empresa.dataCadastro).toLocaleDateString('pt-BR')}
+                          {new Date(empresa.createdAt).toLocaleDateString('pt-BR')}
                         </span>
                       </td>
                       <td>
@@ -459,7 +436,7 @@ export default function AdminEmpresasPage() {
                             <GrView size={16} />
                           </button>
                           
-                          {empresa.status === 'pendente' && (
+                          {empresa.status === 'pending' && (
                             <>
                               <button 
                                 onClick={() => handleApproveEmpresa(empresa)}
@@ -527,9 +504,9 @@ export default function AdminEmpresasPage() {
               {modalType === 'view' && (
                 <div className={styles.empresaDetails}>
                   <div className={styles.empresaHeader}>
-                    <img src={empresaSelecionada.logo} alt={empresaSelecionada.nome} />
+                    <img src={empresaSelecionada.logo || '/default-company-logo.png'} alt={empresaSelecionada.name} />
                     <div>
-                      <h3>{empresaSelecionada.nome}</h3>
+                      <h3>{empresaSelecionada.name}</h3>
                       <p>{empresaSelecionada.email}</p>
                       <div className={`${styles.statusBadge} ${styles[getStatusColor(empresaSelecionada.status)]}`}>
                         {getStatusIcon(empresaSelecionada.status)}
@@ -550,28 +527,28 @@ export default function AdminEmpresasPage() {
                       <GrPhone size={16} />
                       <div>
                         <span className={styles.infoLabel}>Telefone</span>
-                        <span className={styles.infoValue}>{empresaSelecionada.telefone}</span>
+                        <span className={styles.infoValue}>{empresaSelecionada.phone || 'Não informado'}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
                       <GrLocation size={16} />
                       <div>
                         <span className={styles.infoLabel}>Localização</span>
-                        <span className={styles.infoValue}>{empresaSelecionada.localizacao}</span>
+                        <span className={styles.infoValue}>{empresaSelecionada.address?.city}, {empresaSelecionada.address?.country}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
                       <GrBriefcase size={16} />
                       <div>
                         <span className={styles.infoLabel}>Setor</span>
-                        <span className={styles.infoValue}>{empresaSelecionada.setor}</span>
+                        <span className={styles.infoValue}>{empresaSelecionada.industry}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
                       <GrGroup size={16} />
                       <div>
                         <span className={styles.infoLabel}>Porte</span>
-                        <span className={styles.infoValue}>{getTamanhoLabel(empresaSelecionada.tamanho)}</span>
+                        <span className={styles.infoValue}>{getSizeDisplayName(empresaSelecionada.size)}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
@@ -587,9 +564,9 @@ export default function AdminEmpresasPage() {
                     <h4>Responsável</h4>
                     <div className={styles.responsavelCard}>
                       <div className={styles.responsavelDetails}>
-                        <h5>{empresaSelecionada.responsavel.nome}</h5>
-                        <p>{empresaSelecionada.responsavel.cargo}</p>
-                        <span>{empresaSelecionada.responsavel.email}</span>
+                        <h5>{empresaSelecionada.primaryContact.name}</h5>
+                        <p>{empresaSelecionada.primaryContact.position}</p>
+                        <span>{empresaSelecionada.primaryContact.email}</span>
                       </div>
                     </div>
                   </div>
@@ -601,7 +578,7 @@ export default function AdminEmpresasPage() {
                   <div className={styles.confirmationIcon}>
                     <GrStatusGood size={48} />
                   </div>
-                  <h3>Aprovar empresa {empresaSelecionada.nome}?</h3>
+                  <h3>Aprovar empresa {empresaSelecionada.name}?</h3>
                   <p>
                     A empresa será ativada e poderá começar a publicar vagas na plataforma.
                   </p>
@@ -613,7 +590,7 @@ export default function AdminEmpresasPage() {
                   <div className={styles.warningIcon}>
                                             <GrStatusCritical size={48} />
                   </div>
-                  <h3>Rejeitar empresa {empresaSelecionada.nome}?</h3>
+                  <h3>Rejeitar empresa {empresaSelecionada.name}?</h3>
                   <p>
                     A empresa será rejeitada e não poderá acessar a plataforma.
                   </p>
@@ -625,7 +602,7 @@ export default function AdminEmpresasPage() {
                   <div className={styles.dangerIcon}>
                     <GrStatusWarning size={48} />
                   </div>
-                  <h3>Excluir empresa {empresaSelecionada.nome}?</h3>
+                  <h3>Excluir empresa {empresaSelecionada.name}?</h3>
                   <p>
                     Esta ação não pode ser desfeita. Todos os dados da empresa serão 
                     permanentemente removidos do sistema.
@@ -644,7 +621,7 @@ export default function AdminEmpresasPage() {
               
               {modalType === 'approve' && (
                 <button 
-                  onClick={() => handleStatusChange(empresaSelecionada.id, 'ativa')}
+                  onClick={() => handleStatusChange(empresaSelecionada._id, 'active')}
                   className="btn btn-success"
                 >
                   <GrCheckbox size={16} />
@@ -654,7 +631,7 @@ export default function AdminEmpresasPage() {
               
               {modalType === 'reject' && (
                 <button 
-                  onClick={() => handleStatusChange(empresaSelecionada.id, 'rejeitada')}
+                  onClick={() => handleStatusChange(empresaSelecionada._id, 'rejected')}
                   className="btn btn-warning"
                 >
                                                 <GrStatusCritical size={16} />
@@ -664,10 +641,7 @@ export default function AdminEmpresasPage() {
               
               {modalType === 'delete' && (
                 <button 
-                  onClick={() => {
-                    setEmpresas(prev => prev.filter(e => e.id !== empresaSelecionada?.id));
-                    setShowModal(false);
-                  }}
+                  onClick={() => confirmDeleteEmpresa(empresaSelecionada)}
                   className="btn btn-danger"
                 >
                   <GrTrash size={16} />
