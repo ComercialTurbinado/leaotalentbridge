@@ -3,10 +3,19 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci --include=dev
+        - echo "Configurando npm para melhor performance..."
+        - npm config set registry https://registry.npmjs.org/
+        - npm config set fetch-timeout 300000
+        - npm config set fetch-retry-mintimeout 20000
+        - npm config set fetch-retry-maxtimeout 120000
+        - npm config set maxsockets 50
+        - echo "Instalando dependências..."
+        - npm ci --include=dev --prefer-offline --no-audit --no-fund --no-optional || npm install --include=dev
+        - echo "Verificando TypeScript..."
         - npm list typescript @types/react @types/node || npm install typescript @types/react @types/node
     build:
       commands:
+        - echo "Iniciando build..."
         - npm run build
   artifacts:
     baseDirectory: .next
@@ -16,6 +25,7 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
+      - .npm/**/*
   environment:
     variables:
       MONGODB_URI: mongodb+srv://comercialturbinado:Pikopiko2212@cluster0.vryeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
