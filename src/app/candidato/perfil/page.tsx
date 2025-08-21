@@ -109,7 +109,7 @@ export default function CandidatoPerfil() {
       const currentUser = AuthService.getUser();
       if (!currentUser) return;
       
-      const userData = await ApiService.getUser(currentUser.id) as any;
+      const userData = await ApiService.getUser(currentUser._id) as any;
       
       // Mapear dados do usuário para o formato do perfil
       const mappedData: ProfileData = {
@@ -229,7 +229,7 @@ export default function CandidatoPerfil() {
         }
       };
 
-      await ApiService.updateUser(currentUser.id, updateData);
+      await ApiService.updateUser(currentUser._id, updateData);
       
       setEditMode(false);
       setSuccessMessage('Perfil atualizado com sucesso!');

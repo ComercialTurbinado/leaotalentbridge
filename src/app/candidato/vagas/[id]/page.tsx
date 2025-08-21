@@ -112,7 +112,7 @@ export default function DetalhesVagaPage() {
       if (!currentUser) return;
 
       const applicationsResponse = await ApiService.getApplications({
-        candidateId: currentUser.id,
+        candidateId: currentUser._id,
         jobId: jobId,
         limit: 1,
         page: 1

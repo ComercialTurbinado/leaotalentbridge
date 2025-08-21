@@ -100,7 +100,7 @@ export default function CandidatoVagasPage() {
 
       // Carregar candidaturas do usuário (apenas campos essenciais)
       const applicationsResponse = await ApiService.getApplications({
-        candidateId: currentUser.id,
+        candidateId: currentUser._id,
         limit: 100,
         page: 1,
         fields: 'jobId,status' // Apenas campos necessários
