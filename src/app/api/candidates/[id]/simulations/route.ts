@@ -7,10 +7,10 @@ import { verifyAuth } from '@/lib/middleware/auth';
 // GET - Buscar simulações disponíveis para o candidato com progresso
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const resolvedParams = await params;
+    const resolvedParams = await context.params;
     const user = await verifyAuth(request);
     
     if (!user) {

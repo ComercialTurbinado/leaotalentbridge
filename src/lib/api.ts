@@ -480,4 +480,78 @@ export class ApiService {
       body: JSON.stringify({ answers, isCompleted })
     });
   }
+
+  // === CURSOS ===
+  static async getCourses(filters?: any) {
+    const params = new URLSearchParams();
+    
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+          params.append(key, filters[key]);
+        }
+      });
+    }
+    
+    const endpoint = `/courses${params.toString() ? `?${params.toString()}` : ''}`;
+    return this.request(endpoint, {}, true);
+  }
+
+  static async getCourse(id: string) {
+    return this.request(`/courses/${id}`, {}, true);
+  }
+
+  static async createCourse(courseData: any) {
+    // Limpar cache após criação
+    this.clearCache();
+    return this.request('/courses', {
+      method: 'POST',
+      body: JSON.stringify(courseData)
+    });
+  }
+
+  static async updateCourse(id: string, courseData: any) {
+    // Limpar cache após atualização
+    this.clearCache();
+    return this.request(`/courses/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(courseData)
+    });
+  }
+
+  static async deleteCourse(id: string) {
+    // Limpar cache após deleção
+    this.clearCache();
+    return this.request(`/courses/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  static async getCandidateCourses(candidateId: string, filters?: any) {
+    const params = new URLSearchParams();
+    
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+          params.append(key, filters[key]);
+        }
+      });
+    }
+    
+    const endpoint = `/candidates/${candidateId}/courses${params.toString() ? `?${params.toString()}` : ''}`;
+    return this.request(endpoint, {}, true);
+  }
+
+  static async getCourseProgress(courseId: string) {
+    return this.request(`/courses/progress?courseId=${courseId}`, {}, true);
+  }
+
+  static async updateCourseProgress(progressData: any) {
+    // Limpar cache após atualização
+    this.clearCache();
+    return this.request('/courses/progress', {
+      method: 'POST',
+      body: JSON.stringify(progressData)
+    });
+  }
 } 
