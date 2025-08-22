@@ -3,19 +3,24 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Configurando npm para melhor performance..."
+        - echo "Configurando ambiente para build otimizado..."
         - npm config set registry https://registry.npmjs.org/
-        - npm config set fetch-timeout 300000
-        - npm config set fetch-retry-mintimeout 20000
-        - npm config set fetch-retry-maxtimeout 120000
+        - npm config set fetch-timeout 600000
+        - npm config set fetch-retry-mintimeout 30000
+        - npm config set fetch-retry-maxtimeout 300000
         - npm config set maxsockets 50
-        - echo "Instalando dependências..."
-        - npm ci --include=dev --prefer-offline --no-audit --no-fund --no-optional || npm install --include=dev
+        - npm config set maxretries 5
+        - npm config set cache-min 9999999
+        - echo "Instalando dependências com fallback..."
+        - npm ci --include=dev --prefer-offline --no-audit --no-fund --no-optional --cache .npm-cache || npm install --include=dev --cache .npm-cache
         - echo "Verificando TypeScript..."
         - npm list typescript @types/react @types/node || npm install typescript @types/react @types/node
+        - echo "Configurando Next.js para build otimizado..."
+        - export NODE_OPTIONS="--max-old-space-size=4096"
+        - export NEXT_TELEMETRY_DISABLED=1
     build:
       commands:
-        - echo "Iniciando build..."
+        - echo "Iniciando build otimizado..."
         - npm run build
   artifacts:
     baseDirectory: .next
@@ -25,6 +30,7 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
+      - .npm-cache/**/*
       - .npm/**/*
   environment:
     variables:
@@ -34,4 +40,5 @@ frontend:
       NEXT_PUBLIC_API_URL: https://uaecareers.com/api
       JWT_SECRET: super-secret-jwt-key-production-leao-careers-2024-mongodb-atlas
       JWT_EXPIRES_IN: 7d
-      NEXTAUTH_SECRET: super-secret-nextauth-key-production-leao-careers-2024 
+      NEXTAUTH_SECRET: super-secret-nextauth-key-production-leao-careers-2024
+      NEXT_TELEMETRY_DISABLED: 1 
