@@ -9,29 +9,19 @@ import styles from './relatorios.module.css';
 
 interface ReportData {
   overview?: {
-    totalUsers: number;
-    totalCompanies: number;
     totalJobs: number;
     totalApplications: number;
-    totalCourses: number;
-    totalSimulations: number;
+    activeJobs: number;
+    approvedApplications: number;
+    hiredApplications: number;
+    conversionRate: number;
   };
-  userStats?: Record<string, number>;
-  applicationStats?: Record<string, number>;
   jobStats?: Record<string, number>;
-  companyStats?: Record<string, number>;
+  applicationStats?: Record<string, number>;
+  monthlyTrends?: Array<{ _id: string; applications: number; approved: number; hired: number }>;
   trends?: Array<{ _id: string; count: number }>;
-  byCompany?: Array<{ _id: string; count: number; approved: number; hired: number }>;
   byJob?: Array<{ _id: string; count: number; approved: number; hired: number }>;
   byStatus?: Array<{ _id: string; count: number }>;
-  byMonth?: Array<{ _id: string; count: number; approved: number; hired: number }>;
-  topCandidates?: Array<{ _id: string; applications: number; approved: number; hired: number }>;
-  conversionRates?: {
-    approvalRate: number;
-    interviewRate: number;
-    hireRate: number;
-    total: number;
-  };
   byCategory?: Array<{ _id: string; count: number }>;
   byLocation?: Array<{ _id: string; count: number }>;
   performance?: Array<{
@@ -40,18 +30,24 @@ interface ReportData {
     approvedApplications: number;
     hiredApplications: number;
   }>;
-  byIndustry?: Array<{ _id: string; count: number }>;
-  bySize?: Array<{ _id: string; count: number }>;
-  topCompanies?: Array<{
-    name: string;
-    industry: string;
-    jobsCount: number;
+  topJobs?: Array<{
+    title: string;
+    category: string;
     applicationsCount: number;
-    activeJobs: number;
+    approvedApplications: number;
   }>;
+  quality?: {
+    avgScreeningScore: number;
+    highQualityRate: number;
+  };
+  responseTime?: {
+    avg: number;
+    min: number;
+    max: number;
+  };
 }
 
-export default function AdminRelatoriosPage() {
+export default function EmpresaRelatoriosPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -59,20 +55,48 @@ export default function AdminRelatoriosPage() {
   const [reportData, setReportData] = useState<ReportData>({});
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [companyId, setCompanyId] = useState('');
   const [jobId, setJobId] = useState('');
+  const [companyId, setCompanyId] = useState('');
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
-    if (!currentUser || currentUser.type !== 'admin') {
-      router.push('/admin/login');
+    if (!currentUser || currentUser.type !== 'empresa') {
+      router.push('/empresa/login');
       return;
     }
     setUser(currentUser);
-    loadReport();
-  }, [router, reportType, startDate, endDate, companyId, jobId]);
+    loadCompanyId();
+  }, [router]);
+
+  useEffect(() => {
+    if (companyId) {
+      loadReport();
+    }
+  }, [companyId, reportType, startDate, endDate, jobId]);
+
+  const loadCompanyId = async () => {
+    try {
+      // Buscar o ID da empresa do usuário atual
+      const response = await fetch('/api/companies', {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.data && data.data.length > 0) {
+          setCompanyId(data.data[0]._id);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar empresa:', error);
+    }
+  };
 
   const loadReport = useCallback(async () => {
+    if (!companyId) return;
+
     try {
       setLoading(true);
       
@@ -80,11 +104,10 @@ export default function AdminRelatoriosPage() {
         type: reportType,
         ...(startDate && { startDate }),
         ...(endDate && { endDate }),
-        ...(companyId && { companyId }),
         ...(jobId && { jobId })
       });
 
-      const response = await fetch(`/api/admin/reports?${params}`, {
+      const response = await fetch(`/api/companies/${companyId}/reports?${params}`, {
         headers: {
           'Authorization': `Bearer ${AuthService.getToken()}`
         }
@@ -101,7 +124,7 @@ export default function AdminRelatoriosPage() {
     } finally {
       setLoading(false);
     }
-  }, [reportType, startDate, endDate, companyId, jobId]);
+  }, [companyId, reportType, startDate, endDate, jobId]);
 
   const exportReport = async (format: 'pdf' | 'excel' | 'csv') => {
     // TODO: Implementar exportação
@@ -144,14 +167,14 @@ export default function AdminRelatoriosPage() {
   }
 
   return (
-    <div className={styles.adminPage}>
-      <DashboardHeader user={user!} userType="admin" />
+    <div className={styles.empresaPage}>
+      <DashboardHeader user={user!} userType="empresa" />
 
       <main className={styles.mainContent}>
         <div className="container">
           <div className={styles.pageHeader}>
-            <h1>Relatórios e Analytics</h1>
-            <p>Análises detalhadas e métricas de performance do sistema</p>
+            <h1>Relatórios da Empresa</h1>
+            <p>Análises detalhadas e métricas de performance da sua empresa</p>
           </div>
 
           {/* Controles de Relatório */}
@@ -163,9 +186,8 @@ export default function AdminRelatoriosPage() {
                 className={styles.reportSelect}
               >
                 <option value="overview">Visão Geral</option>
-                <option value="applications">Candidaturas</option>
                 <option value="jobs">Vagas</option>
-                <option value="companies">Empresas</option>
+                <option value="applications">Candidaturas</option>
               </select>
             </div>
 
@@ -221,31 +243,11 @@ export default function AdminRelatoriosPage() {
                 <div className={styles.metricsGrid}>
                   <div className={styles.metricCard}>
                     <div className={styles.metricIcon}>
-                      <GrUser size={24} />
-                    </div>
-                    <div className={styles.metricContent}>
-                      <h3>{formatNumber(reportData.overview?.totalUsers || 0)}</h3>
-                      <p>Total de Usuários</p>
-                    </div>
-                  </div>
-
-                  <div className={styles.metricCard}>
-                    <div className={styles.metricIcon}>
-                      <GrOrganization size={24} />
-                    </div>
-                    <div className={styles.metricContent}>
-                      <h3>{formatNumber(reportData.overview?.totalCompanies || 0)}</h3>
-                      <p>Empresas Cadastradas</p>
-                    </div>
-                  </div>
-
-                  <div className={styles.metricCard}>
-                    <div className={styles.metricIcon}>
                       <GrBriefcase size={24} />
                     </div>
                     <div className={styles.metricContent}>
                       <h3>{formatNumber(reportData.overview?.totalJobs || 0)}</h3>
-                      <p>Vagas Publicadas</p>
+                      <p>Total de Vagas</p>
                     </div>
                   </div>
 
@@ -258,16 +260,36 @@ export default function AdminRelatoriosPage() {
                       <p>Candidaturas Recebidas</p>
                     </div>
                   </div>
+
+                  <div className={styles.metricCard}>
+                    <div className={styles.metricIcon}>
+                      <GrUser size={24} />
+                    </div>
+                    <div className={styles.metricContent}>
+                      <h3>{formatNumber(reportData.overview?.approvedApplications || 0)}</h3>
+                      <p>Candidatos Aprovados</p>
+                    </div>
+                  </div>
+
+                  <div className={styles.metricCard}>
+                    <div className={styles.metricIcon}>
+                      <GrOrganization size={24} />
+                    </div>
+                    <div className={styles.metricContent}>
+                      <h3>{formatPercentage(reportData.overview?.conversionRate || 0)}</h3>
+                      <p>Taxa de Conversão</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Gráficos */}
                 <div className={styles.chartsGrid}>
                   <div className={styles.chartCard}>
-                    <h3>Distribuição de Usuários</h3>
+                    <h3>Status das Vagas</h3>
                     <div className={styles.pieChart}>
-                      {reportData.userStats && Object.entries(reportData.userStats).map(([type, count]) => (
-                        <div key={type} className={styles.pieSlice}>
-                          <span className={styles.sliceLabel}>{type}</span>
+                      {reportData.jobStats && Object.entries(reportData.jobStats).map(([status, count]) => (
+                        <div key={status} className={styles.pieSlice}>
+                          <span className={styles.sliceLabel}>{getStatusLabel(status)}</span>
                           <span className={styles.sliceValue}>{count}</span>
                         </div>
                       ))}
@@ -292,60 +314,17 @@ export default function AdminRelatoriosPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-
-            {reportType === 'applications' && (
-              <div className={styles.applicationsReport}>
-                {/* Taxas de Conversão */}
-                <div className={styles.conversionMetrics}>
-                  <h3>Taxas de Conversão</h3>
-                  <div className={styles.conversionGrid}>
-                    <div className={styles.conversionCard}>
-                      <h4>{formatPercentage(reportData.conversionRates?.approvalRate || 0)}</h4>
-                      <p>Taxa de Aprovação</p>
-                    </div>
-                    <div className={styles.conversionCard}>
-                      <h4>{formatPercentage(reportData.conversionRates?.interviewRate || 0)}</h4>
-                      <p>Taxa de Entrevista</p>
-                    </div>
-                    <div className={styles.conversionCard}>
-                      <h4>{formatPercentage(reportData.conversionRates?.hireRate || 0)}</h4>
-                      <p>Taxa de Contratação</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Top Candidatos */}
-                <div className={styles.topCandidates}>
-                  <h3>Top Candidatos</h3>
-                  <div className={styles.candidatesList}>
-                    {reportData.topCandidates?.map((candidate, index) => (
-                      <div key={index} className={styles.candidateItem}>
-                        <div className={styles.candidateRank}>#{index + 1}</div>
-                        <div className={styles.candidateInfo}>
-                          <h4>{candidate._id}</h4>
-                          <p>{candidate.applications} candidaturas</p>
-                        </div>
-                        <div className={styles.candidateStats}>
-                          <span>{candidate.approved} aprovadas</span>
-                          <span>{candidate.hired} contratadas</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Tendências Mensais */}
                 <div className={styles.monthlyTrends}>
                   <h3>Tendências Mensais</h3>
                   <div className={styles.trendsChart}>
-                    {reportData.byMonth?.map((month) => (
+                    {reportData.monthlyTrends?.map((month) => (
                       <div key={month._id} className={styles.monthItem}>
                         <span className={styles.monthLabel}>{month._id}</span>
                         <div className={styles.monthBars}>
                           <div className={styles.monthBar}>
-                            <span>Total: {month.count}</span>
+                            <span>Total: {month.applications}</span>
                           </div>
                           <div className={styles.monthBar}>
                             <span>Aprovadas: {month.approved}</span>
@@ -382,6 +361,26 @@ export default function AdminRelatoriosPage() {
                   </div>
                 </div>
 
+                {/* Top Vagas */}
+                <div className={styles.topJobs}>
+                  <h3>Top Vagas</h3>
+                  <div className={styles.jobsList}>
+                    {reportData.topJobs?.map((job, index) => (
+                      <div key={index} className={styles.jobItem}>
+                        <div className={styles.jobRank}>#{index + 1}</div>
+                        <div className={styles.jobInfo}>
+                          <h4>{job.title}</h4>
+                          <p>{job.category}</p>
+                        </div>
+                        <div className={styles.jobStats}>
+                          <span>{job.applicationsCount} candidaturas</span>
+                          <span>{job.approvedApplications} aprovadas</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Vagas por Categoria */}
                 <div className={styles.jobCategories}>
                   <h3>Vagas por Categoria</h3>
@@ -397,37 +396,56 @@ export default function AdminRelatoriosPage() {
               </div>
             )}
 
-            {reportType === 'companies' && (
-              <div className={styles.companiesReport}>
-                {/* Top Empresas */}
-                <div className={styles.topCompanies}>
-                  <h3>Top Empresas</h3>
-                  <div className={styles.companiesList}>
-                    {reportData.topCompanies?.map((company, index) => (
-                      <div key={index} className={styles.companyItem}>
-                        <div className={styles.companyRank}>#{index + 1}</div>
-                        <div className={styles.companyInfo}>
-                          <h4>{company.name}</h4>
-                          <p>{company.industry}</p>
-                        </div>
-                        <div className={styles.companyStats}>
-                          <span>{company.jobsCount} vagas</span>
-                          <span>{company.applicationsCount} candidaturas</span>
-                          <span>{company.activeJobs} ativas</span>
-                        </div>
-                      </div>
-                    ))}
+            {reportType === 'applications' && (
+              <div className={styles.applicationsReport}>
+                {/* Qualidade dos Candidatos */}
+                <div className={styles.candidateQuality}>
+                  <h3>Qualidade dos Candidatos</h3>
+                  <div className={styles.qualityMetrics}>
+                    <div className={styles.qualityCard}>
+                      <h4>{reportData.quality?.avgScreeningScore || 0}%</h4>
+                      <p>Score Médio de Triagem</p>
+                    </div>
+                    <div className={styles.qualityCard}>
+                      <h4>{formatPercentage(reportData.quality?.highQualityRate || 0)}</h4>
+                      <p>Taxa de Candidatos de Alta Qualidade</p>
+                    </div>
                   </div>
                 </div>
 
-                {/* Empresas por Indústria */}
-                <div className={styles.companiesByIndustry}>
-                  <h3>Empresas por Indústria</h3>
-                  <div className={styles.industryList}>
-                    {reportData.byIndustry?.map((industry) => (
-                      <div key={industry._id} className={styles.industryItem}>
-                        <span className={styles.industryName}>{industry._id}</span>
-                        <span className={styles.industryCount}>{industry.count}</span>
+                {/* Tempo de Resposta */}
+                <div className={styles.responseTime}>
+                  <h3>Tempo de Resposta</h3>
+                  <div className={styles.responseMetrics}>
+                    <div className={styles.responseCard}>
+                      <h4>{reportData.responseTime?.avg || 0} dias</h4>
+                      <p>Tempo Médio de Resposta</p>
+                    </div>
+                    <div className={styles.responseCard}>
+                      <h4>{reportData.responseTime?.min || 0} dias</h4>
+                      <p>Resposta Mais Rápida</p>
+                    </div>
+                    <div className={styles.responseCard}>
+                      <h4>{reportData.responseTime?.max || 0} dias</h4>
+                      <p>Resposta Mais Lenta</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Candidaturas por Vaga */}
+                <div className={styles.applicationsByJob}>
+                  <h3>Candidaturas por Vaga</h3>
+                  <div className={styles.applicationsList}>
+                    {reportData.byJob?.map((job) => (
+                      <div key={job._id} className={styles.applicationItem}>
+                        <div className={styles.jobTitle}>
+                          <h4>{job._id}</h4>
+                        </div>
+                        <div className={styles.applicationStats}>
+                          <span>{job.count} total</span>
+                          <span>{job.approved} aprovadas</span>
+                          <span>{job.hired} contratadas</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -439,4 +457,4 @@ export default function AdminRelatoriosPage() {
       </main>
     </div>
   );
-} 
+}
