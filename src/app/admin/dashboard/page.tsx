@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrGroup, GrOrganization, GrLineChart, GrView, GrFilter, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrBarChart, GrAdd, GrDownload, GrDocument, GrBriefcase, GrStar, GrUser } from 'react-icons/gr';
+import { GrGroup, GrOrganization, GrLineChart, GrView, GrFilter, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrBarChart, GrAdd, GrDownload, GrDocument, GrBriefcase, GrStar, GrUser, GrBook, GrTarget } from 'react-icons/gr';
 import styles from './dashboard.module.css';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -20,8 +21,50 @@ export default function AdminDashboard() {
       return;
     }
     setUser(currentUser);
-    setLoading(false);
+    loadDashboardData();
   }, [router]);
+
+  const loadDashboardData = async () => {
+    try {
+      // Carregar estatísticas administrativas
+      const statsResponse = await fetch('/api/admin/stats', {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        setStats(statsData.data);
+      } else {
+        console.warn('Erro ao carregar estatísticas, usando dados mock');
+        // Fallback para dados mock
+        setStats({
+          users: { total: 0, candidates: 0, companies: 0, admins: 0, pending: 0 },
+          companies: { total: 0, pending: 0, active: 0 },
+          jobs: { total: 0, active: 0, draft: 0, closed: 0, expired: 0 },
+          applications: { total: 0, applied: 0, reviewing: 0, interviewed: 0, hired: 0, rejected: 0 },
+          courses: { total: 0, active: 0 },
+          simulations: { total: 0, active: 0 },
+          platform: { monthlyGrowth: 0, activeProcesses: 0, totalRevenue: 0 }
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do dashboard:', error);
+      // Fallback para dados mock em caso de erro
+      setStats({
+        users: { total: 0, candidates: 0, companies: 0, admins: 0, pending: 0 },
+        companies: { total: 0, pending: 0, active: 0 },
+        jobs: { total: 0, active: 0, draft: 0, closed: 0, expired: 0 },
+        applications: { total: 0, applied: 0, reviewing: 0, interviewed: 0, hired: 0, rejected: 0 },
+        courses: { total: 0, active: 0 },
+        simulations: { total: 0, active: 0 },
+        platform: { monthlyGrowth: 0, activeProcesses: 0, totalRevenue: 0 }
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -31,100 +74,9 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!user) {
+  if (!user || !stats) {
     return null;
   }
-
-  const mockData = {
-    stats: {
-      totalCandidates: 1247,
-      pendingCandidates: 89,
-      totalCompanies: 156,
-      pendingCompanies: 23,
-      activeProcesses: 342,
-      monthlyGrowth: 15.2
-    },
-    recentCandidates: [
-      {
-        id: 1,
-        name: 'João Silva',
-        email: 'joao@email.com',
-        position: 'Desenvolvedor Full Stack',
-        experience: 'Sênior',
-        status: 'pending',
-        appliedAt: '2 horas atrás',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face'
-      },
-      {
-        id: 2,
-        name: 'Maria Santos',
-        email: 'maria@email.com',
-        position: 'Product Manager',
-        experience: 'Sênior',
-        status: 'approved',
-        appliedAt: '5 horas atrás',
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face'
-      },
-      {
-        id: 3,
-        name: 'Carlos Oliveira',
-        email: 'carlos@email.com',
-        position: 'UX Designer',
-        experience: 'Pleno',
-        status: 'reviewing',
-        appliedAt: '1 dia atrás',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'
-      }
-    ],
-    recentCompanies: [
-      {
-        id: 1,
-        name: 'TechCorp Dubai',
-        email: 'hr@techcorp.ae',
-        industry: 'Tecnologia',
-        size: '200-500',
-        status: 'pending',
-        registeredAt: '3 horas atrás',
-        logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=40&h=40&fit=crop'
-      },
-      {
-        id: 2,
-        name: 'Innovation Hub',
-        email: 'contact@innohub.ae',
-        industry: 'Consultoria',
-        size: '50-200',
-        status: 'approved',
-        registeredAt: '1 dia atrás',
-        logo: 'https://images.unsplash.com/photo-1549924231-f129b911e442?w=40&h=40&fit=crop'
-      }
-    ],
-    systemLogs: [
-      {
-        id: 1,
-        action: 'Candidato aprovado',
-        user: 'Admin',
-        target: 'João Silva',
-        timestamp: '10:30',
-        type: 'success'
-      },
-      {
-        id: 2,
-        action: 'Empresa cadastrada',
-        user: 'System',
-        target: 'TechCorp Dubai',
-        timestamp: '09:15',
-        type: 'info'
-      },
-      {
-        id: 3,
-        action: 'Login administrativo',
-        user: 'Admin',
-        target: 'Sistema',
-        timestamp: '08:45',
-        type: 'warning'
-      }
-    ]
-  };
 
   return (
     <div className={styles.adminPage}>
@@ -142,13 +94,13 @@ export default function AdminDashboard() {
             <div className={styles.statsGrid}>
               <div className={styles.statCard}>
                 <div className={styles.statIcon}>
-                  <GrGroup size={24} />
+                  <GrUser size={24} />
                 </div>
                 <div className={styles.statContent}>
-                  <h3>{mockData.stats.totalCandidates.toLocaleString()}</h3>
-                  <p>Total de Candidatos</p>
-                  <span className={styles.statChange}>
-                    +{mockData.stats.monthlyGrowth}% este mês
+                  <h3>{stats.users.total}</h3>
+                  <p>Total de Usuários</p>
+                  <span className={styles.statDetail}>
+                    {stats.users.pending} pendentes
                   </span>
                 </div>
               </div>
@@ -158,10 +110,23 @@ export default function AdminDashboard() {
                   <GrOrganization size={24} />
                 </div>
                 <div className={styles.statContent}>
-                  <h3>{mockData.stats.totalCompanies}</h3>
-                  <p>Empresas Ativas</p>
-                  <span className={styles.statChange}>
-                    {mockData.stats.pendingCompanies} pendentes
+                  <h3>{stats.companies.total}</h3>
+                  <p>Empresas</p>
+                  <span className={styles.statDetail}>
+                    {stats.companies.pending} pendentes
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.statCard}>
+                <div className={styles.statIcon}>
+                  <GrBriefcase size={24} />
+                </div>
+                <div className={styles.statContent}>
+                  <h3>{stats.jobs.total}</h3>
+                  <p>Vagas</p>
+                  <span className={styles.statDetail}>
+                    {stats.jobs.active} ativas
                   </span>
                 </div>
               </div>
@@ -171,194 +136,118 @@ export default function AdminDashboard() {
                   <GrLineChart size={24} />
                 </div>
                 <div className={styles.statContent}>
-                  <h3>{mockData.stats.activeProcesses}</h3>
-                  <p>Processos Ativos</p>
-                  <span className={styles.statChange}>
-                    Em andamento
+                  <h3>{stats.applications.total}</h3>
+                  <p>Candidaturas</p>
+                  <span className={styles.statDetail}>
+                    {stats.applications.reviewing} em análise
                   </span>
                 </div>
               </div>
 
               <div className={styles.statCard}>
                 <div className={styles.statIcon}>
-                  <GrUser size={24} />
+                  <GrBook size={24} />
                 </div>
                 <div className={styles.statContent}>
-                  <h3>312</h3>
-                  <p>Contratações Este Mês</p>
-                  <span className={styles.statChange}>
-                    +12,5% em relação ao mês anterior
+                  <h3>{stats.courses.total}</h3>
+                  <p>Cursos</p>
+                  <span className={styles.statDetail}>
+                    {stats.courses.active} ativos
                   </span>
                 </div>
               </div>
 
               <div className={styles.statCard}>
                 <div className={styles.statIcon}>
-                  <GrClock size={24} />
+                  <GrTarget size={24} />
                 </div>
                 <div className={styles.statContent}>
-                  <h3>{mockData.stats.pendingCandidates}</h3>
-                  <p>Aprovações Pendentes</p>
-                  <span className={styles.statChange}>
-                    Requer atenção
+                  <h3>{stats.simulations.total}</h3>
+                  <p>Simulações</p>
+                  <span className={styles.statDetail}>
+                    {stats.simulations.active} ativas
                   </span>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Dashboard GrApps */}
-          <div className={styles.dashboardGrid}>
-            {/* Recent Candidates */}
-            <section className={styles.dashboardCard}>
-              <div className={styles.cardHeader}>
-                <h2>Candidatos Recentes</h2>
-                <div className={styles.cardActions}>
-                  <button className={styles.actionBtn}>
-                    <GrFilter size={18} />
-                  </button>
-                  <Link href="/admin/usuarios" className="btn btn-secondary btn-small">
-                    Ver Todos
-                  </Link>
+          {/* Performance Metrics */}
+          <section className={styles.metricsSection}>
+            <div className={styles.sectionHeader}>
+              <h2>Métricas de Performance</h2>
+            </div>
+            <div className={styles.metricsGrid}>
+              <div className={styles.metricCard}>
+                <div className={styles.metricHeader}>
+                  <h3>Crescimento Mensal</h3>
+                  <GrLineChart size={20} />
+                </div>
+                <div className={styles.metricValue}>
+                  <span className={styles.metricNumber}>+{stats.platform.monthlyGrowth}%</span>
+                  <span className={styles.metricLabel}>vs. mês anterior</span>
                 </div>
               </div>
 
-              <div className={styles.candidatesList}>
-                {mockData.recentCandidates.map((candidate) => (
-                  <div key={candidate.id} className={styles.candidateCard}>
-                    <div className={styles.candidateInfo}>
-                      <img src={candidate.avatar} alt={candidate.name} />
-                      <div className={styles.candidateDetails}>
-                        <h4>{candidate.name}</h4>
-                        <p>{candidate.position}</p>
-                        <span className={styles.candidateEmail}>{candidate.email}</span>
-                      </div>
-                    </div>
-                    
-                    <div className={styles.candidateStatus}>
-                      <span className={`${styles.status} ${styles[candidate.status]}`}>
-                        {candidate.status === 'pending' && <GrClock size={14} />}
-                        {candidate.status === 'approved' && <GrStatusGood size={14} />}
-                        {candidate.status === 'reviewing' && <GrView size={14} />}
-                        {candidate.status === 'pending' ? 'Pendente' : 
-                         candidate.status === 'approved' ? 'Aprovado' : 'Em Análise'}
-                      </span>
-                      <span className={styles.candidateTime}>{candidate.appliedAt}</span>
-                    </div>
-                    
-                    <div className={styles.candidateActions}>
-                      {candidate.status === 'pending' && (
-                        <>
-                          <button className={`${styles.actionButton} ${styles.approve}`}>
-                            <GrUser size={16} />
-                          </button>
-                          <button className={`${styles.actionButton} ${styles.reject}`}>
-                            <GrUser size={16} />
-                          </button>
-                        </>
-                      )}
-                      <button className={styles.actionButton}>
-                        <GrView size={16} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              <div className={styles.metricCard}>
+                <div className={styles.metricHeader}>
+                  <h3>Processos Ativos</h3>
+                  <GrClock size={20} />
+                </div>
+                <div className={styles.metricValue}>
+                  <span className={styles.metricNumber}>{stats.platform.activeProcesses}</span>
+                  <span className={styles.metricLabel}>candidaturas em análise</span>
+                </div>
               </div>
-            </section>
 
-            {/* Sidebar Content */}
-            <aside className={styles.dashboardSidebar}>
-              {/* Recent Companies */}
-              <section className={styles.sidebarCard}>
-                <div className={styles.sidebarCardHeader}>
-                  <h3>Empresas Recentes</h3>
-                  <Link href="/admin/empresas" className={styles.sidebarLink}>
-                    Ver Todas
-                  </Link>
+              <div className={styles.metricCard}>
+                <div className={styles.metricHeader}>
+                  <h3>Taxa de Conversão</h3>
+                  <GrStar size={20} />
                 </div>
-                
-                <div className={styles.companiesList}>
-                  {mockData.recentCompanies.map((company) => (
-                    <div key={company.id} className={styles.companyCard}>
-                      <div className={styles.companyInfo}>
-                        <img src={company.logo} alt={company.name} />
-                        <div>
-                          <h4>{company.name}</h4>
-                          <p>{company.industry}</p>
-                        </div>
-                      </div>
-                      <span className={`${styles.status} ${styles[company.status]}`}>
-                        {company.status === 'pending' ? 'Pendente' : 'Aprovada'}
-                      </span>
-                    </div>
-                  ))}
+                <div className={styles.metricValue}>
+                  <span className={styles.metricNumber}>
+                    {stats.applications.total > 0 
+                      ? Math.round((stats.applications.hired / stats.applications.total) * 100)
+                      : 0}%
+                  </span>
+                  <span className={styles.metricLabel}>candidaturas contratadas</span>
                 </div>
-              </section>
+              </div>
+            </div>
+          </section>
 
-              {/* System Logs */}
-              <section className={styles.sidebarCard}>
-                <div className={styles.sidebarCardHeader}>
-                  <h3>Logs do Sistema</h3>
-                  <Link href="/admin/relatorios" className={styles.sidebarLink}>
-                    Ver Relatórios
-                  </Link>
-                </div>
-                
-                <div className={styles.logsList}>
-                  {mockData.systemLogs.map((log) => (
-                    <div key={log.id} className={styles.logItem}>
-                      <div className={`${styles.logIcon} ${styles[log.type]}`}>
-                        {log.type === 'success' && <GrStatusGood size={14} />}
-                        {log.type === 'info' && <GrLineChart size={14} />}
-                        {log.type === 'warning' && <GrStatusWarning size={14} />}
-                      </div>
-                      
-                      <div className={styles.logContent}>
-                        <p>
-                          <strong>{log.action}</strong> - {log.target}
-                        </p>
-                        <span className={styles.logTime}>
-                          {log.user} • {log.timestamp}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
+          {/* Quick Actions */}
+          <section className={styles.actionsSection}>
+            <div className={styles.sectionHeader}>
+              <h2>Ações Rápidas</h2>
+            </div>
+            <div className={styles.actionsGrid}>
+              <Link href="/admin/usuarios" className={styles.actionCard}>
+                <GrUser size={24} />
+                <h3>Gerenciar Usuários</h3>
+                <p>{stats.users.pending} pendentes de aprovação</p>
+              </Link>
 
-              {/* Quick Actions */}
-              <section className={styles.sidebarCard}>
-                <h3>Ações Rápidas</h3>
-                
-                <div className={styles.quickActions}>
-                  <Link href="/admin/usuarios" className={styles.quickAction}>
-                    <GrGroup size={20} />
-                    <span>Gerenciar Usuários</span>
-                  </Link>
-                  
-                  <Link href="/admin/vagas" className={styles.quickAction}>
-                    <GrBriefcase size={20} />
-                    <span>Gerenciar Vagas</span>
-                  </Link>
-                  
-                  <Link href="/admin/empresas" className={styles.quickAction}>
-                    <GrOrganization size={20} />
-                    <span>Gerenciar Empresas</span>
-                  </Link>
-                  
-                  <Link href="/admin/relatorios" className={styles.quickAction}>
-                    <GrBarChart size={20} />
-                    <span>Ver Relatórios</span>
-                  </Link>
-                  
-                  <button className={styles.quickAction}>
-                    <GrDownload size={20} />
-                    <span>Exportar Dados</span>
-                  </button>
-                </div>
-              </section>
-            </aside>
-          </div>
+              <Link href="/admin/empresas" className={styles.actionCard}>
+                <GrOrganization size={24} />
+                <h3>Gerenciar Empresas</h3>
+                <p>{stats.companies.pending} pendentes de aprovação</p>
+              </Link>
+
+              <Link href="/admin/vagas" className={styles.actionCard}>
+                <GrBriefcase size={24} />
+                <h3>Gerenciar Vagas</h3>
+                <p>{stats.jobs.total} vagas no sistema</p>
+              </Link>
+
+              <Link href="/admin/relatorios" className={styles.actionCard}>
+                <GrBarChart size={24} />
+                <h3>Relatórios</h3>
+                <p>Análises e métricas detalhadas</p>
+              </Link>
+            </div>
+          </section>
         </div>
       </main>
     </div>

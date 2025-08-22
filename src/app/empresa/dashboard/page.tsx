@@ -75,71 +75,86 @@ export default function EmpresaDashboardPage() {
 
   const loadDashboardData = async () => {
     try {
-      // Carregar vagas da empresa
-      const jobsResponse = await ApiService.getJobs({ 
-        limit: 50,
-        page: 1 
+      // Buscar estatísticas da empresa
+      const currentUser = AuthService.getUser();
+      if (!currentUser) return;
+
+      // Buscar empresa do usuário
+      const companyResponse = await ApiService.getCompanies({ 
+        search: currentUser.email,
+        limit: 1,
+        page: 1
       }) as any;
       
-      const jobs = jobsResponse.data || [];
-      setRecentJobs(jobs.slice(0, 5)); // Últimas 5 vagas
+      const company = companyResponse.data?.[0];
+      if (!company) {
+        console.error('Empresa não encontrada para o usuário');
+        return;
+      }
 
-      // Carregar candidaturas
-      const applicationsResponse = await ApiService.getApplications({ 
-        limit: 50,
-        page: 1 
-      }) as any;
-      
-      const applications = applicationsResponse.data || [];
-      setRecentApplications(applications.slice(0, 5)); // Últimas 5 candidaturas
-
-      // Calcular estatísticas
-      const totalVagas = jobs.length;
-      const vagasAtivas = jobs.filter((job: Job) => job.status === 'active').length;
-      const candidatosIndicados = applications.length;
-      const entrevistasAgendadas = applications.filter((app: Application) => 
-        app.status === 'interview_scheduled' || app.status === 'interviewing'
-      ).length;
-      const contratacoes = applications.filter((app: Application) => 
-        app.status === 'hired'
-      ).length;
-
-      setStats({
-        totalVagas,
-        vagasAtivas,
-        candidatosIndicados,
-        entrevistasAgendadas,
-        contratacoes
+      // Carregar estatísticas da empresa
+      const statsResponse = await fetch(`/api/companies/${company._id}/stats`, {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
       });
 
-      // Gerar atividades recentes baseadas nos dados reais
-      const activities: RecentActivity[] = [];
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        const stats = statsData.data;
 
-      // Adicionar vagas recentes
-      jobs.slice(0, 3).forEach((job: Job) => {
-        activities.push({
-          id: job._id,
-          type: 'vaga',
-          title: 'Nova vaga publicada',
-          description: job.title,
-          date: new Date(job.createdAt).toLocaleDateString('pt-BR')
+        setStats({
+          totalVagas: stats.jobs.total,
+          vagasAtivas: stats.jobs.active,
+          candidatosIndicados: stats.applications.total,
+          entrevistasAgendadas: stats.applications.interviewed,
+          contratacoes: stats.applications.hired
         });
-      });
 
-      // Adicionar candidaturas recentes
-      applications.slice(0, 3).forEach((app: Application) => {
-        activities.push({
-          id: app._id,
-          type: 'candidato',
-          title: 'Talentos recomendados',
-          description: `${app.candidateId.name} se candidatou para ${app.jobId.title}`,
-          date: new Date(app.appliedAt).toLocaleDateString('pt-BR')
+        // Atualizar atividades recentes
+        const activities: RecentActivity[] = [];
+
+        // Adicionar vagas recentes
+        stats.recent.jobs.forEach((job: any) => {
+          activities.push({
+            id: job.id,
+            type: 'vaga',
+            title: 'Vaga atualizada',
+            description: job.title,
+            date: new Date(job.createdAt).toLocaleDateString('pt-BR')
+          });
         });
-      });
 
-      // Ordenar por data mais recente
-      activities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      setRecentActivities(activities.slice(0, 5));
+        // Adicionar candidaturas recentes
+        stats.recent.applications.forEach((app: any) => {
+          activities.push({
+            id: app.id,
+            type: 'candidato',
+            title: 'Nova candidatura',
+            description: `${app.candidateName} se candidatou para ${app.jobTitle}`,
+            date: new Date(app.appliedAt).toLocaleDateString('pt-BR')
+          });
+        });
+
+        // Ordenar por data mais recente
+        activities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        setRecentActivities(activities.slice(0, 5));
+
+        // Atualizar vagas e candidaturas recentes
+        setRecentJobs(stats.recent.jobs);
+        setRecentApplications(stats.recent.applications);
+
+      } else {
+        // Fallback para dados mock em caso de erro
+        console.warn('Erro ao carregar estatísticas, usando dados mock');
+        setStats({
+          totalVagas: 0,
+          vagasAtivas: 0,
+          candidatosIndicados: 0,
+          entrevistasAgendadas: 0,
+          contratacoes: 0
+        });
+      }
 
     } catch (error) {
       console.error('Erro ao carregar dados do dashboard:', error);
