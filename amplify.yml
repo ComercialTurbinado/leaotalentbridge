@@ -9,10 +9,8 @@ frontend:
         - npm config set fetch-retry-mintimeout 30000
         - npm config set fetch-retry-maxtimeout 300000
         - npm config set maxsockets 50
-        - npm config set maxretries 5
-        - npm config set cache-min 9999999
         - echo "Instalando dependências com fallback..."
-        - npm ci --include=dev --prefer-offline --no-audit --no-fund --no-optional --cache .npm-cache || npm install --include=dev --cache .npm-cache
+        - npm ci --include=dev --prefer-offline --no-audit --no-fund --omit=optional --cache .npm-cache || npm install --include=dev --cache .npm-cache
         - echo "Verificando TypeScript..."
         - npm list typescript @types/react @types/node || npm install typescript @types/react @types/node
         - echo "Configurando Next.js para build otimizado..."
