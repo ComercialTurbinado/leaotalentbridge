@@ -307,7 +307,7 @@ export default function AdminEmpresasPage() {
         email: empresa.primaryContact?.email || '',
         phone: empresa.primaryContact?.phone || ''
       },
-      status: empresa.status === 'blocked' ? 'suspended' : empresa.status
+      status: empresa.status
     });
     setModalType('edit');
     setShowModal(true);
@@ -525,9 +525,9 @@ export default function AdminEmpresasPage() {
                                                  <div className={styles.locationInfo}>
                            <GrLocation size={14} />
                            <span>
-                             {empresa.location.city && empresa.location.state 
-                               ? `${empresa.location.city}, ${empresa.location.state}`
-                               : empresa.location.country || 'Não informado'
+                             {empresa.address?.city && empresa.address?.state 
+                               ? `${empresa.address.city}, ${empresa.address.state}`
+                               : empresa.address?.country || 'Não informado'
                              }
                            </span>
                          </div>
@@ -683,9 +683,9 @@ export default function AdminEmpresasPage() {
                        <div>
                          <span className={styles.infoLabel}>Localização</span>
                          <span className={styles.infoValue}>
-                           {empresaSelecionada.location.city && empresaSelecionada.location.state 
-                             ? `${empresaSelecionada.location.city}, ${empresaSelecionada.location.state}`
-                             : empresaSelecionada.location.country || 'Não informado'
+                           {empresaSelecionada.address?.city && empresaSelecionada.address?.state 
+                             ? `${empresaSelecionada.address.city}, ${empresaSelecionada.address.state}`
+                             : empresaSelecionada.address?.country || 'Não informado'
                            }
                          </span>
                        </div>
