@@ -14,17 +14,24 @@ interface Empresa {
   cnpj?: string;
   phone?: string;
   industry: string;
-  size: 'small' | 'medium' | 'large' | 'enterprise';
-  location: {
+  size: 'startup' | 'small' | 'medium' | 'large' | 'enterprise';
+  address?: {
+    street?: string;
     city?: string;
     state?: string;
     country?: string;
+    zipCode?: string;
   };
   website?: string;
-  linkedin?: string;
   description?: string;
   logo?: string;
-  status: 'active' | 'inactive' | 'pending' | 'blocked';
+  primaryContact?: {
+    name?: string;
+    position?: string;
+    email?: string;
+    phone?: string;
+  };
+  status: 'pending' | 'active' | 'inactive' | 'suspended' | 'rejected';
   createdAt: string;
   updatedAt: string;
 }
@@ -130,9 +137,11 @@ export default function AdminEmpresasPage() {
         await loadEmpresas();
         setShowModal(false);
         setFormData({
-          name: '', email: '', industry: '', size: 'medium',
-          location: { city: '', state: '', country: '' },
-          website: '', description: '', logo: '', status: 'active'
+          name: '', email: '', cnpj: '', phone: '', industry: '', size: 'medium',
+          address: { street: '', city: '', state: '', country: 'EAU', zipCode: '' },
+          website: '', description: '', logo: '',
+          primaryContact: { name: '', position: '', email: '', phone: '' },
+          status: 'active'
         });
       } else {
         const error = await response.json();
@@ -165,9 +174,11 @@ export default function AdminEmpresasPage() {
         await loadEmpresas();
         setShowModal(false);
         setFormData({
-          name: '', email: '', industry: '', size: 'medium',
-          location: { city: '', state: '', country: '' },
-          website: '', description: '', logo: '', status: 'active'
+          name: '', email: '', cnpj: '', phone: '', industry: '', size: 'medium',
+          address: { street: '', city: '', state: '', country: 'EAU', zipCode: '' },
+          website: '', description: '', logo: '',
+          primaryContact: { name: '', position: '', email: '', phone: '' },
+          status: 'active'
         });
       } else {
         const error = await response.json();
@@ -214,7 +225,8 @@ export default function AdminEmpresasPage() {
       active: 'Ativa',
       inactive: 'Inativa',
       pending: 'Pendente',
-      blocked: 'Bloqueada'
+      suspended: 'Suspensa',
+      rejected: 'Rejeitada'
     };
     return labels[status as keyof typeof labels] || status;
   };
@@ -224,7 +236,8 @@ export default function AdminEmpresasPage() {
       case 'active': return 'green';
       case 'inactive': return 'gray';
       case 'pending': return 'yellow';
-      case 'blocked': return 'red';
+      case 'suspended': return 'orange';
+      case 'rejected': return 'red';
       default: return 'gray';
     }
   };
@@ -274,17 +287,27 @@ export default function AdminEmpresasPage() {
     setFormData({
       name: empresa.name,
       email: empresa.email,
+      cnpj: empresa.cnpj || '',
+      phone: empresa.phone || '',
       industry: empresa.industry,
       size: empresa.size,
-      location: {
-        city: empresa.location.city || '',
-        state: empresa.location.state || '',
-        country: empresa.location.country || ''
+      address: {
+        street: empresa.address?.street || '',
+        city: empresa.address?.city || '',
+        state: empresa.address?.state || '',
+        country: empresa.address?.country || 'EAU',
+        zipCode: empresa.address?.zipCode || ''
       },
       website: empresa.website || '',
       description: empresa.description || '',
       logo: empresa.logo || '',
-      status: empresa.status
+      primaryContact: {
+        name: empresa.primaryContact?.name || '',
+        position: empresa.primaryContact?.position || '',
+        email: empresa.primaryContact?.email || '',
+        phone: empresa.primaryContact?.phone || ''
+      },
+      status: empresa.status === 'blocked' ? 'suspended' : empresa.status
     });
     setModalType('edit');
     setShowModal(true);
@@ -299,9 +322,11 @@ export default function AdminEmpresasPage() {
   const handleCreateEmpresaClick = () => {
     setEmpresaSelecionada(null);
     setFormData({
-      name: '', email: '', industry: '', size: 'medium',
-      location: { city: '', state: '', country: '' },
-      website: '', description: '', logo: '', status: 'active'
+      name: '', email: '', cnpj: '', phone: '', industry: '', size: 'medium',
+      address: { street: '', city: '', state: '', country: 'EAU', zipCode: '' },
+      website: '', description: '', logo: '',
+      primaryContact: { name: '', position: '', email: '', phone: '' },
+      status: 'active'
     });
     setModalType('create');
     setShowModal(true);
