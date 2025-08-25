@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrBriefcase, GrGroup, GrCalendar, GrAdd, GrLineChart, GrClock, GrView, GrUser } from 'react-icons/gr';
+import { GrBriefcase, GrGroup, GrCalendar, GrAdd, GrLineChart, GrClock, GrView, GrUser, GrCheckmark } from 'react-icons/gr';
 import styles from './dashboard.module.css';
 
 interface DashboardStats {
@@ -15,6 +15,10 @@ interface DashboardStats {
   candidatosIndicados: number;
   entrevistasAgendadas: number;
   contratacoes: number;
+  totalIndicacoes: number;
+  indicacoesPendentes: number;
+  indicacoesAceitas: number;
+  taxaAceitacaoIndicacoes: number;
 }
 
 interface RecentActivity {
@@ -57,7 +61,11 @@ export default function EmpresaDashboardPage() {
     vagasAtivas: 0,
     candidatosIndicados: 0,
     entrevistasAgendadas: 0,
-    contratacoes: 0
+    contratacoes: 0,
+    totalIndicacoes: 0,
+    indicacoesPendentes: 0,
+    indicacoesAceitas: 0,
+    taxaAceitacaoIndicacoes: 0
   });
   const [recentActivities, setRecentActivities] = useState<RecentActivity[]>([]);
   const [recentJobs, setRecentJobs] = useState<Job[]>([]);
@@ -108,7 +116,11 @@ export default function EmpresaDashboardPage() {
           vagasAtivas: stats.jobs.active,
           candidatosIndicados: stats.applications.total,
           entrevistasAgendadas: stats.applications.interviewed,
-          contratacoes: stats.applications.hired
+          contratacoes: stats.applications.hired,
+          totalIndicacoes: stats.recommendations?.total || 0,
+          indicacoesPendentes: stats.recommendations?.pending || 0,
+          indicacoesAceitas: stats.recommendations?.accepted || 0,
+          taxaAceitacaoIndicacoes: stats.recommendationAcceptanceRate || 0
         });
 
         // Atualizar atividades recentes
@@ -152,7 +164,11 @@ export default function EmpresaDashboardPage() {
           vagasAtivas: 0,
           candidatosIndicados: 0,
           entrevistasAgendadas: 0,
-          contratacoes: 0
+          contratacoes: 0,
+          totalIndicacoes: 0,
+          indicacoesPendentes: 0,
+          indicacoesAceitas: 0,
+          taxaAceitacaoIndicacoes: 0
         });
       }
 
@@ -164,7 +180,11 @@ export default function EmpresaDashboardPage() {
         vagasAtivas: 0,
         candidatosIndicados: 0,
         entrevistasAgendadas: 0,
-        contratacoes: 0
+        contratacoes: 0,
+        totalIndicacoes: 0,
+        indicacoesPendentes: 0,
+        indicacoesAceitas: 0,
+        taxaAceitacaoIndicacoes: 0
       });
     } finally {
       setLoading(false);
@@ -246,6 +266,53 @@ export default function EmpresaDashboardPage() {
                 <h3>{stats.contratacoes}</h3>
                 <p>Contratações</p>
                 <span className={styles.statDetail}>Realizadas</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Indicações Stats */}
+          <div className={styles.statsGrid}>
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>
+                <GrUser size={24} />
+              </div>
+              <div className={styles.statContent}>
+                <h3>{stats.totalIndicacoes}</h3>
+                <p>Total de Indicações</p>
+                <span className={styles.statDetail}>Candidatos recomendados</span>
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>
+                <GrClock size={24} />
+              </div>
+              <div className={styles.statContent}>
+                <h3>{stats.indicacoesPendentes}</h3>
+                <p>Indicações Pendentes</p>
+                <span className={styles.statDetail}>Aguardando resposta</span>
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>
+                <GrCheckmark size={24} />
+              </div>
+              <div className={styles.statContent}>
+                <h3>{stats.indicacoesAceitas}</h3>
+                <p>Indicações Aceitas</p>
+                <span className={styles.statDetail}>Candidatos aprovados</span>
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>
+                <GrLineChart size={24} />
+              </div>
+              <div className={styles.statContent}>
+                <h3>{stats.taxaAceitacaoIndicacoes}%</h3>
+                <p>Taxa de Aceitação</p>
+                <span className={styles.statDetail}>Das indicações</span>
               </div>
             </div>
           </div>

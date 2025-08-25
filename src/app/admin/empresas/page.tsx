@@ -11,6 +11,8 @@ interface Empresa {
   _id: string;
   name: string;
   email: string;
+  cnpj?: string;
+  phone?: string;
   industry: string;
   size: 'small' | 'medium' | 'large' | 'enterprise';
   location: {
@@ -19,6 +21,7 @@ interface Empresa {
     country?: string;
   };
   website?: string;
+  linkedin?: string;
   description?: string;
   logo?: string;
   status: 'active' | 'inactive' | 'pending' | 'blocked';
@@ -44,13 +47,27 @@ export default function AdminEmpresasPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    cnpj: '',
+    phone: '',
     industry: '',
-    size: 'medium' as 'small' | 'medium' | 'large' | 'enterprise',
-    location: { city: '', state: '', country: '' } as { city: string; state: string; country: string },
+    size: 'medium' as 'startup' | 'small' | 'medium' | 'large' | 'enterprise',
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      country: 'EAU',
+      zipCode: ''
+    },
     website: '',
     description: '',
     logo: '',
-    status: 'active' as 'active' | 'inactive' | 'pending' | 'blocked'
+    primaryContact: {
+      name: '',
+      position: '',
+      email: '',
+      phone: ''
+    },
+    status: 'active' as 'pending' | 'active' | 'inactive' | 'suspended' | 'rejected'
   });
 
   useEffect(() => {
@@ -670,129 +687,251 @@ export default function AdminEmpresasPage() {
 
               {(modalType === 'create' || modalType === 'edit') && (
                 <div className={styles.formSection}>
-                  <div className={styles.formGroup}>
-                    <label>Nome da Empresa</label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Nome da empresa"
-                    />
+                  {/* Dados da Empresa */}
+                  <div className={styles.formSection}>
+                    <h4>Dados da Empresa</h4>
+                    
+                    <div className={styles.formGrid}>
+                      <div className={styles.formGroup}>
+                        <label>Nome da Empresa *</label>
+                        <input
+                          type="text"
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          placeholder="Nome da empresa"
+                          required
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Business ID</label>
+                        <input
+                          type="text"
+                          value={formData.cnpj || ''}
+                          onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })}
+                          placeholder="00.000.000/0000-00"
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>E-mail Corporativo *</label>
+                        <input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          placeholder="contato@empresa.com"
+                          required
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Telefone</label>
+                        <input
+                          type="tel"
+                          value={formData.phone || ''}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          placeholder="+971 (0) 4 000-0000"
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Website</label>
+                        <input
+                          type="url"
+                          value={formData.website || ''}
+                          onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                          placeholder="https://www.empresa.com"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className={styles.formGroup}>
-                    <label>Email</label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="email@empresa.com"
-                    />
+
+                  {/* Localização */}
+                  <div className={styles.formSection}>
+                    <h4>Localização</h4>
+                    
+                    <div className={styles.formGrid}>
+                      <div className={styles.formGroup}>
+                        <label>Endereço *</label>
+                        <input
+                          type="text"
+                          value={formData.address.street}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            address: { ...formData.address, street: e.target.value }
+                          })}
+                          placeholder="Endereço completo da empresa"
+                          required
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Cidade *</label>
+                        <input
+                          type="text"
+                          value={formData.address.city}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            address: { ...formData.address, city: e.target.value }
+                          })}
+                          placeholder="Dubai"
+                          required
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Estado/Emirado *</label>
+                        <select
+                          value={formData.address.state}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            address: { ...formData.address, state: e.target.value }
+                          })}
+                          required
+                        >
+                          <option value="">Selecione</option>
+                          <option value="AZ">Abu Dhabi</option>
+                          <option value="AJ">Ajman</option>
+                          <option value="DU">Dubai</option>
+                          <option value="FU">Fujairah</option>
+                          <option value="RK">Ras Al Khaimah</option>
+                          <option value="SH">Sharjah</option>
+                          <option value="UQ">Umm Al Quwain</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className={styles.formGroup}>
-                    <label>Website</label>
-                    <input
-                      type="url"
-                      value={formData.website}
-                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                      placeholder="https://www.empresa.com"
-                    />
+
+                  {/* Informações da Empresa */}
+                  <div className={styles.formSection}>
+                    <h4>Informações da Empresa</h4>
+                    
+                    <div className={styles.formGrid}>
+                      <div className={styles.formGroup}>
+                        <label>Setor de Atuação *</label>
+                        <select
+                          value={formData.industry}
+                          onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                          required
+                        >
+                          <option value="">Selecione</option>
+                          <option value="tecnologia">Tecnologia</option>
+                          <option value="financeiro">Financeiro</option>
+                          <option value="construcao">Construção</option>
+                          <option value="petroleo">Petróleo e Gás</option>
+                          <option value="turismo">Turismo e Hospitalidade</option>
+                          <option value="saude">Saúde</option>
+                          <option value="educacao">Educação</option>
+                          <option value="varejo">Varejo</option>
+                          <option value="logistica">Logística</option>
+                          <option value="outros">Outros</option>
+                        </select>
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Tamanho da Empresa *</label>
+                        <select
+                          value={formData.size}
+                          onChange={(e) => setFormData({ ...formData, size: e.target.value as any })}
+                          required
+                        >
+                          <option value="">Selecione</option>
+                          <option value="startup">Startup (1-10 funcionários)</option>
+                          <option value="small">Pequena (11-50 funcionários)</option>
+                          <option value="medium">Média (51-200 funcionários)</option>
+                          <option value="large">Grande (201-1000 funcionários)</option>
+                          <option value="enterprise">Corporação (1000+ funcionários)</option>
+                        </select>
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Descrição da Empresa *</label>
+                        <textarea
+                          value={formData.description}
+                          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                          placeholder="Descreva sua empresa, cultura e oportunidades..."
+                          rows={4}
+                          required
+                        />
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className={styles.formGroup}>
-                    <label>Indústria</label>
-                    <select
-                      value={formData.industry}
-                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                    >
-                      <option value="">Selecione uma indústria</option>
-                      <option value="tecnologia">Tecnologia</option>
-                      <option value="saude">Saúde</option>
-                      <option value="financeiro">Financeiro</option>
-                      <option value="educacao">Educação</option>
-                      <option value="varejo">Varejo</option>
-                      <option value="manufactura">Manufatura</option>
-                      <option value="servicos">Serviços</option>
-                    </select>
+
+                  {/* Contato Responsável */}
+                  <div className={styles.formSection}>
+                    <h4>Contato Responsável</h4>
+                    
+                    <div className={styles.formGrid}>
+                      <div className={styles.formGroup}>
+                        <label>Nome do Responsável *</label>
+                        <input
+                          type="text"
+                          value={formData.primaryContact.name}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            primaryContact: { ...formData.primaryContact, name: e.target.value }
+                          })}
+                          placeholder="Nome completo"
+                          required
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Cargo *</label>
+                        <input
+                          type="text"
+                          value={formData.primaryContact.position}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            primaryContact: { ...formData.primaryContact, position: e.target.value }
+                          })}
+                          placeholder="Ex: HR Manager"
+                          required
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Email do Contato *</label>
+                        <input
+                          type="email"
+                          value={formData.primaryContact.email}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            primaryContact: { ...formData.primaryContact, email: e.target.value }
+                          })}
+                          placeholder="contato@empresa.com"
+                          required
+                        />
+                      </div>
+                      
+                      <div className={styles.formGroup}>
+                        <label>Telefone do Contato</label>
+                        <input
+                          type="tel"
+                          value={formData.primaryContact.phone || ''}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            primaryContact: { ...formData.primaryContact, phone: e.target.value }
+                          })}
+                          placeholder="+971 (0) 4 000-0000"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className={styles.formGroup}>
-                    <label>Tamanho</label>
-                    <select
-                      value={formData.size}
-                      onChange={(e) => setFormData({ ...formData, size: e.target.value as any })}
-                    >
-                      <option value="small">Pequena</option>
-                      <option value="medium">Média</option>
-                      <option value="large">Grande</option>
-                      <option value="enterprise">Enterprise</option>
-                    </select>
-                  </div>
-                  
+
+                  {/* Status (apenas para admin) */}
                   <div className={styles.formGroup}>
                     <label>Status</label>
                     <select
                       value={formData.status}
                       onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
                     >
+                      <option value="pending">Pendente</option>
                       <option value="active">Ativa</option>
                       <option value="inactive">Inativa</option>
-                      <option value="pending">Pendente</option>
-                      <option value="blocked">Bloqueada</option>
+                      <option value="suspended">Suspensa</option>
+                      <option value="rejected">Rejeitada</option>
                     </select>
-                  </div>
-                  
-                  <div className={styles.locationSection}>
-                    <h4>Localização</h4>
-                    <div className={styles.locationGrid}>
-                      <div className={styles.formGroup}>
-                        <label>Cidade</label>
-                        <input
-                          type="text"
-                          value={formData.location.city}
-                          onChange={(e) => setFormData({
-                            ...formData,
-                            location: { ...formData.location, city: e.target.value }
-                          })}
-                          placeholder="Cidade"
-                        />
-                      </div>
-                      <div className={styles.formGroup}>
-                        <label>Estado</label>
-                        <input
-                          type="text"
-                          value={formData.location.state}
-                          onChange={(e) => setFormData({
-                            ...formData,
-                            location: { ...formData.location, state: e.target.value }
-                          })}
-                          placeholder="Estado"
-                        />
-                      </div>
-                      <div className={styles.formGroup}>
-                        <label>País</label>
-                        <input
-                          type="text"
-                          value={formData.location.country}
-                          onChange={(e) => setFormData({
-                            ...formData,
-                            location: { ...formData.location, country: e.target.value }
-                          })}
-                          placeholder="País"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.formGroup}>
-                    <label>Descrição</label>
-                    <textarea
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      placeholder="Descrição da empresa..."
-                      rows={4}
-                    />
                   </div>
                 </div>
               )}
