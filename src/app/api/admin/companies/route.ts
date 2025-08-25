@@ -94,11 +94,14 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await request.json();
-    const { name, email, industry, size, location, website, description, logo } = data;
+    const { 
+      name, email, cnpj, phone, industry, size, address, website, description, logo, 
+      primaryContact, status = 'pending' 
+    } = data;
     
-    if (!name || !email || !industry) {
+    if (!name || !email || !industry || !primaryContact?.name || !primaryContact?.position) {
       return NextResponse.json(
-        { success: false, message: 'Nome, email e indústria são obrigatórios' },
+        { success: false, message: 'Nome, email, indústria e contato responsável são obrigatórios' },
         { status: 400 }
       );
     }
@@ -114,17 +117,58 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Verificar se email já existe em usuários
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { success: false, message: 'Email já cadastrado como usuário' },
+        { status: 400 }
+      );
+    }
+
+    // Criar usuário para a empresa
+    const userPassword = Math.random().toString(36).slice(-8); // Senha aleatória de 8 caracteres
+    const newUser = new User({
+      email,
+      password: userPassword, // Será hasheada pelo middleware
+      name: primaryContact.name,
+      type: 'empresa',
+      status: 'approved',
+      profile: {
+        completed: false,
+        company: name,
+        position: primaryContact.position
+      }
+    });
+
+    await newUser.save();
+
     // Criar nova empresa
     const newCompany = new Company({
       name,
       email,
+      cnpj: cnpj || '',
+      phone: phone || '',
       industry,
       size: size || 'medium',
-      location: location || {},
+      address: address || {
+        street: '',
+        city: '',
+        state: '',
+        country: 'EAU',
+        zipCode: ''
+      },
       website: website || '',
       description: description || '',
       logo: logo || '',
-      status: 'active',
+      primaryContact: {
+        name: primaryContact.name,
+        position: primaryContact.position,
+        email: primaryContact.email || email,
+        phone: primaryContact.phone || phone
+      },
+      status,
+      isVerified: false,
       createdAt: new Date(),
       updatedAt: new Date()
     });
