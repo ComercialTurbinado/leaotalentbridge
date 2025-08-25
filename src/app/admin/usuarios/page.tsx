@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -8,18 +8,24 @@ import { GrGroup, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrMail, Gr
 import styles from './usuarios.module.css';
 
 interface Usuario {
-  id: string;
-  nome: string;
+  _id: string;
+  name: string;
   email: string;
-  tipo: 'candidato' | 'empresa' | 'admin';
-  status: 'ativo' | 'inativo' | 'pendente' | 'bloqueado';
-  dataCadastro: string;
-  ultimoAcesso: string;
-  telefone?: string;
-  localizacao?: string;
-  empresa?: string;
-  cargo?: string;
-  avatar?: string;
+  type: 'candidato' | 'empresa' | 'admin';
+  status: 'active' | 'inactive' | 'pending' | 'blocked';
+  profile?: {
+    phone?: string;
+    avatar?: string;
+    experience?: string;
+    skills?: string[];
+    education?: string;
+    languages?: Array<{
+      language: string;
+      level: string;
+    }>;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function AdminUsuariosPage() {
@@ -27,12 +33,22 @@ export default function AdminUsuariosPage() {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [filtroTipo, setFiltroTipo] = useState('todos');
-  const [filtroStatus, setFiltroStatus] = useState('todos');
+  const [filtroTipo, setFiltroTipo] = useState('all');
+  const [filtroStatus, setFiltroStatus] = useState('all');
   const [busca, setBusca] = useState('');
   const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState<'view' | 'edit' | 'create' | 'delete'>('view');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    type: 'candidato' as 'candidato' | 'empresa' | 'admin',
+    status: 'active' as 'active' | 'inactive' | 'pending' | 'blocked'
+  });
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -42,124 +58,154 @@ export default function AdminUsuariosPage() {
     }
     setUser(currentUser);
     loadUsuarios();
-    setLoading(false);
-  }, [router]);
+  }, [router, currentPage, filtroTipo, filtroStatus, busca]);
 
-  const loadUsuarios = () => {
-    // Dados simulados de usuários
-    const usuariosSimulados: Usuario[] = [
-      {
-        id: '1',
-        nome: 'João Silva',
-        email: 'joao.silva@email.com',
-        tipo: 'candidato',
-        status: 'ativo',
-        dataCadastro: '2024-01-15',
-        ultimoAcesso: '2024-06-13',
-        telefone: '+55 11 99999-9999',
-        localizacao: 'São Paulo, SP',
-        cargo: 'Desenvolvedor Full Stack',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face'
-      },
-      {
-        id: '2',
-        nome: 'Maria Santos',
-        email: 'maria.santos@techcorp.ae',
-        tipo: 'empresa',
-        status: 'ativo',
-        dataCadastro: '2024-01-10',
-        ultimoAcesso: '2024-06-13',
-        telefone: '+971 50 123-4567',
-        localizacao: 'Dubai, EAU',
-        empresa: 'TechCorp Dubai',
-        cargo: 'Recrutadora Sênior',
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face'
-      },
-      {
-        id: '3',
-        nome: 'Carlos Oliveira',
-        email: 'carlos.oliveira@email.com',
-        tipo: 'candidato',
-        status: 'pendente',
-        dataCadastro: '2024-06-12',
-        ultimoAcesso: '2024-06-12',
-        telefone: '+55 21 88888-8888',
-        localizacao: 'Rio de Janeiro, RJ',
-        cargo: 'UX Designer',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'
-      },
-      {
-        id: '4',
-        nome: 'Ana Costa',
-        email: 'ana.costa@innovhub.ae',
-        tipo: 'empresa',
-        status: 'ativo',
-        dataCadastro: '2024-02-20',
-        ultimoAcesso: '2024-06-11',
-        telefone: '+971 55 987-6543',
-        localizacao: 'Abu Dhabi, EAU',
-        empresa: 'Innovation Hub',
-        cargo: 'HR Manager',
-        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face'
-      },
-      {
-        id: '5',
-        nome: 'Pedro Almeida',
-        email: 'pedro.almeida@email.com',
-        tipo: 'candidato',
-        status: 'bloqueado',
-        dataCadastro: '2024-03-05',
-        ultimoAcesso: '2024-05-20',
-        telefone: '+55 11 77777-7777',
-        localizacao: 'São Paulo, SP',
-        cargo: 'Product Manager',
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face'
-      },
-      {
-        id: '6',
-        nome: 'Lucia Fernandes',
-        email: 'lucia.fernandes@email.com',
-        tipo: 'candidato',
-        status: 'inativo',
-        dataCadastro: '2024-01-30',
-        ultimoAcesso: '2024-04-15',
-        telefone: '+55 85 66666-6666',
-        localizacao: 'Fortaleza, CE',
-        cargo: 'Data Scientist',
-        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face'
+  const loadUsuarios = useCallback(async () => {
+    try {
+      setLoading(true);
+      
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: '20',
+        ...(filtroTipo !== 'all' && { type: filtroTipo }),
+        ...(filtroStatus !== 'all' && { status: filtroStatus }),
+        ...(busca && { search: busca })
+      });
+
+      const response = await fetch(`/api/admin/users?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUsuarios(data.data);
+        setTotalPages(data.pagination.pages);
+      } else {
+        console.error('Erro ao carregar usuários');
       }
-    ];
+    } catch (error) {
+      console.error('Erro ao carregar usuários:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, filtroTipo, filtroStatus, busca]);
 
-    setUsuarios(usuariosSimulados);
+  const handleCreateUser = async () => {
+    try {
+      setActionLoading('create');
+      
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        await loadUsuarios();
+        setShowModal(false);
+        setFormData({ name: '', email: '', password: '', type: 'candidato', status: 'active' });
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Erro ao criar usuário');
+      }
+    } catch (error) {
+      console.error('Erro ao criar usuário:', error);
+      alert('Erro ao criar usuário');
+    } finally {
+      setActionLoading(null);
+    }
   };
 
-  const usuariosFiltrados = usuarios.filter(usuario => {
-    const matchTipo = filtroTipo === 'todos' || usuario.tipo === filtroTipo;
-    const matchStatus = filtroStatus === 'todos' || usuario.status === filtroStatus;
-    const matchBusca = busca === '' || 
-      usuario.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      usuario.email.toLowerCase().includes(busca.toLowerCase()) ||
-      usuario.empresa?.toLowerCase().includes(busca.toLowerCase());
+  const handleUpdateUser = async () => {
+    if (!usuarioSelecionado) return;
     
-    return matchTipo && matchStatus && matchBusca;
-  });
+    try {
+      setActionLoading('update');
+      
+      const response = await fetch(`/api/admin/users/${usuarioSelecionado._id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        await loadUsuarios();
+        setShowModal(false);
+        setFormData({ name: '', email: '', password: '', type: 'candidato', status: 'active' });
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Erro ao atualizar usuário');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar usuário:', error);
+      alert('Erro ao atualizar usuário');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!usuarioSelecionado) return;
+    
+    try {
+      setActionLoading('delete');
+      
+      const response = await fetch(`/api/admin/users/${usuarioSelecionado._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        await loadUsuarios();
+        setShowModal(false);
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Erro ao deletar usuário');
+      }
+    } catch (error) {
+      console.error('Erro ao deletar usuário:', error);
+      alert('Erro ao deletar usuário');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    const labels = {
+      active: 'Ativo',
+      inactive: 'Inativo',
+      pending: 'Pendente',
+      blocked: 'Bloqueado'
+    };
+    return labels[status as keyof typeof labels] || status;
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ativo': return 'green';
-      case 'inativo': return 'gray';
-      case 'pendente': return 'yellow';
-      case 'bloqueado': return 'red';
+      case 'active': return 'green';
+      case 'inactive': return 'gray';
+      case 'pending': return 'yellow';
+      case 'blocked': return 'red';
       default: return 'gray';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'ativo': return <GrStatusGood size={14} />;
-      case 'inativo': return <GrStatusCritical size={14} />;
-      case 'pendente': return <GrClock size={14} />;
-      case 'bloqueado': return <GrStatusWarning size={14} />;
+      case 'active': return <GrStatusGood size={14} />;
+      case 'inactive': return <GrStatusCritical size={14} />;
+      case 'pending': return <GrClock size={14} />;
+      case 'blocked': return <GrStatusWarning size={14} />;
       default: return <GrStatusCritical size={14} />;
     }
   };
@@ -181,31 +227,33 @@ export default function AdminUsuariosPage() {
 
   const handleEditUser = (usuario: Usuario) => {
     setUsuarioSelecionado(usuario);
+    setFormData({
+      name: usuario.name,
+      email: usuario.email,
+      password: '',
+      type: usuario.type,
+      status: usuario.status
+    });
     setModalType('edit');
     setShowModal(true);
   };
 
-  const handleDeleteUser = (usuario: Usuario) => {
+  const handleDeleteUserClick = (usuario: Usuario) => {
     setUsuarioSelecionado(usuario);
     setModalType('delete');
     setShowModal(true);
   };
 
-  const handleCreateUser = () => {
+  const handleCreateUserClick = () => {
     setUsuarioSelecionado(null);
+    setFormData({ name: '', email: '', password: '', type: 'candidato', status: 'active' });
     setModalType('create');
     setShowModal(true);
   };
 
-  const handleStatusChange = (usuarioId: string, novoStatus: string) => {
-    setUsuarios(prev => 
-      prev.map(u => u.id === usuarioId ? { ...u, status: novoStatus as any } : u)
-    );
-  };
-
   const exportarUsuarios = () => {
-    // Simular exportação
-    alert('Exportando lista de usuários...');
+    // TODO: Implementar exportação
+    alert('Exportação será implementada em breve');
   };
 
   if (loading) {
@@ -242,7 +290,7 @@ export default function AdminUsuariosPage() {
                 Exportar
               </button>
               <button 
-                onClick={handleCreateUser}
+                onClick={handleCreateUserClick}
                 className="btn btn-primary"
               >
                 <GrAdd size={16} />
@@ -258,7 +306,7 @@ export default function AdminUsuariosPage() {
                 <GrGroup size={24} />
               </div>
               <div className={styles.statContent}>
-                <h3>{usuarios.filter(u => u.tipo === 'candidato').length}</h3>
+                <h3>{usuarios.filter(u => u.type === 'candidato').length}</h3>
                 <p>Candidatos</p>
               </div>
             </div>
@@ -267,7 +315,7 @@ export default function AdminUsuariosPage() {
                 <GrOrganization size={24} />
               </div>
               <div className={styles.statContent}>
-                <h3>{usuarios.filter(u => u.tipo === 'empresa').length}</h3>
+                <h3>{usuarios.filter(u => u.type === 'empresa').length}</h3>
                 <p>Empresas</p>
               </div>
             </div>
@@ -276,7 +324,7 @@ export default function AdminUsuariosPage() {
                 <GrStatusGood size={24} />
               </div>
               <div className={styles.statContent}>
-                <h3>{usuarios.filter(u => u.status === 'ativo').length}</h3>
+                <h3>{usuarios.filter(u => u.status === 'active').length}</h3>
                 <p>Ativos</p>
               </div>
             </div>
@@ -285,7 +333,7 @@ export default function AdminUsuariosPage() {
                 <GrClock size={24} />
               </div>
               <div className={styles.statContent}>
-                <h3>{usuarios.filter(u => u.status === 'pendente').length}</h3>
+                <h3>{usuarios.filter(u => u.status === 'pending').length}</h3>
                 <p>Pendentes</p>
               </div>
             </div>
@@ -297,7 +345,7 @@ export default function AdminUsuariosPage() {
               <GrSearch size={20} />
               <input
                 type="text"
-                placeholder="Buscar por nome, e-mail ou empresa..."
+                placeholder="Buscar por nome ou e-mail..."
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
               />
@@ -309,7 +357,7 @@ export default function AdminUsuariosPage() {
                 onChange={(e) => setFiltroTipo(e.target.value)}
                 className={styles.filterSelect}
               >
-                <option value="todos">Todos os Tipos</option>
+                <option value="all">Todos os Tipos</option>
                 <option value="candidato">Candidatos</option>
                 <option value="empresa">Empresas</option>
                 <option value="admin">Administradores</option>
@@ -320,16 +368,16 @@ export default function AdminUsuariosPage() {
                 onChange={(e) => setFiltroStatus(e.target.value)}
                 className={styles.filterSelect}
               >
-                <option value="todos">Todos os Status</option>
-                <option value="ativo">Ativos</option>
-                <option value="inativo">Inativos</option>
-                <option value="pendente">Pendentes</option>
-                <option value="bloqueado">Bloqueados</option>
+                <option value="all">Todos os Status</option>
+                <option value="active">Ativos</option>
+                <option value="inactive">Inativos</option>
+                <option value="pending">Pendentes</option>
+                <option value="blocked">Bloqueados</option>
               </select>
             </div>
           </div>
 
-          {/* GrGroup Table */}
+          {/* Users Table */}
           <div className={styles.tableSection}>
             <div className={styles.tableContainer}>
               <table className={styles.usersTable}>
@@ -338,24 +386,26 @@ export default function AdminUsuariosPage() {
                     <th>Usuário</th>
                     <th>Tipo</th>
                     <th>Status</th>
-                    <th>Último Acesso</th>
                     <th>Cadastro</th>
                     <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {usuariosFiltrados.map((usuario) => (
-                    <tr key={usuario.id}>
+                  {usuarios.map((usuario) => (
+                    <tr key={usuario._id}>
                       <td>
                         <div className={styles.userInfo}>
-                          <img src={usuario.avatar} alt={usuario.nome} />
+                          <img 
+                            src={usuario.profile?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face'} 
+                            alt={usuario.name} 
+                          />
                           <div className={styles.userDetails}>
-                            <h4>{usuario.nome}</h4>
+                            <h4>{usuario.name}</h4>
                             <p>{usuario.email}</p>
-                            {usuario.empresa && (
-                              <span className={styles.userCompany}>
-                                <GrOrganization size={12} />
-                                {usuario.empresa}
+                            {usuario.profile?.phone && (
+                              <span className={styles.userPhone}>
+                                <GrPhone size={12} />
+                                {usuario.profile.phone}
                               </span>
                             )}
                           </div>
@@ -363,24 +413,19 @@ export default function AdminUsuariosPage() {
                       </td>
                       <td>
                         <div className={styles.userType}>
-                          {getTipoIcon(usuario.tipo)}
-                          <span>{usuario.tipo}</span>
+                          {getTipoIcon(usuario.type)}
+                          <span>{usuario.type}</span>
                         </div>
                       </td>
                       <td>
                         <div className={`${styles.statusBadge} ${styles[getStatusColor(usuario.status)]}`}>
                           {getStatusIcon(usuario.status)}
-                          <span>{usuario.status}</span>
+                          <span>{getStatusLabel(usuario.status)}</span>
                         </div>
                       </td>
                       <td>
                         <span className={styles.dateText}>
-                          {new Date(usuario.ultimoAcesso).toLocaleDateString('pt-BR')}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={styles.dateText}>
-                          {new Date(usuario.dataCadastro).toLocaleDateString('pt-BR')}
+                          {new Date(usuario.createdAt).toLocaleDateString('pt-BR')}
                         </span>
                       </td>
                       <td>
@@ -399,25 +444,8 @@ export default function AdminUsuariosPage() {
                           >
                             <GrEdit size={16} />
                           </button>
-                          {usuario.status === 'ativo' ? (
-                            <button 
-                              onClick={() => handleStatusChange(usuario.id, 'inativo')}
-                              className={`${styles.actionBtn} ${styles.danger}`}
-                              title="Desativar"
-                            >
-                              <GrUser size={16} />
-                            </button>
-                          ) : (
-                            <button 
-                              onClick={() => handleStatusChange(usuario.id, 'ativo')}
-                              className={`${styles.actionBtn} ${styles.success}`}
-                              title="Ativar"
-                            >
-                              <GrUser size={16} />
-                            </button>
-                          )}
                           <button 
-                            onClick={() => handleDeleteUser(usuario)}
+                            onClick={() => handleDeleteUserClick(usuario)}
                             className={`${styles.actionBtn} ${styles.danger}`}
                             title="Excluir"
                           >
@@ -431,7 +459,7 @@ export default function AdminUsuariosPage() {
               </table>
             </div>
 
-            {usuariosFiltrados.length === 0 && (
+            {usuarios.length === 0 && (
               <div className={styles.emptyState}>
                 <GrGroup size={48} />
                 <h3>Nenhum usuário encontrado</h3>
@@ -439,6 +467,31 @@ export default function AdminUsuariosPage() {
               </div>
             )}
           </div>
+
+          {/* Paginação */}
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className={styles.paginationBtn}
+              >
+                Anterior
+              </button>
+              
+              <span className={styles.pageInfo}>
+                Página {currentPage} de {totalPages}
+              </span>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className={styles.paginationBtn}
+              >
+                Próxima
+              </button>
+            </div>
+          )}
         </div>
       </main>
 
@@ -465,46 +518,42 @@ export default function AdminUsuariosPage() {
               {modalType === 'view' && usuarioSelecionado && (
                 <div className={styles.userDetails}>
                   <div className={styles.userHeader}>
-                    <img src={usuarioSelecionado.avatar} alt={usuarioSelecionado.nome} />
+                    <img 
+                      src={usuarioSelecionado.profile?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face'} 
+                      alt={usuarioSelecionado.name} 
+                    />
                     <div>
-                      <h3>{usuarioSelecionado.nome}</h3>
+                      <h3>{usuarioSelecionado.name}</h3>
                       <p>{usuarioSelecionado.email}</p>
                       <div className={`${styles.statusBadge} ${styles[getStatusColor(usuarioSelecionado.status)]}`}>
                         {getStatusIcon(usuarioSelecionado.status)}
-                        <span>{usuarioSelecionado.status}</span>
+                        <span>{getStatusLabel(usuarioSelecionado.status)}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className={styles.userInfoGrid}>
                     <div className={styles.infoItem}>
-                      <GrPhone size={16} />
+                      <GrMail size={16} />
                       <div>
-                        <span className={styles.infoLabel}>Telefone</span>
-                        <span className={styles.infoValue}>{usuarioSelecionado.telefone}</span>
+                        <span className={styles.infoLabel}>Email</span>
+                        <span className={styles.infoValue}>{usuarioSelecionado.email}</span>
                       </div>
                     </div>
-                    <div className={styles.infoItem}>
-                      <GrLocation size={16} />
-                      <div>
-                        <span className={styles.infoLabel}>Localização</span>
-                        <span className={styles.infoValue}>{usuarioSelecionado.localizacao}</span>
-                      </div>
-                    </div>
-                    {usuarioSelecionado.empresa && (
+                    {usuarioSelecionado.profile?.phone && (
                       <div className={styles.infoItem}>
-                        <GrOrganization size={16} />
+                        <GrPhone size={16} />
                         <div>
-                          <span className={styles.infoLabel}>Empresa</span>
-                          <span className={styles.infoValue}>{usuarioSelecionado.empresa}</span>
+                          <span className={styles.infoLabel}>Telefone</span>
+                          <span className={styles.infoValue}>{usuarioSelecionado.profile.phone}</span>
                         </div>
                       </div>
                     )}
                     <div className={styles.infoItem}>
-                      <GrBriefcase size={16} />
+                      <GrUser size={16} />
                       <div>
-                        <span className={styles.infoLabel}>Cargo</span>
-                        <span className={styles.infoValue}>{usuarioSelecionado.cargo}</span>
+                        <span className={styles.infoLabel}>Tipo</span>
+                        <span className={styles.infoValue}>{usuarioSelecionado.type}</span>
                       </div>
                     </div>
                     <div className={styles.infoItem}>
@@ -512,19 +561,71 @@ export default function AdminUsuariosPage() {
                       <div>
                         <span className={styles.infoLabel}>Data de Cadastro</span>
                         <span className={styles.infoValue}>
-                          {new Date(usuarioSelecionado.dataCadastro).toLocaleDateString('pt-BR')}
+                          {new Date(usuarioSelecionado.createdAt).toLocaleDateString('pt-BR')}
                         </span>
                       </div>
                     </div>
-                    <div className={styles.infoItem}>
-                      <GrClock size={16} />
-                      <div>
-                        <span className={styles.infoLabel}>Último Acesso</span>
-                        <span className={styles.infoValue}>
-                          {new Date(usuarioSelecionado.ultimoAcesso).toLocaleDateString('pt-BR')}
-                        </span>
-                      </div>
+                  </div>
+                </div>
+              )}
+
+              {(modalType === 'create' || modalType === 'edit') && (
+                <div className={styles.formSection}>
+                  <div className={styles.formGroup}>
+                    <label>Nome</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Nome completo"
+                    />
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="email@exemplo.com"
+                    />
+                  </div>
+                  
+                  {modalType === 'create' && (
+                    <div className={styles.formGroup}>
+                      <label>Senha</label>
+                      <input
+                        type="password"
+                        value={formData.password}
+                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                        placeholder="Senha"
+                      />
                     </div>
+                  )}
+                  
+                  <div className={styles.formGroup}>
+                    <label>Tipo</label>
+                    <select
+                      value={formData.type}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                    >
+                      <option value="candidato">Candidato</option>
+                      <option value="empresa">Empresa</option>
+                      <option value="admin">Administrador</option>
+                    </select>
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Status</label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                    >
+                      <option value="active">Ativo</option>
+                      <option value="inactive">Inativo</option>
+                      <option value="pending">Pendente</option>
+                      <option value="blocked">Bloqueado</option>
+                    </select>
                   </div>
                 </div>
               )}
@@ -536,7 +637,7 @@ export default function AdminUsuariosPage() {
                   </div>
                   <h3>Tem certeza que deseja excluir este usuário?</h3>
                   <p>
-                    Esta ação não pode ser desfeita. O usuário <strong>{usuarioSelecionado.nome}</strong> será 
+                    Esta ação não pode ser desfeita. O usuário <strong>{usuarioSelecionado.name}</strong> será 
                     permanentemente removido do sistema.
                   </p>
                 </div>
@@ -551,17 +652,33 @@ export default function AdminUsuariosPage() {
                 {modalType === 'delete' ? 'Cancelar' : 'Fechar'}
               </button>
               
+              {modalType === 'create' && (
+                <button 
+                  onClick={handleCreateUser}
+                  className="btn btn-primary"
+                  disabled={actionLoading === 'create'}
+                >
+                  {actionLoading === 'create' ? 'Criando...' : 'Criar Usuário'}
+                </button>
+              )}
+              
+              {modalType === 'edit' && (
+                <button 
+                  onClick={handleUpdateUser}
+                  className="btn btn-primary"
+                  disabled={actionLoading === 'update'}
+                >
+                  {actionLoading === 'update' ? 'Atualizando...' : 'Atualizar Usuário'}
+                </button>
+              )}
+              
               {modalType === 'delete' && (
                 <button 
-                  onClick={() => {
-                    // Simular exclusão
-                    setUsuarios(prev => prev.filter(u => u.id !== usuarioSelecionado?.id));
-                    setShowModal(false);
-                  }}
+                  onClick={handleDeleteUser}
                   className="btn btn-danger"
+                  disabled={actionLoading === 'delete'}
                 >
-                  <GrTrash size={16} />
-                  Confirmar Exclusão
+                  {actionLoading === 'delete' ? 'Deletando...' : 'Confirmar Exclusão'}
                 </button>
               )}
             </div>

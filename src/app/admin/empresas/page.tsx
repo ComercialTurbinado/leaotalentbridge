@@ -4,48 +4,26 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { ApiService } from '@/lib/api';
-import { GrOrganization, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrLocation, GrGroup, GrBriefcase, GrGlobe, GrMail, GrPhone, GrCalendar, GrStar, GrDownload, GrClose, GrCheckbox } from 'react-icons/gr';
+import { GrOrganization, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrMail, GrPhone, GrCalendar, GrLocation, GrGlobe, GrDownload, GrUpload, GrMore, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrClose, GrUser, GrStar, GrBriefcase } from 'react-icons/gr';
 import styles from './empresas.module.css';
 
 interface Empresa {
   _id: string;
   name: string;
   email: string;
-  cnpj?: string;
-  registrationNumber?: string;
-  status: 'pending' | 'active' | 'inactive' | 'suspended' | 'rejected';
-  createdAt: string;
-  lastLogin?: string;
-  phone?: string;
-  address: {
-    city: string;
-    state: string;
-    country: string;
-    street: string;
-  };
   industry: string;
-  size: 'startup' | 'small' | 'medium' | 'large' | 'enterprise';
+  size: 'small' | 'medium' | 'large' | 'enterprise';
+  location: {
+    city?: string;
+    state?: string;
+    country?: string;
+  };
   website?: string;
+  description?: string;
   logo?: string;
-  totalJobs: number;
-  activeJobs: number;
-  totalHires: number;
-  averageRating: number;
-  totalReviews: number;
-  isVerified: boolean;
-  verificationDate?: string;
-  plan: {
-    type: 'basic' | 'premium' | 'enterprise';
-    isActive: boolean;
-    maxJobs: number;
-  };
-  primaryContact: {
-    name: string;
-    position: string;
-    email: string;
-    phone?: string;
-  };
+  status: 'active' | 'inactive' | 'pending' | 'blocked';
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function AdminEmpresasPage() {
@@ -53,63 +31,27 @@ export default function AdminEmpresasPage() {
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [empresas, setEmpresas] = useState<Empresa[]>([]);
-  const [filtroStatus, setFiltroStatus] = useState('todas');
-  const [filtroTamanho, setFiltroTamanho] = useState('todos');
+  const [filtroIndustria, setFiltroIndustria] = useState('all');
+  const [filtroStatus, setFiltroStatus] = useState('all');
+  const [filtroTamanho, setFiltroTamanho] = useState('all');
   const [busca, setBusca] = useState('');
   const [empresaSelecionada, setEmpresaSelecionada] = useState<Empresa | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState<'view' | 'approve' | 'reject' | 'delete'>('view');
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 10,
-    total: 0,
-    pages: 0
+  const [modalType, setModalType] = useState<'view' | 'edit' | 'create' | 'delete'>('view');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    industry: '',
+    size: 'medium' as 'small' | 'medium' | 'large' | 'enterprise',
+    location: { city: '', state: '', country: '' } as { city: string; state: string; country: string },
+    website: '',
+    description: '',
+    logo: '',
+    status: 'active' as 'active' | 'inactive' | 'pending' | 'blocked'
   });
-
-  // Função para carregar empresas do banco de dados
-  const loadEmpresas = useCallback(async (filters?: any) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const queryParams: any = {
-        page: pagination.page,
-        limit: pagination.limit
-      };
-      
-      if (filtroStatus !== 'todas') {
-        queryParams.status = filtroStatus;
-      }
-      
-      if (filtroTamanho !== 'todos') {
-        queryParams.size = filtroTamanho;
-      }
-      
-      if (busca.trim()) {
-        queryParams.search = busca.trim();
-      }
-      
-      const response = await ApiService.getCompanies(queryParams) as any;
-      
-      if (response.success) {
-        setEmpresas(response.data || []);
-        setPagination({
-          page: response.pagination?.page || 1,
-          limit: response.pagination?.limit || 10,
-          total: response.pagination?.total || 0,
-          pages: response.pagination?.pages || 0
-        });
-      } else {
-        setError('Erro ao carregar empresas');
-      }
-    } catch (error) {
-      console.error('Erro ao carregar empresas:', error);
-      setError('Erro ao conectar com o servidor');
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.page, pagination.limit, filtroStatus, filtroTamanho, busca]);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -118,24 +60,154 @@ export default function AdminEmpresasPage() {
       return;
     }
     setUser(currentUser);
-  }, [router]);
-  
-  useEffect(() => {
-    if (user) {
-      loadEmpresas();
-    }
-  }, [user, loadEmpresas]);
+    loadEmpresas();
+  }, [router, currentPage, filtroIndustria, filtroStatus, filtroTamanho, busca]);
 
-  // Empresas já são filtradas pelo backend, mas aplicamos filtros locais se necessário
-  const empresasFiltradas = empresas;
+  const loadEmpresas = useCallback(async () => {
+    try {
+      setLoading(true);
+      
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: '20',
+        ...(filtroIndustria !== 'all' && { industry: filtroIndustria }),
+        ...(filtroStatus !== 'all' && { status: filtroStatus }),
+        ...(filtroTamanho !== 'all' && { size: filtroTamanho }),
+        ...(busca && { search: busca })
+      });
+
+      const response = await fetch(`/api/admin/companies?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setEmpresas(data.data);
+        setTotalPages(data.pagination.pages);
+      } else {
+        console.error('Erro ao carregar empresas');
+      }
+    } catch (error) {
+      console.error('Erro ao carregar empresas:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, filtroIndustria, filtroStatus, filtroTamanho, busca]);
+
+  const handleCreateEmpresa = async () => {
+    try {
+      setActionLoading('create');
+      
+      const response = await fetch('/api/admin/companies', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        await loadEmpresas();
+        setShowModal(false);
+        setFormData({
+          name: '', email: '', industry: '', size: 'medium',
+          location: { city: '', state: '', country: '' },
+          website: '', description: '', logo: '', status: 'active'
+        });
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Erro ao criar empresa');
+      }
+    } catch (error) {
+      console.error('Erro ao criar empresa:', error);
+      alert('Erro ao criar empresa');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleUpdateEmpresa = async () => {
+    if (!empresaSelecionada) return;
+    
+    try {
+      setActionLoading('update');
+      
+      const response = await fetch(`/api/admin/companies/${empresaSelecionada._id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        await loadEmpresas();
+        setShowModal(false);
+        setFormData({
+          name: '', email: '', industry: '', size: 'medium',
+          location: { city: '', state: '', country: '' },
+          website: '', description: '', logo: '', status: 'active'
+        });
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Erro ao atualizar empresa');
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar empresa:', error);
+      alert('Erro ao atualizar empresa');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDeleteEmpresa = async () => {
+    if (!empresaSelecionada) return;
+    
+    try {
+      setActionLoading('delete');
+      
+      const response = await fetch(`/api/admin/companies/${empresaSelecionada._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        await loadEmpresas();
+        setShowModal(false);
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Erro ao deletar empresa');
+      }
+    } catch (error) {
+      console.error('Erro ao deletar empresa:', error);
+      alert('Erro ao deletar empresa');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    const labels = {
+      active: 'Ativa',
+      inactive: 'Inativa',
+      pending: 'Pendente',
+      blocked: 'Bloqueada'
+    };
+    return labels[status as keyof typeof labels] || status;
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'active': return 'green';
       case 'inactive': return 'gray';
       case 'pending': return 'yellow';
-      case 'rejected': return 'red';
-      case 'suspended': return 'orange';
+      case 'blocked': return 'red';
       default: return 'gray';
     }
   };
@@ -145,32 +217,33 @@ export default function AdminEmpresasPage() {
       case 'active': return <GrStatusGood size={14} />;
       case 'inactive': return <GrStatusCritical size={14} />;
       case 'pending': return <GrClock size={14} />;
-      case 'rejected': return <GrStatusWarning size={14} />;
-      case 'suspended': return <GrStatusWarning size={14} />;
+      case 'blocked': return <GrStatusWarning size={14} />;
       default: return <GrStatusCritical size={14} />;
     }
   };
 
-  const getStatusDisplayName = (status: string) => {
-    switch (status) {
-      case 'active': return 'Ativa';
-      case 'inactive': return 'Inativa';
-      case 'pending': return 'Pendente';
-      case 'rejected': return 'Rejeitada';
-      case 'suspended': return 'Suspensa';
-      default: return status;
-    }
+  const getTamanhoLabel = (size: string) => {
+    const labels = {
+      small: 'Pequena',
+      medium: 'Média',
+      large: 'Grande',
+      enterprise: 'Enterprise'
+    };
+    return labels[size as keyof typeof labels] || size;
   };
 
-  const getSizeDisplayName = (size: string) => {
-    switch (size) {
-      case 'startup': return 'Startup';
-      case 'small': return 'Pequena';
-      case 'medium': return 'Média';
-      case 'large': return 'Grande';
-      case 'enterprise': return 'Enterprise';
-      default: return size;
-    }
+  const getIndustriaIcon = (industry: string) => {
+    // Mapear indústrias para ícones
+    const industryIcons: { [key: string]: any } = {
+      'tecnologia': <GrBriefcase size={16} />,
+      'saude': <GrUser size={16} />,
+      'financeiro': <GrStar size={16} />,
+      'educacao': <GrUser size={16} />,
+      'varejo': <GrBriefcase size={16} />,
+      'manufactura': <GrOrganization size={16} />,
+      'servicos': <GrBriefcase size={16} />
+    };
+    return industryIcons[industry.toLowerCase()] || <GrOrganization size={16} />;
   };
 
   const handleViewEmpresa = (empresa: Empresa) => {
@@ -179,65 +252,47 @@ export default function AdminEmpresasPage() {
     setShowModal(true);
   };
 
-  const handleApproveEmpresa = (empresa: Empresa) => {
+  const handleEditEmpresa = (empresa: Empresa) => {
     setEmpresaSelecionada(empresa);
-    setModalType('approve');
+    setFormData({
+      name: empresa.name,
+      email: empresa.email,
+      industry: empresa.industry,
+      size: empresa.size,
+      location: {
+        city: empresa.location.city || '',
+        state: empresa.location.state || '',
+        country: empresa.location.country || ''
+      },
+      website: empresa.website || '',
+      description: empresa.description || '',
+      logo: empresa.logo || '',
+      status: empresa.status
+    });
+    setModalType('edit');
     setShowModal(true);
   };
 
-  const handleRejectEmpresa = (empresa: Empresa) => {
-    setEmpresaSelecionada(empresa);
-    setModalType('reject');
-    setShowModal(true);
-  };
-
-  const handleDeleteEmpresa = (empresa: Empresa) => {
+  const handleDeleteEmpresaClick = (empresa: Empresa) => {
     setEmpresaSelecionada(empresa);
     setModalType('delete');
     setShowModal(true);
   };
 
-  const handleStatusChange = async (empresaId: string, novoStatus: string) => {
-    try {
-      const response = await ApiService.updateCompany(empresaId, {
-        status: novoStatus,
-        ...(novoStatus === 'active' && { isVerified: true, verificationDate: new Date().toISOString() })
-      }) as any;
-      
-      if (response.success) {
-        loadEmpresas();
-        setShowModal(false);
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
-    }
-  };
-
-  const confirmDeleteEmpresa = async (empresa: Empresa) => {
-    try {
-      const response = await ApiService.deleteCompany(empresa._id) as any;
-      
-      if (response.success) {
-        loadEmpresas();
-        setShowModal(false);
-      }
-    } catch (error) {
-      console.error('Erro ao deletar empresa:', error);
-    }
+  const handleCreateEmpresaClick = () => {
+    setEmpresaSelecionada(null);
+    setFormData({
+      name: '', email: '', industry: '', size: 'medium',
+      location: { city: '', state: '', country: '' },
+      website: '', description: '', logo: '', status: 'active'
+    });
+    setModalType('create');
+    setShowModal(true);
   };
 
   const exportarEmpresas = () => {
-    alert('Exportando lista de empresas...');
-  };
-
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <GrStar 
-        key={i} 
-        size={12} 
-        className={i < rating ? styles.starFilled : styles.starEmpty}
-      />
-    ));
+    // TODO: Implementar exportação
+    alert('Exportação será implementada em breve');
   };
 
   if (loading) {
@@ -262,7 +317,7 @@ export default function AdminEmpresasPage() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Gestão de Empresas</h1>
-              <p>Gerencie todas as empresas cadastradas na plataforma</p>
+              <p>Gerencie todas as empresas cadastradas na plataforma Leão Talent Bridge</p>
             </div>
             
             <div className={styles.headerActions}>
@@ -272,6 +327,13 @@ export default function AdminEmpresasPage() {
               >
                 <GrDownload size={16} />
                 Exportar
+              </button>
+              <button 
+                onClick={handleCreateEmpresaClick}
+                className="btn btn-primary"
+              >
+                <GrAdd size={16} />
+                Nova Empresa
               </button>
             </div>
           </div>
@@ -293,7 +355,7 @@ export default function AdminEmpresasPage() {
               </div>
               <div className={styles.statContent}>
                 <h3>{empresas.filter(e => e.status === 'active').length}</h3>
-                <p>Ativas</p>
+                <p>Empresas Ativas</p>
               </div>
             </div>
             <div className={styles.statCard}>
@@ -306,12 +368,12 @@ export default function AdminEmpresasPage() {
               </div>
             </div>
             <div className={styles.statCard}>
-              <div className={styles.statIcon}>
-                <GrBriefcase size={24} />
-              </div>
+                              <div className={styles.statIcon}>
+                  <GrOrganization size={24} />
+                </div>
               <div className={styles.statContent}>
-                <h3>{empresas.reduce((acc, e) => acc + e.totalJobs, 0)}</h3>
-                <p>Vagas Publicadas</p>
+                <h3>{new Set(empresas.map(e => e.industry)).size}</h3>
+                <p>Indústrias</p>
               </div>
             </div>
           </div>
@@ -322,7 +384,7 @@ export default function AdminEmpresasPage() {
               <GrSearch size={20} />
               <input
                 type="text"
-                placeholder="Buscar por nome, e-mail ou setor..."
+                placeholder="Buscar por nome, e-mail ou indústria..."
                 value={busca}
                 onChange={(e) => setBusca(e.target.value)}
               />
@@ -330,15 +392,18 @@ export default function AdminEmpresasPage() {
 
             <div className={styles.filters}>
               <select
-                value={filtroStatus}
-                onChange={(e) => setFiltroStatus(e.target.value)}
+                value={filtroIndustria}
+                onChange={(e) => setFiltroIndustria(e.target.value)}
                 className={styles.filterSelect}
               >
-                <option value="todas">Todos os Status</option>
-                <option value="ativa">Ativas</option>
-                <option value="inativa">Inativas</option>
-                <option value="pendente">Pendentes</option>
-                <option value="rejeitada">Reprovadas</option>
+                <option value="all">Todas as Indústrias</option>
+                <option value="tecnologia">Tecnologia</option>
+                <option value="saude">Saúde</option>
+                <option value="financeiro">Financeiro</option>
+                <option value="educacao">Educação</option>
+                <option value="varejo">Varejo</option>
+                <option value="manufactura">Manufatura</option>
+                <option value="servicos">Serviços</option>
               </select>
 
               <select
@@ -346,11 +411,23 @@ export default function AdminEmpresasPage() {
                 onChange={(e) => setFiltroTamanho(e.target.value)}
                 className={styles.filterSelect}
               >
-                <option value="todos">Todos os Portes</option>
-                <option value="startup">Startup</option>
-                <option value="pequena">Pequena</option>
-                <option value="media">Média</option>
-                <option value="grande">Grande</option>
+                <option value="all">Todos os Tamanhos</option>
+                <option value="small">Pequena</option>
+                <option value="medium">Média</option>
+                <option value="large">Grande</option>
+                <option value="enterprise">Enterprise</option>
+              </select>
+
+              <select
+                value={filtroStatus}
+                onChange={(e) => setFiltroStatus(e.target.value)}
+                className={styles.filterSelect}
+              >
+                <option value="all">Todos os Status</option>
+                <option value="active">Ativas</option>
+                <option value="inactive">Inativas</option>
+                <option value="pending">Pendentes</option>
+                <option value="blocked">Bloqueadas</option>
               </select>
             </div>
           </div>
@@ -358,67 +435,65 @@ export default function AdminEmpresasPage() {
           {/* Companies Table */}
           <div className={styles.tableSection}>
             <div className={styles.tableContainer}>
-              <table className={styles.empresasTable}>
+              <table className={styles.companiesTable}>
                 <thead>
                   <tr>
                     <th>Empresa</th>
+                    <th>Indústria</th>
+                    <th>Tamanho</th>
+                    <th>Localização</th>
                     <th>Status</th>
-                    <th>Setor</th>
-                    <th>Porte</th>
-                    <th>Vagas</th>
-                    <th>Total de Contratações</th>
-                    <th>Avaliação</th>
                     <th>Cadastro</th>
                     <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {empresasFiltradas.map((empresa) => (
+                  {empresas.map((empresa) => (
                     <tr key={empresa._id}>
                       <td>
-                        <div className={styles.empresaInfo}>
-                          <img src={empresa.logo || '/default-company-logo.png'} alt={empresa.name} />
-                          <div className={styles.empresaDetails}>
+                        <div className={styles.companyInfo}>
+                          <img 
+                            src={empresa.logo || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=40&h=40&fit=crop&crop=face'} 
+                            alt={empresa.name} 
+                          />
+                          <div className={styles.companyDetails}>
                             <h4>{empresa.name}</h4>
                             <p>{empresa.email}</p>
-                            <span className={styles.empresaLocation}>
-                              <GrLocation size={12} />
-                              {empresa.address?.city}, {empresa.address?.country}
-                            </span>
+                            {empresa.website && (
+                              <span className={styles.companyWebsite}>
+                                <GrGlobe size={12} />
+                                {empresa.website}
+                              </span>
+                            )}
                           </div>
                         </div>
+                      </td>
+                      <td>
+                        <div className={styles.industryInfo}>
+                          {getIndustriaIcon(empresa.industry)}
+                          <span>{empresa.industry}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={styles.sizeBadge}>
+                          {getTamanhoLabel(empresa.size)}
+                        </span>
+                      </td>
+                      <td>
+                                                 <div className={styles.locationInfo}>
+                           <GrLocation size={14} />
+                           <span>
+                             {empresa.location.city && empresa.location.state 
+                               ? `${empresa.location.city}, ${empresa.location.state}`
+                               : empresa.location.country || 'Não informado'
+                             }
+                           </span>
+                         </div>
                       </td>
                       <td>
                         <div className={`${styles.statusBadge} ${styles[getStatusColor(empresa.status)]}`}>
                           {getStatusIcon(empresa.status)}
-                          <span>{getStatusDisplayName(empresa.status)}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <span className={styles.setorText}>{empresa.industry}</span>
-                      </td>
-                      <td>
-                        <span className={styles.tamanhoText}>{getSizeDisplayName(empresa.size)}</span>
-                      </td>
-                      <td>
-                        <div className={styles.vagasInfo}>
-                          <span className={styles.vagasCount}>{empresa.totalJobs}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className={styles.contratacoesInfo}>
-                          <span className={styles.contratacoesCount}>{empresa.totalHires}</span>
-                          <span className={styles.contratacoesLabel}>contratações</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className={styles.avaliacaoInfo}>
-                          <div className={styles.stars}>
-                            {renderStars(empresa.averageRating)}
-                          </div>
-                          <span className={styles.avaliacaoNumero}>
-                            {empresa.averageRating > 0 ? empresa.averageRating.toFixed(1) : 'N/A'}
-                          </span>
+                          <span>{getStatusLabel(empresa.status)}</span>
                         </div>
                       </td>
                       <td>
@@ -435,28 +510,15 @@ export default function AdminEmpresasPage() {
                           >
                             <GrView size={16} />
                           </button>
-                          
-                          {empresa.status === 'pending' && (
-                            <>
-                              <button 
-                                onClick={() => handleApproveEmpresa(empresa)}
-                                className={`${styles.actionBtn} ${styles.success}`}
-                                title="Aprovar"
-                              >
-                                <GrCheckbox size={16} />
-                              </button>
-                              <button 
-                                onClick={() => handleRejectEmpresa(empresa)}
-                                className={`${styles.actionBtn} ${styles.danger}`}
-                                title="Rejeitar"
-                              >
-                                <GrStatusCritical size={16} />
-                              </button>
-                            </>
-                          )}
-                          
                           <button 
-                            onClick={() => handleDeleteEmpresa(empresa)}
+                            onClick={() => handleEditEmpresa(empresa)}
+                            className={styles.actionBtn}
+                            title="Editar"
+                          >
+                            <GrEdit size={16} />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteEmpresaClick(empresa)}
                             className={`${styles.actionBtn} ${styles.danger}`}
                             title="Excluir"
                           >
@@ -470,26 +532,51 @@ export default function AdminEmpresasPage() {
               </table>
             </div>
 
-            {empresasFiltradas.length === 0 && (
+            {empresas.length === 0 && (
               <div className={styles.emptyState}>
                 <GrOrganization size={48} />
                 <h3>Nenhuma empresa encontrada</h3>
-                <p>Tente ajustar os filtros de busca.</p>
+                <p>Tente ajustar os filtros ou criar uma nova empresa.</p>
               </div>
             )}
           </div>
+
+          {/* Paginação */}
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className={styles.paginationBtn}
+              >
+                Anterior
+              </button>
+              
+              <span className={styles.pageInfo}>
+                Página {currentPage} de {totalPages}
+              </span>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className={styles.paginationBtn}
+              >
+                Próxima
+              </button>
+            </div>
+          )}
         </div>
       </main>
 
       {/* Modal */}
-      {showModal && empresaSelecionada && (
+      {showModal && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <h2>
                 {modalType === 'view' && 'Detalhes da Empresa'}
-                {modalType === 'approve' && 'Aprovar Empresa'}
-                {modalType === 'reject' && 'Rejeitar Empresa'}
+                {modalType === 'edit' && 'Editar Empresa'}
+                {modalType === 'create' && 'Nova Empresa'}
                 {modalType === 'delete' && 'Confirmar Exclusão'}
               </h2>
               <button 
@@ -501,111 +588,224 @@ export default function AdminEmpresasPage() {
             </div>
 
             <div className={styles.modalBody}>
-              {modalType === 'view' && (
-                <div className={styles.empresaDetails}>
-                  <div className={styles.empresaHeader}>
-                    <img src={empresaSelecionada.logo || '/default-company-logo.png'} alt={empresaSelecionada.name} />
+              {modalType === 'view' && empresaSelecionada && (
+                <div className={styles.companyDetails}>
+                  <div className={styles.companyHeader}>
+                    <img 
+                      src={empresaSelecionada.logo || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=40&h=40&fit=crop&crop=face'} 
+                      alt={empresaSelecionada.name} 
+                    />
                     <div>
                       <h3>{empresaSelecionada.name}</h3>
                       <p>{empresaSelecionada.email}</p>
                       <div className={`${styles.statusBadge} ${styles[getStatusColor(empresaSelecionada.status)]}`}>
                         {getStatusIcon(empresaSelecionada.status)}
-                        <span>{empresaSelecionada.status}</span>
+                        <span>{getStatusLabel(empresaSelecionada.status)}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className={styles.empresaInfoGrid}>
+                  <div className={styles.companyInfoGrid}>
+                    <div className={styles.infoItem}>
+                      <GrMail size={16} />
+                      <div>
+                        <span className={styles.infoLabel}>Email</span>
+                        <span className={styles.infoValue}>{empresaSelecionada.email}</span>
+                      </div>
+                    </div>
+                    {empresaSelecionada.website && (
+                      <div className={styles.infoItem}>
+                        <GrGlobe size={16} />
+                        <div>
+                          <span className={styles.infoLabel}>Website</span>
+                          <span className={styles.infoValue}>{empresaSelecionada.website}</span>
+                        </div>
+                      </div>
+                    )}
+                                         <div className={styles.infoItem}>
+                       <GrOrganization size={16} />
+                       <div>
+                         <span className={styles.infoLabel}>Indústria</span>
+                         <span className={styles.infoValue}>{empresaSelecionada.industry}</span>
+                       </div>
+                     </div>
                     <div className={styles.infoItem}>
                       <GrOrganization size={16} />
                       <div>
-                        <span className={styles.infoLabel}>Business ID</span>
-                        <span className={styles.infoValue}>{empresaSelecionada.cnpj}</span>
+                        <span className={styles.infoLabel}>Tamanho</span>
+                        <span className={styles.infoValue}>{getTamanhoLabel(empresaSelecionada.size)}</span>
                       </div>
                     </div>
+                                         <div className={styles.infoItem}>
+                       <GrLocation size={16} />
+                       <div>
+                         <span className={styles.infoLabel}>Localização</span>
+                         <span className={styles.infoValue}>
+                           {empresaSelecionada.location.city && empresaSelecionada.location.state 
+                             ? `${empresaSelecionada.location.city}, ${empresaSelecionada.location.state}`
+                             : empresaSelecionada.location.country || 'Não informado'
+                           }
+                         </span>
+                       </div>
+                     </div>
                     <div className={styles.infoItem}>
-                      <GrPhone size={16} />
+                      <GrCalendar size={16} />
                       <div>
-                        <span className={styles.infoLabel}>Telefone</span>
-                        <span className={styles.infoValue}>{empresaSelecionada.phone || 'Não informado'}</span>
-                      </div>
-                    </div>
-                    <div className={styles.infoItem}>
-                      <GrLocation size={16} />
-                      <div>
-                        <span className={styles.infoLabel}>Localização</span>
-                        <span className={styles.infoValue}>{empresaSelecionada.address?.city}, {empresaSelecionada.address?.country}</span>
-                      </div>
-                    </div>
-                    <div className={styles.infoItem}>
-                      <GrBriefcase size={16} />
-                      <div>
-                        <span className={styles.infoLabel}>Setor</span>
-                        <span className={styles.infoValue}>{empresaSelecionada.industry}</span>
-                      </div>
-                    </div>
-                    <div className={styles.infoItem}>
-                      <GrGroup size={16} />
-                      <div>
-                        <span className={styles.infoLabel}>Porte</span>
-                        <span className={styles.infoValue}>{getSizeDisplayName(empresaSelecionada.size)}</span>
-                      </div>
-                    </div>
-                    <div className={styles.infoItem}>
-                      <GrGlobe size={16} />
-                      <div>
-                        <span className={styles.infoLabel}>Website</span>
-                        <span className={styles.infoValue}>{empresaSelecionada.website}</span>
+                        <span className={styles.infoLabel}>Data de Cadastro</span>
+                        <span className={styles.infoValue}>
+                          {new Date(empresaSelecionada.createdAt).toLocaleDateString('pt-BR')}
+                        </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className={styles.responsavelInfo}>
-                    <h4>Responsável</h4>
-                    <div className={styles.responsavelCard}>
-                      <div className={styles.responsavelDetails}>
-                        <h5>{empresaSelecionada.primaryContact.name}</h5>
-                        <p>{empresaSelecionada.primaryContact.position}</p>
-                        <span>{empresaSelecionada.primaryContact.email}</span>
+                  {empresaSelecionada.description && (
+                    <div className={styles.descriptionSection}>
+                      <h4>Descrição</h4>
+                      <p>{empresaSelecionada.description}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {(modalType === 'create' || modalType === 'edit') && (
+                <div className={styles.formSection}>
+                  <div className={styles.formGroup}>
+                    <label>Nome da Empresa</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="Nome da empresa"
+                    />
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="email@empresa.com"
+                    />
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Website</label>
+                    <input
+                      type="url"
+                      value={formData.website}
+                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                      placeholder="https://www.empresa.com"
+                    />
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Indústria</label>
+                    <select
+                      value={formData.industry}
+                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                    >
+                      <option value="">Selecione uma indústria</option>
+                      <option value="tecnologia">Tecnologia</option>
+                      <option value="saude">Saúde</option>
+                      <option value="financeiro">Financeiro</option>
+                      <option value="educacao">Educação</option>
+                      <option value="varejo">Varejo</option>
+                      <option value="manufactura">Manufatura</option>
+                      <option value="servicos">Serviços</option>
+                    </select>
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Tamanho</label>
+                    <select
+                      value={formData.size}
+                      onChange={(e) => setFormData({ ...formData, size: e.target.value as any })}
+                    >
+                      <option value="small">Pequena</option>
+                      <option value="medium">Média</option>
+                      <option value="large">Grande</option>
+                      <option value="enterprise">Enterprise</option>
+                    </select>
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Status</label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                    >
+                      <option value="active">Ativa</option>
+                      <option value="inactive">Inativa</option>
+                      <option value="pending">Pendente</option>
+                      <option value="blocked">Bloqueada</option>
+                    </select>
+                  </div>
+                  
+                  <div className={styles.locationSection}>
+                    <h4>Localização</h4>
+                    <div className={styles.locationGrid}>
+                      <div className={styles.formGroup}>
+                        <label>Cidade</label>
+                        <input
+                          type="text"
+                          value={formData.location.city}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            location: { ...formData.location, city: e.target.value }
+                          })}
+                          placeholder="Cidade"
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label>Estado</label>
+                        <input
+                          type="text"
+                          value={formData.location.state}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            location: { ...formData.location, state: e.target.value }
+                          })}
+                          placeholder="Estado"
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label>País</label>
+                        <input
+                          type="text"
+                          value={formData.location.country}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            location: { ...formData.location, country: e.target.value }
+                          })}
+                          placeholder="País"
+                        />
                       </div>
                     </div>
+                  </div>
+                  
+                  <div className={styles.formGroup}>
+                    <label>Descrição</label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      placeholder="Descrição da empresa..."
+                      rows={4}
+                    />
                   </div>
                 </div>
               )}
 
-              {modalType === 'approve' && (
-                <div className={styles.confirmationContent}>
-                  <div className={styles.confirmationIcon}>
-                    <GrStatusGood size={48} />
-                  </div>
-                  <h3>Aprovar empresa {empresaSelecionada.name}?</h3>
-                  <p>
-                    A empresa será ativada e poderá começar a publicar vagas na plataforma.
-                  </p>
-                </div>
-              )}
-
-              {modalType === 'reject' && (
-                <div className={styles.confirmationContent}>
+              {modalType === 'delete' && empresaSelecionada && (
+                <div className={styles.deleteConfirmation}>
                   <div className={styles.warningIcon}>
-                                            <GrStatusCritical size={48} />
-                  </div>
-                  <h3>Rejeitar empresa {empresaSelecionada.name}?</h3>
-                  <p>
-                    A empresa será rejeitada e não poderá acessar a plataforma.
-                  </p>
-                </div>
-              )}
-
-              {modalType === 'delete' && (
-                <div className={styles.confirmationContent}>
-                  <div className={styles.dangerIcon}>
                     <GrStatusWarning size={48} />
                   </div>
-                  <h3>Excluir empresa {empresaSelecionada.name}?</h3>
+                  <h3>Tem certeza que deseja excluir esta empresa?</h3>
                   <p>
-                    Esta ação não pode ser desfeita. Todos os dados da empresa serão 
-                    permanentemente removidos do sistema.
+                    Esta ação não pode ser desfeita. A empresa <strong>{empresaSelecionada.name}</strong> será 
+                    permanentemente removida do sistema.
                   </p>
                 </div>
               )}
@@ -616,36 +816,36 @@ export default function AdminEmpresasPage() {
                 onClick={() => setShowModal(false)}
                 className="btn btn-secondary"
               >
-                Cancelar
+                {modalType === 'delete' ? 'Cancelar' : 'Fechar'}
               </button>
               
-              {modalType === 'approve' && (
+              {modalType === 'create' && (
                 <button 
-                  onClick={() => handleStatusChange(empresaSelecionada._id, 'active')}
-                  className="btn btn-success"
+                  onClick={handleCreateEmpresa}
+                  className="btn btn-primary"
+                  disabled={actionLoading === 'create'}
                 >
-                  <GrCheckbox size={16} />
-                  Aprovar Empresa
+                  {actionLoading === 'create' ? 'Criando...' : 'Criar Empresa'}
                 </button>
               )}
               
-              {modalType === 'reject' && (
+              {modalType === 'edit' && (
                 <button 
-                  onClick={() => handleStatusChange(empresaSelecionada._id, 'rejected')}
-                  className="btn btn-warning"
+                  onClick={handleUpdateEmpresa}
+                  className="btn btn-primary"
+                  disabled={actionLoading === 'update'}
                 >
-                                                <GrStatusCritical size={16} />
-                  Rejeitar Empresa
+                  {actionLoading === 'update' ? 'Atualizando...' : 'Atualizar Empresa'}
                 </button>
               )}
               
               {modalType === 'delete' && (
                 <button 
-                  onClick={() => confirmDeleteEmpresa(empresaSelecionada)}
+                  onClick={handleDeleteEmpresa}
                   className="btn btn-danger"
+                  disabled={actionLoading === 'delete'}
                 >
-                  <GrTrash size={16} />
-                  Confirmar Exclusão
+                  {actionLoading === 'delete' ? 'Deletando...' : 'Confirmar Exclusão'}
                 </button>
               )}
             </div>
