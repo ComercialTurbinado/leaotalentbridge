@@ -8,12 +8,35 @@ import bcrypt from 'bcryptjs';
 // Verificar autenticação de admin
 async function verifyAdminAuth(request: NextRequest) {
   try {
+    console.log('🔍 Iniciando verificação de admin...');
+    
     const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+    console.log('📋 Auth header:', authHeader ? 'Presente' : 'Ausente');
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ Header Authorization inválido');
+      return null;
+    }
+    
     const token = authHeader.substring(7);
+    console.log('🔑 Token extraído:', token.substring(0, 50) + '...');
+    
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    console.log('🔓 Token decodificado:', {
+      userId: decoded.userId,
+      email: decoded.email,
+      type: decoded.type
+    });
+    
     await connectMongoDB();
     const user = await User.findById(decoded.userId);
+    console.log('👤 Usuário encontrado:', user ? {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      type: user.type,
+      status: user.status
+    } : 'Não encontrado');
     
     // Admin deve ter acesso total independente do status
     if (user?.type === 'admin') {
@@ -21,9 +44,10 @@ async function verifyAdminAuth(request: NextRequest) {
       return user;
     }
     
+    console.log('❌ Usuário não é admin ou não encontrado');
     return null;
   } catch (error) {
-    console.error('Erro na verificação de admin:', error);
+    console.error('❌ Erro na verificação de admin:', error);
     return null;
   }
 }
