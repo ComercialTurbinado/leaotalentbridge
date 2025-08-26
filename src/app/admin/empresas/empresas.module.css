@@ -668,4 +668,13 @@
   .locationGrid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Help Text */
+.helpText {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #718096;
+  font-style: italic;
 } 

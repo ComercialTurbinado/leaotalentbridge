@@ -189,8 +189,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Criar usuário para a empresa
-    const userPassword = Math.random().toString(36).slice(-8); // Senha aleatória de 8 caracteres
-    console.log('🔑 Senha gerada para usuário:', userPassword);
+    const userPassword = tempPassword || Math.random().toString(36).slice(-8); // Senha temporária ou aleatória
+    console.log('🔑 Senha definida para usuário:', userPassword);
     
     const hashedPassword = await bcrypt.hash(userPassword, 10);
     

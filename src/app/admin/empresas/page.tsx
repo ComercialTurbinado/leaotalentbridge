@@ -74,7 +74,8 @@ export default function AdminEmpresasPage() {
       email: '',
       phone: ''
     },
-    status: 'active' as 'pending' | 'active' | 'inactive' | 'suspended' | 'rejected'
+    status: 'active' as 'pending' | 'active' | 'inactive' | 'suspended' | 'rejected',
+    tempPassword: ''
   });
 
   useEffect(() => {
@@ -158,7 +159,7 @@ export default function AdminEmpresasPage() {
           address: { street: '', city: '', state: '', country: 'EAU', zipCode: '' },
           website: '', description: '', logo: '',
           primaryContact: { name: '', position: '', email: '', phone: '' },
-          status: 'active'
+          status: 'active', tempPassword: ''
         });
       } else {
         const error = await response.json();
@@ -195,7 +196,7 @@ export default function AdminEmpresasPage() {
           address: { street: '', city: '', state: '', country: 'EAU', zipCode: '' },
           website: '', description: '', logo: '',
           primaryContact: { name: '', position: '', email: '', phone: '' },
-          status: 'active'
+          status: 'active', tempPassword: ''
         });
       } else {
         const error = await response.json();
@@ -324,7 +325,7 @@ export default function AdminEmpresasPage() {
         email: empresa.primaryContact?.email || '',
         phone: empresa.primaryContact?.phone || ''
       },
-      status: empresa.status
+      status: empresa.status, tempPassword: ''
     });
     setModalType('edit');
     setShowModal(true);
@@ -343,7 +344,7 @@ export default function AdminEmpresasPage() {
       address: { street: '', city: '', state: '', country: 'EAU', zipCode: '' },
       website: '', description: '', logo: '',
       primaryContact: { name: '', position: '', email: '', phone: '' },
-      status: 'active'
+      status: 'active', tempPassword: ''
     });
     setModalType('create');
     setShowModal(true);
@@ -975,6 +976,22 @@ export default function AdminEmpresasPage() {
                       <option value="rejected">Rejeitada</option>
                     </select>
                   </div>
+
+                  {/* Senha Temporária (apenas para criação) */}
+                  {modalType === 'create' && (
+                    <div className={styles.formGroup}>
+                      <label>Senha Temporária (opcional)</label>
+                      <input
+                        type="text"
+                        value={formData.tempPassword}
+                        onChange={(e) => setFormData({ ...formData, tempPassword: e.target.value })}
+                        placeholder="Deixe em branco para gerar senha automática"
+                      />
+                      <small className={styles.helpText}>
+                        Se não informada, será gerada uma senha aleatória de 8 caracteres
+                      </small>
+                    </div>
+                  )}
                 </div>
               )}
 
