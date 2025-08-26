@@ -254,9 +254,16 @@ export default function AdminCandidatoPage() {
   };
 
   const handleViewDocument = (doc: Document) => {
+    console.log('🔍 Tentando visualizar documento:', doc);
+    console.log('📁 fileUrl:', doc.fileUrl);
+    console.log('📄 fileName:', doc.fileName);
+    console.log('🔧 mimeType:', doc.mimeType);
+    
     // Para arquivos base64, converter para blob e abrir
     if (doc.fileUrl && !doc.fileUrl.startsWith('http')) {
       try {
+        console.log('📝 Processando arquivo base64...');
+        
         // Determinar o tipo MIME
         let mimeType = doc.mimeType;
         if (!mimeType) {
@@ -271,10 +278,13 @@ export default function AdminCandidatoPage() {
             'txt': 'text/plain'
           };
           mimeType = mimeTypes[extension || ''] || 'application/octet-stream';
+          console.log('🔧 MIME type detectado:', mimeType);
         }
 
         // Converter base64 para blob
         const base64Data = doc.fileUrl.includes(',') ? doc.fileUrl.split(',')[1] : doc.fileUrl;
+        console.log('📊 Tamanho base64:', base64Data.length);
+        
         const byteCharacters = atob(base64Data);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -285,13 +295,14 @@ export default function AdminCandidatoPage() {
 
         // Criar URL do blob
         const blobUrl = URL.createObjectURL(blob);
+        console.log('🔗 Blob URL criada:', blobUrl);
 
         // Abrir em nova aba ou download
         if (mimeType.startsWith('image/') || mimeType === 'application/pdf' || mimeType === 'text/plain') {
-          // Abrir em nova aba
+          console.log('🌐 Abrindo em nova aba...');
           window.open(blobUrl, '_blank');
         } else {
-          // Download para outros tipos
+          console.log('⬇️ Fazendo download...');
           const link = document.createElement('a');
           link.href = blobUrl;
           link.download = doc.fileName;
@@ -300,15 +311,17 @@ export default function AdminCandidatoPage() {
 
         // Limpar URL do blob
         setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        console.log('✅ Documento processado com sucesso!');
       } catch (error) {
-        console.error('Erro ao visualizar documento:', error);
-        alert('Erro ao visualizar documento');
+        console.error('❌ Erro ao visualizar documento:', error);
+        alert('Erro ao visualizar documento: ' + error.message);
       }
     } else if (doc.fileUrl && doc.fileUrl.startsWith('http')) {
-      // URL externa, abrir em nova aba
+      console.log('🌐 Abrindo URL externa...');
       window.open(doc.fileUrl, '_blank');
     } else {
-      alert('Documento não pode ser visualizado');
+      console.log('❌ Documento não pode ser visualizado - fileUrl:', doc.fileUrl);
+      alert('Documento não pode ser visualizado - fileUrl inválido');
     }
   };
 
