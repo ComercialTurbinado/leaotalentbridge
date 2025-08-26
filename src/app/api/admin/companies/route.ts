@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
     
     const { 
       name, email, cnpj, phone, industry, size, address, website, description, logo, 
-      primaryContact, status = 'pending', plan 
+      primaryContact, status = 'pending', plan, tempPassword 
     } = data;
 
     // Converter industry se necessário
