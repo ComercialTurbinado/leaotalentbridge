@@ -1,22 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
+import CandidateDocument from '@/lib/models/CandidateDocument';
 import User from '@/lib/models/User';
-import jwt from 'jsonwebtoken';
+import { verifyAuth } from '@/lib/middleware/auth';
 
-async function verifyAuth(request: NextRequest) {
-  try {
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-    const token = authHeader.substring(7);
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    await connectMongoDB();
-    return await User.findById(decoded.userId);
-  } catch (error) {
-    return null;
-  }
-}
-
-// GET - Buscar documentos do candidato
+// GET - Listar documentos do candidato
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -24,30 +12,30 @@ export async function GET(
   try {
     const user = await verifyAuth(request);
     if (!user) {
-      return NextResponse.json({ success: false, message: 'Token inválido' }, { status: 401 });
+      return NextResponse.json({ success: false, message: 'Acesso negado' }, { status: 403 });
     }
 
     const resolvedParams = await params;
     await connectMongoDB();
-    
-    // Verificar permissões - apenas o próprio candidato ou admin pode ver
-    const canView = user.type === 'admin' || user._id.toString() === resolvedParams.id;
-    if (!canView) {
-      return NextResponse.json({ success: false, message: 'Acesso negado' }, { status: 403 });
-    }
 
+    // Verificar se o candidato existe
     const candidate = await User.findById(resolvedParams.id);
-    if (!candidate) {
+    if (!candidate || candidate.type !== 'candidato') {
       return NextResponse.json({ success: false, message: 'Candidato não encontrado' }, { status: 404 });
     }
 
-    // Retornar documentos do candidato (do perfil)
-    const documents = candidate.profile?.documents || [];
+    // Verificar se o usuário tem permissão para acessar os documentos
+    if (user.type !== 'admin' && user._id.toString() !== resolvedParams.id) {
+      return NextResponse.json({ success: false, message: 'Acesso negado aos documentos' }, { status: 403 });
+    }
+
+    const documents = await CandidateDocument.find({ candidateId: resolvedParams.id })
+      .sort({ createdAt: -1 });
 
     return NextResponse.json({
       success: true,
       data: documents,
-      message: 'Documentos carregados com sucesso'
+      message: `${documents.length} documento(s) encontrado(s)`
     });
   } catch (error) {
     console.error('Erro ao buscar documentos:', error);

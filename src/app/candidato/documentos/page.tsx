@@ -11,19 +11,20 @@ import DashboardHeader from '@/components/DashboardHeader';
 import styles from './documentos.module.css';
 
 interface Document {
-  id: string;
-  name: string;
-  type: string;
-  category?: 'sent' | 'received';
-  size?: string;
-  format?: string;
-  uploadDate: string;
-  status: 'pending' | 'approved' | 'rejected';
+  _id: string;
+  type: 'cv' | 'certificate' | 'contract' | 'form' | 'other';
+  fileType: 'pdf' | 'doc' | 'docx' | 'jpg' | 'jpeg' | 'png' | 'txt';
+  title: string;
   description?: string;
-  feedback?: string;
-  downloadUrl?: string;
-  version?: number;
-  tags?: string[];
+  fileName: string;
+  fileUrl: string;
+  fileSize: number;
+  mimeType: string;
+  status: 'pending' | 'verified' | 'rejected';
+  uploadedBy: 'candidate' | 'admin';
+  createdAt: string;
+  verifiedAt?: string;
+  adminComments?: string;
 }
 
 export default function CandidatoDocumentos() {
@@ -61,24 +62,7 @@ export default function CandidatoDocumentos() {
       const response = await ApiService.getCandidateDocuments(user._id) as any;
       
       if (response.success) {
-        // Converter dados da API para o formato esperado pela interface
-        const apiDocuments = response.data.map((doc: any) => ({
-          id: doc.id || doc._id,
-          name: doc.name,
-          type: doc.type,
-          category: 'sent', // Documentos enviados pelo candidato
-          size: doc.size || '',
-          format: doc.format || '',
-          uploadDate: new Date(doc.uploadedAt).toISOString().split('T')[0],
-          status: doc.status,
-          description: doc.description || '',
-          feedback: doc.feedback || '',
-          downloadUrl: doc.url,
-          version: doc.version || 1,
-          tags: doc.tags || []
-        }));
-
-        setDocuments(apiDocuments);
+        setDocuments(response.data);
       } else {
         setError('Erro ao carregar documentos');
       }
@@ -208,22 +192,22 @@ export default function CandidatoDocumentos() {
   };
 
   const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doc.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+                         doc.fileType?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesType = !selectedType || doc.type === selectedType;
     const matchesStatus = !selectedStatus || doc.status === selectedStatus;
-    const matchesCategory = activeTab === 'enviados' ? doc.category === 'sent' : doc.category === 'received';
+    const matchesCategory = activeTab === 'enviados' ? doc.uploadedBy === 'candidate' : doc.uploadedBy === 'admin';
     
     return matchesSearch && matchesType && matchesStatus && matchesCategory;
   });
 
   const stats = {
-    total: documents.filter(d => d.category === 'sent').length,
-    approved: documents.filter(d => d.category === 'sent' && d.status === 'approved').length,
-    pending: documents.filter(d => d.category === 'sent' && d.status === 'pending').length,
-    received: documents.filter(d => d.category === 'received').length
+    total: documents.filter(d => d.uploadedBy === 'candidate').length,
+    approved: documents.filter(d => d.uploadedBy === 'candidate' && d.status === 'verified').length,
+    pending: documents.filter(d => d.uploadedBy === 'candidate' && d.status === 'pending').length,
+    received: documents.filter(d => d.uploadedBy === 'admin').length
   };
 
   if (loading) {
@@ -280,8 +264,8 @@ export default function CandidatoDocumentos() {
                 <GrStatusGood size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{documents.filter(d => d.status === 'approved').length}</h3>
-                <p>Aprovados</p>
+                <h3>{documents.filter(d => d.status === 'verified').length}</h3>
+                <p>Verificados</p>
               </div>
             </div>
 

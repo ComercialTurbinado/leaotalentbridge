@@ -253,6 +253,126 @@ export default function AdminCandidatoPage() {
     }
   };
 
+  const handleViewDocument = (doc: Document) => {
+    // Para arquivos base64, converter para blob e abrir
+    if (doc.fileUrl && !doc.fileUrl.startsWith('http')) {
+      try {
+        // Determinar o tipo MIME
+        let mimeType = doc.mimeType;
+        if (!mimeType) {
+          const extension = doc.fileName.split('.').pop()?.toLowerCase();
+          const mimeTypes: { [key: string]: string } = {
+            'pdf': 'application/pdf',
+            'doc': 'application/msword',
+            'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'jpg': 'image/jpeg',
+            'jpeg': 'image/jpeg',
+            'png': 'image/png',
+            'txt': 'text/plain'
+          };
+          mimeType = mimeTypes[extension || ''] || 'application/octet-stream';
+        }
+
+        // Converter base64 para blob
+        const base64Data = doc.fileUrl.includes(',') ? doc.fileUrl.split(',')[1] : doc.fileUrl;
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: mimeType });
+
+        // Criar URL do blob
+        const blobUrl = URL.createObjectURL(blob);
+
+        // Abrir em nova aba ou download
+        if (mimeType.startsWith('image/') || mimeType === 'application/pdf' || mimeType === 'text/plain') {
+          // Abrir em nova aba
+          window.open(blobUrl, '_blank');
+        } else {
+          // Download para outros tipos
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = doc.fileName;
+          link.click();
+        }
+
+        // Limpar URL do blob
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      } catch (error) {
+        console.error('Erro ao visualizar documento:', error);
+        alert('Erro ao visualizar documento');
+      }
+    } else if (doc.fileUrl && doc.fileUrl.startsWith('http')) {
+      // URL externa, abrir em nova aba
+      window.open(doc.fileUrl, '_blank');
+    } else {
+      alert('Documento não pode ser visualizado');
+    }
+  };
+
+  const handleDownloadDocument = async (doc: Document) => {
+    try {
+      const response = await fetch(`/api/admin/candidates/${candidatoId}/documents/${doc._id}/download`, {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        // Para arquivos base64, fazer download direto
+        if (doc.fileUrl && !doc.fileUrl.startsWith('http')) {
+          try {
+            // Determinar o tipo MIME
+            let mimeType = doc.mimeType;
+            if (!mimeType) {
+              const extension = doc.fileName.split('.').pop()?.toLowerCase();
+              const mimeTypes: { [key: string]: string } = {
+                'pdf': 'application/pdf',
+                'doc': 'application/msword',
+                'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg',
+                'png': 'image/png',
+                'txt': 'text/plain'
+              };
+              mimeType = mimeTypes[extension || ''] || 'application/octet-stream';
+            }
+
+            // Converter base64 para blob e download
+            const base64Data = doc.fileUrl.includes(',') ? doc.fileUrl.split(',')[1] : doc.fileUrl;
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: mimeType });
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = doc.fileName;
+            link.click();
+            URL.revokeObjectURL(link.href);
+          } catch (error) {
+            console.error('Erro ao fazer download:', error);
+            alert('Erro ao fazer download');
+          }
+        } else {
+          // Para URLs externas, redirecionar
+          window.open(doc.fileUrl, '_blank');
+        }
+      } else {
+        const errorData = await response.json();
+        alert(`Erro ao fazer download: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error('Erro ao fazer download:', error);
+      alert('Erro ao fazer download');
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       pending: { label: 'Pendente', className: styles.statusPending, icon: <GrPending size={14} /> },
@@ -622,11 +742,17 @@ export default function AdminCandidatoPage() {
                         </div>
 
                         <div className={styles.documentActions}>
-                          <button className="btn btn-secondary btn-sm">
+                          <button 
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => handleViewDocument(doc)}
+                          >
                             <GrView size={14} />
                             Visualizar
                           </button>
-                          <button className="btn btn-primary btn-sm">
+                          <button 
+                            className="btn btn-primary btn-sm"
+                            onClick={() => handleDownloadDocument(doc)}
+                          >
                             <GrDownload size={14} />
                             Download
                           </button>
