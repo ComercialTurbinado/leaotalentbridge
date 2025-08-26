@@ -51,7 +51,7 @@ type TabType = 'overview' | 'documents' | 'interviews' | 'connections' | 'evalua
 export default function AdminCandidatoPage() {
   const router = useRouter();
   const params = useParams();
-  const candidatoId = params.id as string;
+  const candidatoId = params?.id as string;
   
   const [user, setUser] = useState<UserType | null>(null);
   const [candidato, setCandidato] = useState<Candidato | null>(null);
