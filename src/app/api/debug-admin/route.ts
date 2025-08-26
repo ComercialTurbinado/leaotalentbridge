@@ -182,3 +182,43 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
+
+// DELETE - Listar todos os admins (usando DELETE para não conflitar com GET)
+export async function DELETE(request: NextRequest) {
+  try {
+    await connectMongoDB();
+    
+    const admins = await User.find({ type: 'admin' }).select('-password');
+    
+    if (!admins || admins.length === 0) {
+      return NextResponse.json({
+        success: false,
+        message: 'Nenhum admin encontrado no sistema'
+      });
+    }
+    
+    return NextResponse.json({
+      success: true,
+      data: {
+        total: admins.length,
+        admins: admins.map(admin => ({
+          _id: admin._id,
+          email: admin.email,
+          name: admin.name,
+          type: admin.type,
+          status: admin.status || 'N/A',
+          createdAt: admin.createdAt,
+          updatedAt: admin.updatedAt,
+          profile: admin.profile
+        }))
+      },
+      message: `${admins.length} admin(s) encontrado(s) no sistema`
+    });
+  } catch (error) {
+    console.error('Erro ao listar admins:', error);
+    return NextResponse.json(
+      { success: false, message: 'Erro ao listar admins' },
+      { status: 500 }
+    );
+  }
+}
