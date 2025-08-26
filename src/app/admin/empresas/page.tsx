@@ -124,10 +124,27 @@ export default function AdminEmpresasPage() {
     try {
       setActionLoading('create');
       
+      const token = AuthService.getToken();
+      const user = AuthService.getUser();
+      
+      console.log('🔍 Debug - Token:', token ? 'Presente' : 'Ausente');
+      console.log('🔍 Debug - Usuário:', user);
+      console.log('🔍 Debug - Tipo:', user?.type);
+      
+      if (!token) {
+        alert('Token não encontrado. Faça login novamente.');
+        return;
+      }
+      
+      if (user?.type !== 'admin') {
+        alert('Usuário não é administrador.');
+        return;
+      }
+      
       const response = await fetch('/api/admin/companies', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${AuthService.getToken()}`,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
