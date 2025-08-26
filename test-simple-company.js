@@ -55,12 +55,25 @@ function testSimpleCompany(token) {
   
   // Dados mais simples
   const companyData = JSON.stringify({
-    name: 'Empresa Simples',
-    email: 'simples@empresa.com',
-    industry: 'Tecnologia',
+    name: 'Empresa Teste API',
+    email: 'teste-api-' + Date.now() + '@empresa.com',
+    industry: 'technology',
+    size: 'medium',
+    address: {
+      street: 'Rua Teste, 123',
+      city: 'São Paulo',
+      state: 'SP',
+      country: 'Brasil',
+      zipCode: '01234-567'
+    },
     primaryContact: {
       name: 'João Silva',
-      position: 'CEO'
+      position: 'CEO',
+      email: 'joao@empresa.com'
+    },
+    plan: {
+      type: 'basic',
+      endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() // 1 ano
     }
   });
   
@@ -71,8 +84,7 @@ function testSimpleCompany(token) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      'Content-Length': companyData.length
+      'Authorization': `Bearer ${token}`
     }
   };
 

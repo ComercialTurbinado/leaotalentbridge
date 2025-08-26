@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
     
     const { 
       name, email, cnpj, phone, industry, size, address, website, description, logo, 
-      primaryContact, status = 'pending' 
+      primaryContact, status = 'pending', plan 
     } = data;
     
     if (!name || !email || !industry || !primaryContact?.name || !primaryContact?.position) {
@@ -221,6 +221,14 @@ export async function POST(request: NextRequest) {
         position: primaryContact.position,
         email: primaryContact.email || email,
         phone: primaryContact.phone || phone
+      },
+      plan: plan || {
+        type: 'basic',
+        endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 ano
+        features: ['basic_jobs', 'basic_candidates'],
+        maxJobs: 5,
+        maxCandidates: 50,
+        isActive: true
       },
       status,
       isVerified: false,
