@@ -3,6 +3,7 @@ import connectMongoDB from '@/lib/mongodb';
 import Company from '@/lib/models/Company';
 import User from '@/lib/models/User';
 import jwt from 'jsonwebtoken';
+import { mapIndustry } from '@/lib/utils/companyUtils';
 
 // Verificar autenticação de admin
 async function verifyAdminAuth(request: NextRequest) {
@@ -75,6 +76,11 @@ export async function PUT(
 
     const { id } = await params;
     const data = await request.json();
+
+    // Converter industry se necessário
+    if (data.industry) {
+      data.industry = mapIndustry(data.industry);
+    }
     
     await connectMongoDB();
     

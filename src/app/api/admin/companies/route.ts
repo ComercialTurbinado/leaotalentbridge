@@ -4,6 +4,7 @@ import Company from '@/lib/models/Company';
 import User from '@/lib/models/User';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { mapIndustry, validateWebsite } from '@/lib/utils/companyUtils';
 
 // Verificar autenticação de admin
 async function verifyAdminAuth(request: NextRequest) {
@@ -148,10 +149,21 @@ export async function POST(request: NextRequest) {
       name, email, cnpj, phone, industry, size, address, website, description, logo, 
       primaryContact, status = 'pending', plan 
     } = data;
+
+    // Converter industry se necessário
+    const mappedIndustry = mapIndustry(industry);
     
-    if (!name || !email || !industry || !primaryContact?.name || !primaryContact?.position) {
+    if (!name || !email || !mappedIndustry || !primaryContact?.name || !primaryContact?.position) {
       return NextResponse.json(
         { success: false, message: 'Nome, email, indústria e contato responsável são obrigatórios' },
+        { status: 400 }
+      );
+    }
+
+    // Validar website se fornecido
+    if (!validateWebsite(website)) {
+      return NextResponse.json(
+        { success: false, message: 'Website deve ser uma URL válida começando com http:// ou https://' },
         { status: 400 }
       );
     }
@@ -204,7 +216,7 @@ export async function POST(request: NextRequest) {
       email,
       cnpj: cnpj || '',
       phone: phone || '',
-      industry,
+      industry: mappedIndustry,
       size: size || 'medium',
       address: address || {
         street: '',
