@@ -492,9 +492,9 @@ export default function AdminCandidatosPage() {
                       <td>
                         <div className={styles.actionButtons}>
                           <button
-                            onClick={() => handleViewCandidato(candidato)}
+                            onClick={() => router.push(`/admin/candidatos/${candidato._id}`)}
                             className={styles.actionBtn}
-                            title="Visualizar"
+                            title="Gerenciar"
                           >
                             <GrView size={16} />
                           </button>
