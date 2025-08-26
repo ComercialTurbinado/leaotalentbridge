@@ -92,11 +92,14 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await request.json();
-    const { name, email, password, type, profile } = data;
+    const { 
+      name, email, password, type, status = 'active', tempPassword,
+      profile = {}, permissions = {}, profileVerified = false, documentsVerified = false 
+    } = data;
     
-    if (!name || !email || !password || !type) {
+    if (!name || !email || !type) {
       return NextResponse.json(
-        { success: false, message: 'Nome, email, senha e tipo são obrigatórios' },
+        { success: false, message: 'Nome, email e tipo são obrigatórios' },
         { status: 400 }
       );
     }
@@ -112,14 +115,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Definir senha (temporária ou fornecida)
+    const userPassword = tempPassword || password || Math.random().toString(36).slice(-8);
+    console.log('🔑 Senha definida para usuário:', userPassword);
+    
     // Criar novo usuário
     const newUser = new User({
       name,
       email,
-      password, // Será hasheada pelo middleware do Mongoose
+      password: userPassword, // Será hasheada pelo middleware do Mongoose
       type,
-      profile: profile || {},
-      status: 'active',
+      status,
+      profile: {
+        completed: false,
+        ...profile
+      },
+      permissions: {
+        canAccessJobs: false,
+        canApplyToJobs: false,
+        canViewCourses: true,
+        canAccessSimulations: false,
+        canContactCompanies: false,
+        ...permissions
+      },
+      profileVerified,
+      documentsVerified,
       createdAt: new Date(),
       updatedAt: new Date()
     });
@@ -133,7 +153,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: userResponse,
-      message: 'Usuário criado com sucesso'
+      message: `Usuário criado com sucesso${tempPassword ? ` - Senha: ${tempPassword}` : ''}`
     });
   } catch (error) {
     console.error('Erro ao criar usuário:', error);

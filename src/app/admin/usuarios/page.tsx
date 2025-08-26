@@ -16,6 +16,10 @@ interface Usuario {
   profile?: {
     phone?: string;
     avatar?: string;
+    company?: string;
+    position?: string;
+    linkedin?: string;
+    website?: string;
     experience?: string;
     skills?: string[];
     education?: string;
@@ -47,7 +51,28 @@ export default function AdminUsuariosPage() {
     email: '',
     password: '',
     type: 'candidato' as 'candidato' | 'empresa' | 'admin',
-    status: 'active' as 'active' | 'inactive' | 'pending' | 'blocked'
+    status: 'active' as 'active' | 'inactive' | 'pending' | 'blocked',
+    tempPassword: '',
+    profile: {
+      phone: '',
+      company: '',
+      position: '',
+      linkedin: '',
+      website: '',
+      experience: '',
+      skills: [] as string[],
+      education: '',
+      languages: [] as Array<{ language: string; level: string }>
+    },
+    permissions: {
+      canAccessJobs: false,
+      canApplyToJobs: false,
+      canViewCourses: true,
+      canAccessSimulations: false,
+      canContactCompanies: false
+    },
+    profileVerified: false,
+    documentsVerified: false
   });
 
   useEffect(() => {
@@ -108,7 +133,19 @@ export default function AdminUsuariosPage() {
       if (response.ok) {
         await loadUsuarios();
         setShowModal(false);
-        setFormData({ name: '', email: '', password: '', type: 'candidato', status: 'active' });
+        setFormData({
+          name: '', email: '', password: '', type: 'candidato', status: 'active',
+          tempPassword: '',
+          profile: {
+            phone: '', company: '', position: '', linkedin: '', website: '', experience: '',
+            skills: [], education: '', languages: []
+          },
+          permissions: {
+            canAccessJobs: false, canApplyToJobs: false, canViewCourses: true,
+            canAccessSimulations: false, canContactCompanies: false
+          },
+          profileVerified: false, documentsVerified: false
+        });
       } else {
         const error = await response.json();
         alert(error.message || 'Erro ao criar usuário');
@@ -139,7 +176,19 @@ export default function AdminUsuariosPage() {
       if (response.ok) {
         await loadUsuarios();
         setShowModal(false);
-        setFormData({ name: '', email: '', password: '', type: 'candidato', status: 'active' });
+        setFormData({
+          name: '', email: '', password: '', type: 'candidato', status: 'active',
+          tempPassword: '',
+          profile: {
+            phone: '', company: '', position: '', linkedin: '', website: '', experience: '',
+            skills: [], education: '', languages: []
+          },
+          permissions: {
+            canAccessJobs: false, canApplyToJobs: false, canViewCourses: true,
+            canAccessSimulations: false, canContactCompanies: false
+          },
+          profileVerified: false, documentsVerified: false
+        });
       } else {
         const error = await response.json();
         alert(error.message || 'Erro ao atualizar usuário');
@@ -227,13 +276,30 @@ export default function AdminUsuariosPage() {
 
   const handleEditUser = (usuario: Usuario) => {
     setUsuarioSelecionado(usuario);
-    setFormData({
-      name: usuario.name,
-      email: usuario.email,
-      password: '',
-      type: usuario.type,
-      status: usuario.status
-    });
+            setFormData({
+          name: usuario.name,
+          email: usuario.email,
+          password: '',
+          type: usuario.type,
+          status: usuario.status,
+          tempPassword: '',
+          profile: {
+            phone: usuario.profile?.phone || '',
+            company: usuario.profile?.company || '',
+            position: usuario.profile?.position || '',
+            linkedin: usuario.profile?.linkedin || '',
+            website: usuario.profile?.website || '',
+            experience: usuario.profile?.experience || '',
+            skills: usuario.profile?.skills || [],
+            education: usuario.profile?.education || '',
+            languages: usuario.profile?.languages || []
+          },
+          permissions: {
+            canAccessJobs: false, canApplyToJobs: false, canViewCourses: true,
+            canAccessSimulations: false, canContactCompanies: false
+          },
+          profileVerified: false, documentsVerified: false
+        });
     setModalType('edit');
     setShowModal(true);
   };
@@ -246,7 +312,19 @@ export default function AdminUsuariosPage() {
 
   const handleCreateUserClick = () => {
     setUsuarioSelecionado(null);
-    setFormData({ name: '', email: '', password: '', type: 'candidato', status: 'active' });
+    setFormData({
+      name: '', email: '', password: '', type: 'candidato', status: 'active',
+      tempPassword: '',
+      profile: {
+        phone: '', company: '', position: '', linkedin: '', website: '', experience: '',
+        skills: [], education: '', languages: []
+      },
+      permissions: {
+        canAccessJobs: false, canApplyToJobs: false, canViewCourses: true,
+        canAccessSimulations: false, canContactCompanies: false
+      },
+      profileVerified: false, documentsVerified: false
+    });
     setModalType('create');
     setShowModal(true);
   };
@@ -627,6 +705,230 @@ export default function AdminUsuariosPage() {
                       <option value="blocked">Bloqueado</option>
                     </select>
                   </div>
+
+                  {/* Senha Temporária (apenas para criação) */}
+                  {modalType === 'create' && (
+                    <div className={styles.formGroup}>
+                      <label>Senha Temporária (opcional)</label>
+                      <input
+                        type="text"
+                        value={formData.tempPassword}
+                        onChange={(e) => setFormData({ ...formData, tempPassword: e.target.value })}
+                        placeholder="Deixe em branco para gerar senha automática"
+                      />
+                      <small className={styles.helpText}>
+                        Se não informada, será gerada uma senha aleatória de 8 caracteres
+                      </small>
+                    </div>
+                  )}
+
+                  {/* Campos do Perfil (apenas para candidatos) */}
+                  {formData.type === 'candidato' && (
+                    <>
+                      <div className={styles.formSection}>
+                        <h3>Informações do Perfil</h3>
+                        
+                        <div className={styles.formGroup}>
+                          <label>Telefone</label>
+                          <input
+                            type="tel"
+                            value={formData.profile.phone}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              profile: { ...formData.profile, phone: e.target.value }
+                            })}
+                            placeholder="+55 (11) 99999-9999"
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label>Empresa Atual</label>
+                          <input
+                            type="text"
+                            value={formData.profile.company}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              profile: { ...formData.profile, company: e.target.value }
+                            })}
+                            placeholder="Nome da empresa atual"
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label>Cargo Atual</label>
+                          <input
+                            type="text"
+                            value={formData.profile.position}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              profile: { ...formData.profile, position: e.target.value }
+                            })}
+                            placeholder="Cargo/função atual"
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label>LinkedIn</label>
+                          <input
+                            type="url"
+                            value={formData.profile.linkedin}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              profile: { ...formData.profile, linkedin: e.target.value }
+                            })}
+                            placeholder="https://linkedin.com/in/seu-perfil"
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label>Website</label>
+                          <input
+                            type="url"
+                            value={formData.profile.website}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              profile: { ...formData.profile, website: e.target.value }
+                            })}
+                            placeholder="https://seu-site.com"
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label>Experiência</label>
+                          <textarea
+                            value={formData.profile.experience}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              profile: { ...formData.profile, experience: e.target.value }
+                            })}
+                            placeholder="Descreva sua experiência profissional"
+                            rows={3}
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label>Educação</label>
+                          <textarea
+                            value={formData.profile.education}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              profile: { ...formData.profile, education: e.target.value }
+                            })}
+                            placeholder="Formação acadêmica"
+                            rows={2}
+                          />
+                        </div>
+
+                        <div className={styles.formGroup}>
+                          <label>Habilidades (separadas por vírgula)</label>
+                          <input
+                            type="text"
+                            value={formData.profile.skills.join(', ')}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              profile: { 
+                                ...formData.profile, 
+                                skills: e.target.value.split(',').map(s => s.trim()).filter(s => s)
+                              }
+                            })}
+                            placeholder="JavaScript, React, Node.js, MongoDB"
+                          />
+                        </div>
+                      </div>
+
+                      <div className={styles.formSection}>
+                        <h3>Permissões</h3>
+                        
+                        <div className={styles.checkboxGroup}>
+                          <label className={styles.checkbox}>
+                            <input
+                              type="checkbox"
+                              checked={formData.permissions.canAccessJobs}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                permissions: { ...formData.permissions, canAccessJobs: e.target.checked }
+                              })}
+                            />
+                            <span>Acessar vagas</span>
+                          </label>
+
+                          <label className={styles.checkbox}>
+                            <input
+                              type="checkbox"
+                              checked={formData.permissions.canApplyToJobs}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                permissions: { ...formData.permissions, canApplyToJobs: e.target.checked }
+                              })}
+                            />
+                            <span>Candidatar-se a vagas</span>
+                          </label>
+
+                          <label className={styles.checkbox}>
+                            <input
+                              type="checkbox"
+                              checked={formData.permissions.canViewCourses}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                permissions: { ...formData.permissions, canViewCourses: e.target.checked }
+                              })}
+                            />
+                            <span>Visualizar cursos</span>
+                          </label>
+
+                          <label className={styles.checkbox}>
+                            <input
+                              type="checkbox"
+                              checked={formData.permissions.canAccessSimulations}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                permissions: { ...formData.permissions, canAccessSimulations: e.target.checked }
+                              })}
+                            />
+                            <span>Acessar simulações</span>
+                          </label>
+
+                          <label className={styles.checkbox}>
+                            <input
+                              type="checkbox"
+                              checked={formData.permissions.canContactCompanies}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                permissions: { ...formData.permissions, canContactCompanies: e.target.checked }
+                              })}
+                            />
+                            <span>Contatar empresas</span>
+                          </label>
+                        </div>
+
+                        <div className={styles.checkboxGroup}>
+                          <label className={styles.checkbox}>
+                            <input
+                              type="checkbox"
+                              checked={formData.profileVerified}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                profileVerified: e.target.checked
+                              })}
+                            />
+                            <span>Perfil verificado</span>
+                          </label>
+
+                          <label className={styles.checkbox}>
+                            <input
+                              type="checkbox"
+                              checked={formData.documentsVerified}
+                              onChange={(e) => setFormData({
+                                ...formData,
+                                documentsVerified: e.target.checked
+                              })}
+                            />
+                            <span>Documentos verificados</span>
+                          </label>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
