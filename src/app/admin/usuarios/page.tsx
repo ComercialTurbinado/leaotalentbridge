@@ -12,7 +12,7 @@ interface Usuario {
   name: string;
   email: string;
   type: 'candidato' | 'empresa' | 'admin';
-  status: 'active' | 'inactive' | 'pending' | 'blocked';
+  status: 'pending' | 'approved' | 'rejected' | 'suspended';
   profile?: {
     phone?: string;
     avatar?: string;
@@ -51,7 +51,7 @@ export default function AdminUsuariosPage() {
     email: '',
     password: '',
     type: 'candidato' as 'candidato' | 'empresa' | 'admin',
-    status: 'active' as 'active' | 'inactive' | 'pending' | 'blocked',
+    status: 'approved' as 'pending' | 'approved' | 'rejected' | 'suspended',
     tempPassword: '',
     profile: {
       phone: '',
@@ -134,7 +134,7 @@ export default function AdminUsuariosPage() {
         await loadUsuarios();
         setShowModal(false);
         setFormData({
-          name: '', email: '', password: '', type: 'candidato', status: 'active',
+          name: '', email: '', password: '', type: 'candidato', status: 'approved',
           tempPassword: '',
           profile: {
             phone: '', company: '', position: '', linkedin: '', website: '', experience: '',
@@ -177,7 +177,7 @@ export default function AdminUsuariosPage() {
         await loadUsuarios();
         setShowModal(false);
         setFormData({
-          name: '', email: '', password: '', type: 'candidato', status: 'active',
+          name: '', email: '', password: '', type: 'candidato', status: 'approved',
           tempPassword: '',
           profile: {
             phone: '', company: '', position: '', linkedin: '', website: '', experience: '',
@@ -312,19 +312,19 @@ export default function AdminUsuariosPage() {
 
   const handleCreateUserClick = () => {
     setUsuarioSelecionado(null);
-    setFormData({
-      name: '', email: '', password: '', type: 'candidato', status: 'active',
-      tempPassword: '',
-      profile: {
-        phone: '', company: '', position: '', linkedin: '', website: '', experience: '',
-        skills: [], education: '', languages: []
-      },
-      permissions: {
-        canAccessJobs: false, canApplyToJobs: false, canViewCourses: true,
-        canAccessSimulations: false, canContactCompanies: false
-      },
-      profileVerified: false, documentsVerified: false
-    });
+            setFormData({
+          name: '', email: '', password: '', type: 'candidato', status: 'approved',
+          tempPassword: '',
+          profile: {
+            phone: '', company: '', position: '', linkedin: '', website: '', experience: '',
+            skills: [], education: '', languages: []
+          },
+          permissions: {
+            canAccessJobs: false, canApplyToJobs: false, canViewCourses: true,
+            canAccessSimulations: false, canContactCompanies: false
+          },
+          profileVerified: false, documentsVerified: false
+        });
     setModalType('create');
     setShowModal(true);
   };
@@ -402,7 +402,7 @@ export default function AdminUsuariosPage() {
                 <GrStatusGood size={24} />
               </div>
               <div className={styles.statContent}>
-                <h3>{usuarios.filter(u => u.status === 'active').length}</h3>
+                <h3>{usuarios.filter(u => u.status === 'approved').length}</h3>
                 <p>Ativos</p>
               </div>
             </div>
@@ -699,10 +699,10 @@ export default function AdminUsuariosPage() {
                       value={formData.status}
                       onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
                     >
-                      <option value="active">Ativo</option>
-                      <option value="inactive">Inativo</option>
+                      <option value="approved">Aprovado</option>
                       <option value="pending">Pendente</option>
-                      <option value="blocked">Bloqueado</option>
+                      <option value="rejected">Rejeitado</option>
+                      <option value="suspended">Suspenso</option>
                     </select>
                   </div>
 

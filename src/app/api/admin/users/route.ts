@@ -92,8 +92,10 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await request.json();
+    console.log('📝 Dados recebidos para criação de usuário:', JSON.stringify(data, null, 2));
+    
     const { 
-      name, email, password, type, status = 'active', tempPassword,
+      name, email, password, type, status = 'approved', tempPassword,
       profile = {}, permissions = {}, profileVerified = false, documentsVerified = false 
     } = data;
     
@@ -119,8 +121,8 @@ export async function POST(request: NextRequest) {
     const userPassword = tempPassword || password || Math.random().toString(36).slice(-8);
     console.log('🔑 Senha definida para usuário:', userPassword);
     
-    // Criar novo usuário
-    const newUser = new User({
+    // Preparar objeto do usuário
+    const userData = {
       name,
       email,
       password: userPassword, // Será hasheada pelo middleware do Mongoose
@@ -142,7 +144,12 @@ export async function POST(request: NextRequest) {
       documentsVerified,
       createdAt: new Date(),
       updatedAt: new Date()
-    });
+    };
+    
+    console.log('🔧 Objeto do usuário a ser criado:', JSON.stringify(userData, null, 2));
+    
+    // Criar novo usuário
+    const newUser = new User(userData);
 
     await newUser.save();
     
@@ -157,6 +164,24 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Erro ao criar usuário:', error);
+    console.error('Detalhes do erro:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    
+    // Se for erro de validação do Mongoose, retornar detalhes
+    if (error instanceof Error && error.name === 'ValidationError') {
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: 'Erro de validação dos dados',
+          details: error.message
+        },
+        { status: 400 }
+      );
+    }
+    
     return NextResponse.json(
       { success: false, message: 'Erro ao criar usuário' },
       { status: 500 }
