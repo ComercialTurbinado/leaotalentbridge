@@ -17,7 +17,7 @@ const updateCandidatePassword = async () => {
   const options = {
     hostname: 'uaecareers.com',
     port: 443,
-    path: '/api/debug-candidato/',
+    path: '/api/debug-admin/',
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',

@@ -138,45 +138,59 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// PATCH - Atualizar admin existente com status e senha hasheada
+// PATCH - Atualizar admin ou candidato existente com status e senha hasheada
 export async function PATCH(request: NextRequest) {
   try {
     await connectMongoDB();
     
-    const admin = await User.findOne({ type: 'admin' });
+    const { email, password, status } = await request.json();
     
-    if (!admin) {
+    let user;
+    
+    if (email) {
+      // Buscar usuário específico por email
+      user = await User.findOne({ email });
+    } else {
+      // Buscar admin padrão
+      user = await User.findOne({ type: 'admin' });
+    }
+    
+    if (!user) {
       return NextResponse.json({
         success: false,
-        message: 'Nenhum admin encontrado no sistema'
+        message: 'Usuário não encontrado no sistema'
       });
     }
     
-    const { password } = await request.json();
+    // Hash da senha se fornecida
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+      console.log(`Senha atualizada para ${user.email}: ${password}`);
+    }
     
-    // Hash da senha
-    const hashedPassword = await bcrypt.hash(password || 'admin123', 10);
+    // Atualizar status se fornecido
+    if (status) {
+      user.status = status;
+    }
     
-    // Atualizar admin
-    admin.password = hashedPassword;
-    admin.status = 'approved';
-    await admin.save();
+    await user.save();
     
     return NextResponse.json({
       success: true,
       data: {
-        _id: admin._id,
-        email: admin.email,
-        name: admin.name,
-        type: admin.type,
-        status: admin.status
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        type: user.type,
+        status: user.status
       },
-      message: 'Admin atualizado com sucesso - Status: approved, Senha: hasheada'
+      message: `${user.type === 'admin' ? 'Admin' : 'Usuário'} atualizado com sucesso - Status: ${user.status}, Senha: hasheada`
     });
   } catch (error) {
-    console.error('Erro ao atualizar admin:', error);
+    console.error('Erro ao atualizar usuário:', error);
     return NextResponse.json(
-      { success: false, message: 'Erro ao atualizar admin' },
+      { success: false, message: 'Erro ao atualizar usuário' },
       { status: 500 }
     );
   }
