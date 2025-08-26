@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import bcrypt from 'bcryptjs';
 
 // GET - Verificar admin existente
 export async function GET(request: NextRequest) {
@@ -133,6 +134,50 @@ export async function PUT(request: NextRequest) {
     console.error('Erro ao criar/atualizar admin:', error);
     return NextResponse.json(
       { success: false, message: 'Erro ao criar/atualizar admin' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH - Atualizar admin existente com status e senha hasheada
+export async function PATCH(request: NextRequest) {
+  try {
+    await connectMongoDB();
+    
+    const admin = await User.findOne({ type: 'admin' });
+    
+    if (!admin) {
+      return NextResponse.json({
+        success: false,
+        message: 'Nenhum admin encontrado no sistema'
+      });
+    }
+    
+    const { password } = await request.json();
+    
+    // Hash da senha
+    const hashedPassword = await bcrypt.hash(password || 'admin123', 10);
+    
+    // Atualizar admin
+    admin.password = hashedPassword;
+    admin.status = 'approved';
+    await admin.save();
+    
+    return NextResponse.json({
+      success: true,
+      data: {
+        _id: admin._id,
+        email: admin.email,
+        name: admin.name,
+        type: admin.type,
+        status: admin.status
+      },
+      message: 'Admin atualizado com sucesso - Status: approved, Senha: hasheada'
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar admin:', error);
+    return NextResponse.json(
+      { success: false, message: 'Erro ao atualizar admin' },
       { status: 500 }
     );
   }

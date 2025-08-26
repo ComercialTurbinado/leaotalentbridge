@@ -116,7 +116,7 @@ export default function AdminEmpresasPage() {
     } catch (error) {
       console.error('Erro ao carregar empresas:', error);
     } finally {
-      setLoading(false);
+    setLoading(false);
     }
   }, [currentPage, filtroIndustria, filtroStatus, filtroTamanho, busca]);
 
@@ -427,9 +427,9 @@ export default function AdminEmpresasPage() {
               </div>
             </div>
             <div className={styles.statCard}>
-                              <div className={styles.statIcon}>
+              <div className={styles.statIcon}>
                   <GrOrganization size={24} />
-                </div>
+              </div>
               <div className={styles.statContent}>
                 <h3>{new Set(empresas.map(e => e.industry)).size}</h3>
                 <p>Indústrias</p>
@@ -522,7 +522,7 @@ export default function AdminEmpresasPage() {
                               <span className={styles.companyWebsite}>
                                 <GrGlobe size={12} />
                                 {empresa.website}
-                              </span>
+                            </span>
                             )}
                           </div>
                         </div>
@@ -547,7 +547,7 @@ export default function AdminEmpresasPage() {
                                : empresa.address?.country || 'Não informado'
                              }
                            </span>
-                         </div>
+                        </div>
                       </td>
                       <td>
                         <div className={`${styles.statusBadge} ${styles[getStatusColor(empresa.status)]}`}>
@@ -569,14 +569,14 @@ export default function AdminEmpresasPage() {
                           >
                             <GrView size={16} />
                           </button>
-                          <button 
+                              <button 
                             onClick={() => handleEditEmpresa(empresa)}
                             className={styles.actionBtn}
                             title="Editar"
                           >
                             <GrEdit size={16} />
-                          </button>
-                          <button 
+                              </button>
+                              <button 
                             onClick={() => handleDeleteEmpresaClick(empresa)}
                             className={`${styles.actionBtn} ${styles.danger}`}
                             title="Excluir"
@@ -673,21 +673,21 @@ export default function AdminEmpresasPage() {
                       </div>
                     </div>
                     {empresaSelecionada.website && (
-                      <div className={styles.infoItem}>
+                    <div className={styles.infoItem}>
                         <GrGlobe size={16} />
-                        <div>
+                      <div>
                           <span className={styles.infoLabel}>Website</span>
                           <span className={styles.infoValue}>{empresaSelecionada.website}</span>
-                        </div>
                       </div>
+                    </div>
                     )}
-                                         <div className={styles.infoItem}>
+                    <div className={styles.infoItem}>
                        <GrOrganization size={16} />
-                       <div>
+                      <div>
                          <span className={styles.infoLabel}>Indústria</span>
                          <span className={styles.infoValue}>{empresaSelecionada.industry}</span>
-                       </div>
-                     </div>
+                      </div>
+                    </div>
                     <div className={styles.infoItem}>
                       <GrOrganization size={16} />
                       <div>
@@ -695,9 +695,9 @@ export default function AdminEmpresasPage() {
                         <span className={styles.infoValue}>{getTamanhoLabel(empresaSelecionada.size)}</span>
                       </div>
                     </div>
-                                         <div className={styles.infoItem}>
+                    <div className={styles.infoItem}>
                        <GrLocation size={16} />
-                       <div>
+                      <div>
                          <span className={styles.infoLabel}>Localização</span>
                          <span className={styles.infoValue}>
                            {empresaSelecionada.address?.city && empresaSelecionada.address?.state 
@@ -705,8 +705,8 @@ export default function AdminEmpresasPage() {
                              : empresaSelecionada.address?.country || 'Não informado'
                            }
                          </span>
-                       </div>
-                     </div>
+                      </div>
+                    </div>
                     <div className={styles.infoItem}>
                       <GrCalendar size={16} />
                       <div>
@@ -722,9 +722,9 @@ export default function AdminEmpresasPage() {
                     <div className={styles.descriptionSection}>
                       <h4>Descrição</h4>
                       <p>{empresaSelecionada.description}</p>
-                    </div>
+                      </div>
                   )}
-                </div>
+                    </div>
               )}
 
               {(modalType === 'create' || modalType === 'edit') && (
@@ -743,7 +743,7 @@ export default function AdminEmpresasPage() {
                           placeholder="Nome da empresa"
                           required
                         />
-                      </div>
+                  </div>
                       
                       <div className={styles.formGroup}>
                         <label>Business ID</label>
@@ -753,7 +753,7 @@ export default function AdminEmpresasPage() {
                           onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })}
                           placeholder="00.000.000/0000-00"
                         />
-                      </div>
+                </div>
                       
                       <div className={styles.formGroup}>
                         <label>E-mail Corporativo *</label>
@@ -764,7 +764,7 @@ export default function AdminEmpresasPage() {
                           placeholder="contato@empresa.com"
                           required
                         />
-                      </div>
+                  </div>
                       
                       <div className={styles.formGroup}>
                         <label>Telefone</label>
@@ -774,7 +774,7 @@ export default function AdminEmpresasPage() {
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="+971 (0) 4 000-0000"
                         />
-                      </div>
+                </div>
                       
                       <div className={styles.formGroup}>
                         <label>Website</label>
@@ -784,7 +784,7 @@ export default function AdminEmpresasPage() {
                           onChange={(e) => setFormData({ ...formData, website: e.target.value })}
                           placeholder="https://www.empresa.com"
                         />
-                      </div>
+                  </div>
                     </div>
                   </div>
 
