@@ -125,8 +125,8 @@ export default function SimulacoesPage() {
           color: getCategoryColor(sim.category),
           questionsCount: 0,
           avgDuration: 0,
-          difficulty: 'básico',
-          unlocked: true
+      difficulty: 'básico',
+      unlocked: true
         });
       }
       
@@ -517,7 +517,7 @@ export default function SimulacoesPage() {
                               style={{ width: `${simulation.progress.percentage}%` }}
                             />
                           </div>
-                        </div>
+                      </div>
                       )}
 
                       {simulation.completed && simulation.score && (
@@ -526,9 +526,9 @@ export default function SimulacoesPage() {
                             <GrStar size={16} />
                             <span className={styles.score}>{simulation.score}%</span>
                             {simulation.completedAt && (
-                              <span className={styles.completedDate}>
+                            <span className={styles.completedDate}>
                                 Concluída em {new Date(simulation.completedAt).toLocaleDateString('pt-BR')}
-                              </span>
+                            </span>
                             )}
                           </div>
                         </div>
@@ -611,7 +611,7 @@ export default function SimulacoesPage() {
                         {simulation.completedAt && (
                           <>
                             <span>Concluída em {new Date(simulation.completedAt).toLocaleDateString('pt-BR')}</span>
-                            <span>•</span>
+                        <span>•</span>
                           </>
                         )}
                         <span>{simulation.estimatedTime} minutos</span>
