@@ -21,7 +21,8 @@ async function verifyAdminAuth(request: NextRequest) {
     const token = authHeader.substring(7);
     console.log('🔑 Token extraído:', token.substring(0, 50) + '...');
     
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const jwtSecret = process.env.JWT_SECRET || 'default-jwt-secret-key-for-production-leao-careers-2024-mongodb-atlas-amplify';
+    const decoded = jwt.verify(token, jwtSecret) as any;
     console.log('🔓 Token decodificado:', {
       userId: decoded.userId,
       email: decoded.email,
