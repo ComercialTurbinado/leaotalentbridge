@@ -50,6 +50,7 @@ interface Candidato {
 interface Document {
   _id: string;
   type: 'cv' | 'certificate' | 'contract' | 'form' | 'other';
+  fileType: 'pdf' | 'doc' | 'docx' | 'jpg' | 'jpeg' | 'png' | 'txt';
   title: string;
   description?: string;
   fileName: string;

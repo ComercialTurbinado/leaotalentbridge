@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface ICandidateDocument extends Document {
   candidateId: mongoose.Types.ObjectId;
   type: 'cv' | 'certificate' | 'contract' | 'form' | 'other';
+  fileType: 'pdf' | 'doc' | 'docx' | 'jpg' | 'jpeg' | 'png' | 'txt';
   title: string;
   description?: string;
   fileName: string;
