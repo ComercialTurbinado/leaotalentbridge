@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { 
-  GrUser, GrDocument, GrCalendar, GrConnect, GrStar, GrClock, 
+import {
+  GrUser, GrDocument, GrCalendar, GrConnect, GrStar, GrClock,
   GrMail, GrPhone, GrLocation, GrBriefcase, GrOrganization,
   GrDownload, GrUpload, GrEdit, GrTrash, GrView, GrAdd,
-  GrStatusGood, GrStatusCritical, GrClock as GrPending
+  GrStatusGood, GrStatusCritical, GrClock as GrPending,
+  GrCheckmark, GrClose
 } from 'react-icons/gr';
 import styles from './candidato.module.css';
 
@@ -46,17 +47,47 @@ interface Candidato {
   updatedAt: string;
 }
 
+interface Document {
+  _id: string;
+  type: 'cv' | 'certificate' | 'contract' | 'form' | 'other';
+  title: string;
+  description?: string;
+  fileName: string;
+  fileUrl: string;
+  fileSize: number;
+  mimeType: string;
+  status: 'pending' | 'verified' | 'rejected';
+  uploadedBy: 'candidate' | 'admin';
+  createdAt: string;
+  verifiedAt?: string;
+  adminComments?: string;
+}
+
 type TabType = 'overview' | 'documents' | 'interviews' | 'connections' | 'evaluations' | 'timeline';
 
 export default function AdminCandidatoPage() {
   const router = useRouter();
   const params = useParams();
   const candidatoId = params?.id as string;
-  
+
   const [user, setUser] = useState<UserType | null>(null);
   const [candidato, setCandidato] = useState<Candidato | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>('overview');
+  
+  // Estados para documentos
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documentsLoading, setDocumentsLoading] = useState(false);
+  const [showDocumentModal, setShowDocumentModal] = useState(false);
+  const [documentForm, setDocumentForm] = useState({
+    type: 'form' as const,
+    title: '',
+    description: '',
+    fileName: '',
+    fileUrl: '',
+    fileSize: 0,
+    mimeType: ''
+  });
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -92,6 +123,62 @@ export default function AdminCandidatoPage() {
     }
   };
 
+  const loadDocuments = async () => {
+    if (!candidatoId) return;
+    
+    try {
+      setDocumentsLoading(true);
+      const response = await fetch(`/api/admin/candidates/${candidatoId}/documents`, {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setDocuments(data.data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar documentos:', error);
+    } finally {
+      setDocumentsLoading(false);
+    }
+  };
+
+  const handleDocumentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const response = await fetch(`/api/admin/candidates/${candidatoId}/documents`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        },
+        body: JSON.stringify(documentForm)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setDocuments([data.data, ...documents]);
+        setShowDocumentModal(false);
+        setDocumentForm({
+          type: 'form',
+          title: '',
+          description: '',
+          fileName: '',
+          fileUrl: '',
+          fileSize: 0,
+          mimeType: ''
+        });
+      } else {
+        console.error('Erro ao criar documento');
+      }
+    } catch (error) {
+      console.error('Erro ao criar documento:', error);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       pending: { label: 'Pendente', className: styles.statusPending, icon: <GrPending size={14} /> },
@@ -101,7 +188,24 @@ export default function AdminCandidatoPage() {
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
-    
+
+    return (
+      <span className={`${styles.statusBadge} ${config.className}`}>
+        {config.icon}
+        {config.label}
+      </span>
+    );
+  };
+
+  const getDocumentStatusBadge = (status: string) => {
+    const statusConfig = {
+      pending: { label: 'Pendente', className: styles.statusPending, icon: <GrPending size={12} /> },
+      verified: { label: 'Verificado', className: styles.statusApproved, icon: <GrCheckmark size={12} /> },
+      rejected: { label: 'Rejeitado', className: styles.statusRejected, icon: <GrClose size={12} /> }
+    };
+
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+
     return (
       <span className={`${styles.statusBadge} ${config.className}`}>
         {config.icon}
@@ -114,6 +218,14 @@ export default function AdminCandidatoPage() {
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const tabs = [
     { id: 'overview', label: 'Visão Geral', icon: <GrUser size={16} /> },
     { id: 'documents', label: 'Documentos', icon: <GrDocument size={16} /> },
@@ -122,6 +234,13 @@ export default function AdminCandidatoPage() {
     { id: 'evaluations', label: 'Avaliações', icon: <GrStar size={16} /> },
     { id: 'timeline', label: 'Timeline', icon: <GrClock size={16} /> }
   ];
+
+  // Carregar documentos quando a aba for ativada
+  useEffect(() => {
+    if (activeTab === 'documents' && candidatoId) {
+      loadDocuments();
+    }
+  }, [activeTab, candidatoId]);
 
   if (loading) {
     return (
@@ -148,7 +267,7 @@ export default function AdminCandidatoPage() {
             <div className={styles.errorContainer}>
               <h2>Candidato não encontrado</h2>
               <p>O candidato solicitado não foi encontrado.</p>
-              <button 
+              <button
                 onClick={() => router.push('/admin/candidatos')}
                 className="btn btn-primary"
               >
@@ -199,7 +318,7 @@ export default function AdminCandidatoPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className={styles.candidatoActions}>
               <button className="btn btn-secondary">
                 <GrEdit size={16} />
@@ -338,7 +457,7 @@ export default function AdminCandidatoPage() {
                         <div className={styles.metricLabel}>Entrevistas</div>
                       </div>
                       <div className={styles.metricItem}>
-                        <div className={styles.metricValue}>0</div>
+                        <div className={styles.metricValue}>{documents.length}</div>
                         <div className={styles.metricLabel}>Documentos</div>
                       </div>
                       <div className={styles.metricItem}>
@@ -356,13 +475,93 @@ export default function AdminCandidatoPage() {
                 <div className={styles.tabHeader}>
                   <h2>Gestão de Documentos</h2>
                   <div className={styles.tabActions}>
-                    <button className="btn btn-primary">
+                    <button 
+                      className="btn btn-primary"
+                      onClick={() => setShowDocumentModal(true)}
+                    >
                       <GrUpload size={16} />
                       Enviar Documento
                     </button>
                   </div>
                 </div>
-                <p>Funcionalidade de documentos em desenvolvimento...</p>
+
+                {documentsLoading ? (
+                  <div className={styles.loadingContainer}>
+                    <div className={styles.loadingSpinner}></div>
+                    <p>Carregando documentos...</p>
+                  </div>
+                ) : documents.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    <GrDocument size={48} />
+                    <h3>Nenhum documento encontrado</h3>
+                    <p>Este candidato ainda não possui documentos cadastrados.</p>
+                    <button 
+                      className="btn btn-primary"
+                      onClick={() => setShowDocumentModal(true)}
+                    >
+                      <GrAdd size={16} />
+                      Adicionar Primeiro Documento
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.documentsGrid}>
+                    {documents.map((doc) => (
+                      <div key={doc._id} className={styles.documentCard}>
+                        <div className={styles.documentHeader}>
+                          <div className={styles.documentType}>
+                            <GrDocument size={20} />
+                            <span className={styles.documentTypeLabel}>
+                              {doc.type === 'cv' && 'Currículo'}
+                              {doc.type === 'certificate' && 'Certificado'}
+                              {doc.type === 'contract' && 'Contrato'}
+                              {doc.type === 'form' && 'Formulário'}
+                              {doc.type === 'other' && 'Outro'}
+                            </span>
+                          </div>
+                          {getDocumentStatusBadge(doc.status)}
+                        </div>
+                        
+                        <div className={styles.documentContent}>
+                          <h4>{doc.title}</h4>
+                          {doc.description && (
+                            <p className={styles.documentDescription}>{doc.description}</p>
+                          )}
+                          
+                          <div className={styles.documentInfo}>
+                            <div className={styles.documentMeta}>
+                              <span><strong>Arquivo:</strong> {doc.fileName}</span>
+                              <span><strong>Tamanho:</strong> {formatFileSize(doc.fileSize)}</span>
+                              <span><strong>Enviado por:</strong> {doc.uploadedBy === 'admin' ? 'Admin' : 'Candidato'}</span>
+                              <span><strong>Data:</strong> {formatDate(doc.createdAt)}</span>
+                            </div>
+                          </div>
+
+                          {doc.adminComments && (
+                            <div className={styles.documentComments}>
+                              <strong>Comentários:</strong>
+                              <p>{doc.adminComments}</p>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className={styles.documentActions}>
+                          <button className="btn btn-secondary btn-sm">
+                            <GrView size={14} />
+                            Visualizar
+                          </button>
+                          <button className="btn btn-primary btn-sm">
+                            <GrDownload size={14} />
+                            Download
+                          </button>
+                          <button className="btn btn-danger btn-sm">
+                            <GrTrash size={14} />
+                            Excluir
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -422,6 +621,121 @@ export default function AdminCandidatoPage() {
           </div>
         </div>
       </main>
+
+      {/* Modal para Upload de Documento */}
+      {showDocumentModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h3>Enviar Documento</h3>
+              <button 
+                className={styles.modalClose}
+                onClick={() => setShowDocumentModal(false)}
+              >
+                <GrClose size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleDocumentSubmit} className={styles.modalForm}>
+              <div className={styles.formGroup}>
+                <label>Tipo de Documento</label>
+                <select
+                  value={documentForm.type}
+                  onChange={(e) => setDocumentForm({...documentForm, type: e.target.value as any})}
+                  required
+                >
+                  <option value="form">Formulário</option>
+                  <option value="contract">Contrato</option>
+                  <option value="certificate">Certificado</option>
+                  <option value="cv">Currículo</option>
+                  <option value="other">Outro</option>
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Título</label>
+                <input
+                  type="text"
+                  value={documentForm.title}
+                  onChange={(e) => setDocumentForm({...documentForm, title: e.target.value})}
+                  placeholder="Ex: Contrato de Trabalho"
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Descrição (opcional)</label>
+                <textarea
+                  value={documentForm.description}
+                  onChange={(e) => setDocumentForm({...documentForm, description: e.target.value})}
+                  placeholder="Descrição do documento..."
+                  rows={3}
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>URL do Arquivo</label>
+                <input
+                  type="url"
+                  value={documentForm.fileUrl}
+                  onChange={(e) => setDocumentForm({...documentForm, fileUrl: e.target.value})}
+                  placeholder="https://exemplo.com/arquivo.pdf"
+                  required
+                />
+              </div>
+
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Nome do Arquivo</label>
+                  <input
+                    type="text"
+                    value={documentForm.fileName}
+                    onChange={(e) => setDocumentForm({...documentForm, fileName: e.target.value})}
+                    placeholder="documento.pdf"
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Tamanho (bytes)</label>
+                  <input
+                    type="number"
+                    value={documentForm.fileSize}
+                    onChange={(e) => setDocumentForm({...documentForm, fileSize: parseInt(e.target.value)})}
+                    placeholder="1024"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Tipo MIME</label>
+                <input
+                  type="text"
+                  value={documentForm.mimeType}
+                  onChange={(e) => setDocumentForm({...documentForm, mimeType: e.target.value})}
+                  placeholder="application/pdf"
+                  required
+                />
+              </div>
+
+              <div className={styles.modalActions}>
+                <button 
+                  type="button" 
+                  className="btn btn-secondary"
+                  onClick={() => setShowDocumentModal(false)}
+                >
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  <GrUpload size={16} />
+                  Enviar Documento
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
