@@ -311,10 +311,7 @@ export default function AdminIndicacoesPage() {
     setShowModal(true);
   };
 
-  const exportarIndicacoes = () => {
-    // TODO: Implementar exportação
-    alert('Exportação será implementada em breve');
-  };
+
 
   if (loading) {
     return (
@@ -342,13 +339,6 @@ export default function AdminIndicacoesPage() {
             </div>
             
             <div className={styles.headerActions}>
-              <button 
-                onClick={exportarIndicacoes}
-                className="btn btn-secondary"
-              >
-                <GrDownload size={16} />
-                Exportar
-              </button>
               <button 
                 onClick={handleCreateIndicacaoClick}
                 className="btn btn-primary"

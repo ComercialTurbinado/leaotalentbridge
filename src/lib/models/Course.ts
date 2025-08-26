@@ -456,7 +456,7 @@ const CourseSchema = new Schema<ICourse>({
   
   metrics: {
     type: CourseMetricsSchema,
-    default: () => ({})
+    default: {}
   },
   
   seoTitle: String,

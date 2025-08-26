@@ -329,10 +329,7 @@ export default function AdminUsuariosPage() {
     setShowModal(true);
   };
 
-  const exportarUsuarios = () => {
-    // TODO: Implementar exportação
-    alert('Exportação será implementada em breve');
-  };
+
 
   if (loading) {
     return (
@@ -360,13 +357,6 @@ export default function AdminUsuariosPage() {
             </div>
             
             <div className={styles.headerActions}>
-              <button 
-                onClick={exportarUsuarios}
-                className="btn btn-secondary"
-              >
-                <GrDownload size={16} />
-                Exportar
-              </button>
               <button 
                 onClick={handleCreateUserClick}
                 className="btn btn-primary"
