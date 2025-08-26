@@ -131,8 +131,18 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('✅ Admin autenticado:', admin.email);
-    const data = await request.json();
-    console.log('📝 Dados recebidos:', JSON.stringify(data, null, 2));
+    
+    let data;
+    try {
+      data = await request.json();
+      console.log('📝 Dados recebidos:', JSON.stringify(data, null, 2));
+    } catch (jsonError) {
+      console.error('❌ Erro ao fazer parse do JSON:', jsonError);
+      return NextResponse.json(
+        { success: false, message: 'Erro ao processar dados da requisição' },
+        { status: 400 }
+      );
+    }
     
     const { 
       name, email, cnpj, phone, industry, size, address, website, description, logo, 
