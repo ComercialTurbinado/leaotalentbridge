@@ -47,6 +47,7 @@ export default function DashboardHeader({ user, userType }: DashboardHeaderProps
         return [
           { href: '/admin/dashboard', label: 'Dashboard' },
           { href: '/admin/usuarios', label: 'Usuários' },
+          { href: '/admin/candidatos', label: 'Candidatos' },
           { href: '/admin/empresas', label: 'Empresas' },
           { href: '/admin/vagas', label: 'Vagas' },
           { href: '/admin/relatorios', label: 'Relatórios' }
