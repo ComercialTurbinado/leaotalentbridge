@@ -30,6 +30,11 @@ const CandidateDocumentSchema = new Schema<ICandidateDocument>({
     enum: ['cv', 'certificate', 'contract', 'form', 'other'],
     required: true
   },
+  fileType: {
+    type: String,
+    enum: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt'],
+    required: true
+  },
   title: {
     type: String,
     required: true,

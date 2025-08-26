@@ -81,13 +81,17 @@ export default function AdminCandidatoPage() {
   const [showDocumentModal, setShowDocumentModal] = useState(false);
   const [documentForm, setDocumentForm] = useState({
     type: 'form' as const,
+    fileType: 'pdf' as const,
     title: '',
     description: '',
     fileName: '',
     fileUrl: '',
+    base64Data: '',
     fileSize: 0,
     mimeType: ''
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -145,17 +149,79 @@ export default function AdminCandidatoPage() {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      
+      // Validar tipo de arquivo
+      const allowedTypes = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt'];
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      
+      if (!fileExtension || !allowedTypes.includes(fileExtension)) {
+        alert('Tipo de arquivo não permitido. Tipos aceitos: PDF, DOC, DOCX, JPG, PNG, TXT');
+        return;
+      }
+
+      // Validar tamanho (máximo 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Arquivo muito grande. Tamanho máximo: 10MB');
+        return;
+      }
+
+      // Atualizar formulário
+      setDocumentForm(prev => ({
+        ...prev,
+        fileName: file.name,
+        fileSize: file.size,
+        mimeType: file.type,
+        fileType: fileExtension as any
+      }));
+    }
+  };
+
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        // Remove o prefixo "data:application/pdf;base64," para obter apenas o base64
+        const base64Data = base64.split(',')[1];
+        resolve(base64Data);
+      };
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleDocumentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!selectedFile) {
+      alert('Por favor, selecione um arquivo');
+      return;
+    }
+
     try {
+      setUploading(true);
+      
+      // Converter arquivo para base64
+      const base64Data = await convertFileToBase64(selectedFile);
+      
+      const documentData = {
+        ...documentForm,
+        base64Data,
+        fileSize: selectedFile.size,
+        mimeType: selectedFile.type
+      };
+
       const response = await fetch(`/api/admin/candidates/${candidatoId}/documents`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${AuthService.getToken()}`
         },
-        body: JSON.stringify(documentForm)
+        body: JSON.stringify(documentData)
       });
 
       if (response.ok) {
@@ -164,18 +230,25 @@ export default function AdminCandidatoPage() {
         setShowDocumentModal(false);
         setDocumentForm({
           type: 'form',
+          fileType: 'pdf',
           title: '',
           description: '',
           fileName: '',
           fileUrl: '',
+          base64Data: '',
           fileSize: 0,
           mimeType: ''
         });
+        setSelectedFile(null);
       } else {
-        console.error('Erro ao criar documento');
+        const errorData = await response.json();
+        alert(`Erro ao criar documento: ${errorData.message}`);
       }
     } catch (error) {
       console.error('Erro ao criar documento:', error);
+      alert('Erro ao processar arquivo');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -517,6 +590,9 @@ export default function AdminCandidatoPage() {
                               {doc.type === 'form' && 'Formulário'}
                               {doc.type === 'other' && 'Outro'}
                             </span>
+                            <span className={styles.fileTypeBadge}>
+                              {doc.fileType?.toUpperCase()}
+                            </span>
                           </div>
                           {getDocumentStatusBadge(doc.status)}
                         </div>
@@ -638,6 +714,26 @@ export default function AdminCandidatoPage() {
             
             <form onSubmit={handleDocumentSubmit} className={styles.modalForm}>
               <div className={styles.formGroup}>
+                <label>Arquivo</label>
+                <input
+                  type="file"
+                  onChange={handleFileSelect}
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt"
+                  required
+                  className={styles.fileInput}
+                />
+                <small className={styles.fileHelp}>
+                  Tipos aceitos: PDF, DOC, DOCX, JPG, PNG, TXT. Tamanho máximo: 10MB
+                </small>
+                {selectedFile && (
+                  <div className={styles.fileInfo}>
+                    <strong>Arquivo selecionado:</strong> {selectedFile.name} 
+                    ({formatFileSize(selectedFile.size)})
+                  </div>
+                )}
+              </div>
+
+              <div className={styles.formGroup}>
                 <label>Tipo de Documento</label>
                 <select
                   value={documentForm.type}
@@ -674,48 +770,12 @@ export default function AdminCandidatoPage() {
               </div>
 
               <div className={styles.formGroup}>
-                <label>URL do Arquivo</label>
-                <input
-                  type="url"
-                  value={documentForm.fileUrl}
-                  onChange={(e) => setDocumentForm({...documentForm, fileUrl: e.target.value})}
-                  placeholder="https://exemplo.com/arquivo.pdf"
-                  required
-                />
-              </div>
-
-              <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label>Nome do Arquivo</label>
-                  <input
-                    type="text"
-                    value={documentForm.fileName}
-                    onChange={(e) => setDocumentForm({...documentForm, fileName: e.target.value})}
-                    placeholder="documento.pdf"
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>Tamanho (bytes)</label>
-                  <input
-                    type="number"
-                    value={documentForm.fileSize}
-                    onChange={(e) => setDocumentForm({...documentForm, fileSize: parseInt(e.target.value)})}
-                    placeholder="1024"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Tipo MIME</label>
+                <label>Nome do Arquivo (opcional)</label>
                 <input
                   type="text"
-                  value={documentForm.mimeType}
-                  onChange={(e) => setDocumentForm({...documentForm, mimeType: e.target.value})}
-                  placeholder="application/pdf"
-                  required
+                  value={documentForm.fileName}
+                  onChange={(e) => setDocumentForm({...documentForm, fileName: e.target.value})}
+                  placeholder="Deixe em branco para usar o nome original"
                 />
               </div>
 
@@ -727,9 +787,22 @@ export default function AdminCandidatoPage() {
                 >
                   Cancelar
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  <GrUpload size={16} />
-                  Enviar Documento
+                <button 
+                  type="submit" 
+                  className="btn btn-primary"
+                  disabled={uploading}
+                >
+                  {uploading ? (
+                    <>
+                      <div className={styles.loadingSpinner}></div>
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <GrUpload size={16} />
+                      Enviar Documento
+                    </>
+                  )}
                 </button>
               </div>
             </form>

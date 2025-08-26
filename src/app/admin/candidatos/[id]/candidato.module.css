@@ -375,6 +375,17 @@
   font-size: 0.9rem;
 }
 
+.fileTypeBadge {
+  background: #e2e8f0;
+  color: #4a5568;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+}
+
 .documentContent h4 {
   margin: 0 0 0.5rem 0;
   color: #1a202c;
@@ -540,6 +551,36 @@
   border-radius: 6px;
   font-size: 0.9rem;
   transition: border-color 0.2s ease;
+}
+
+.fileInput {
+  padding: 0.5rem !important;
+  border: 2px dashed #cbd5e0 !important;
+  background: #f7fafc;
+  cursor: pointer;
+}
+
+.fileInput:hover {
+  border-color: #667eea !important;
+  background: #edf2f7;
+}
+
+.fileHelp {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #718096;
+  line-height: 1.4;
+}
+
+.fileInfo {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #f0fff4;
+  border: 1px solid #c6f6d5;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #22543d;
 }
 
 .formGroup input:focus,

@@ -60,13 +60,32 @@ export async function POST(
 
     const data = await request.json();
     
+    // Validar tipo de arquivo
+    const allowedFileTypes = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt'];
+    if (!allowedFileTypes.includes(data.fileType)) {
+      return NextResponse.json({ 
+        success: false, 
+        message: 'Tipo de arquivo não permitido. Tipos aceitos: PDF, DOC, DOCX, JPG, PNG, TXT' 
+      }, { status: 400 });
+    }
+
+    // Validar tamanho do arquivo (máximo 10MB para base64)
+    const maxSizeBytes = 10 * 1024 * 1024; // 10MB
+    if (data.fileSize > maxSizeBytes) {
+      return NextResponse.json({ 
+        success: false, 
+        message: 'Arquivo muito grande. Tamanho máximo: 10MB' 
+      }, { status: 400 });
+    }
+
     const newDocument = new CandidateDocument({
       candidateId: resolvedParams.id,
       type: data.type,
+      fileType: data.fileType,
       title: data.title,
       description: data.description,
       fileName: data.fileName,
-      fileUrl: data.fileUrl,
+      fileUrl: data.fileUrl || data.base64Data, // Aceita URL ou base64
       fileSize: data.fileSize,
       mimeType: data.mimeType,
       uploadedBy: 'admin',
