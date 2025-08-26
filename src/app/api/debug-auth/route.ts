@@ -1,86 +1,72 @@
 import { NextRequest, NextResponse } from 'next/server';
+import connectMongoDB from '@/lib/mongodb';
+import User from '@/lib/models/User';
 import jwt from 'jsonwebtoken';
 
-export async function GET(request: NextRequest) {
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+export async function POST(request: NextRequest) {
   try {
-    // Verificar se existe token no header
-    const authHeader = request.headers.get('authorization');
+    await connectMongoDB();
     
-    if (!authHeader) {
-      return NextResponse.json({
-        success: false,
-        message: 'Header Authorization não encontrado',
-        debug: {
-          headers: Object.fromEntries(request.headers.entries()),
-        }
-      });
-    }
-
-    if (!authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({
-        success: false,
-        message: 'Formato do token inválido - deve começar com "Bearer "',
-        debug: {
-          authHeader,
-        }
-      });
-    }
-
-    const token = authHeader.substring(7);
+    const { token } = await request.json();
     
     if (!token) {
       return NextResponse.json({
         success: false,
-        message: 'Token não encontrado após "Bearer "',
-        debug: {
-          authHeader,
-          token,
-        }
+        message: 'Token não fornecido'
       });
     }
-
-    // Verificar JWT_SECRET
-    const jwtSecret = process.env.JWT_SECRET || 'default-jwt-secret-key-for-production-leao-careers-2024-mongodb-atlas-amplify';
     
-    try {
-      const decoded = jwt.verify(token, jwtSecret) as any;
-      
-      return NextResponse.json({
-        success: true,
-        message: 'Token válido',
-        debug: {
-          token: token.substring(0, 20) + '...',
-          decoded: {
-            userId: decoded.userId,
-            email: decoded.email,
-            type: decoded.type,
-            iat: decoded.iat,
-            exp: decoded.exp,
-            expiresAt: new Date(decoded.exp * 1000).toISOString()
-          },
-          jwtSecretUsed: process.env.JWT_SECRET ? 'Configurado via env' : 'Usando padrão',
-          currentTime: new Date().toISOString()
-        }
-      });
-    } catch (jwtError) {
+    // Verificar token
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    console.log('🔍 Token decodificado:', decoded);
+    
+    // Buscar usuário
+    const user = await User.findById(decoded.userId);
+    console.log('🔍 Usuário encontrado:', user ? {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      type: user.type,
+      status: user.status
+    } : 'Não encontrado');
+    
+    if (!user) {
       return NextResponse.json({
         success: false,
-        message: 'Token inválido ou expirado',
-        debug: {
-          token: token.substring(0, 20) + '...',
-          jwtError: jwtError instanceof Error ? jwtError.message : String(jwtError),
-          jwtSecretUsed: process.env.JWT_SECRET ? 'Configurado via env' : 'Usando padrão'
-        }
+        message: 'Usuário não encontrado'
       });
     }
-
-  } catch (error) {
+    
+    // Verificar se é admin
+    const isAdmin = user.type === 'admin';
+    const isApproved = user.status === 'approved';
+    
     return NextResponse.json({
-      success: false,
-      message: 'Erro interno do servidor',
-      debug: {
-        error: error instanceof Error ? error.message : String(error)
-      }
-    }, { status: 500 });
+      success: true,
+      data: {
+        user: {
+          _id: user._id,
+          email: user.email,
+          name: user.name,
+          type: user.type,
+          status: user.status
+        },
+        auth: {
+          isAdmin,
+          isApproved,
+          canAccess: isAdmin && isApproved
+        }
+      },
+      message: `Verificação completa - Admin: ${isAdmin}, Aprovado: ${isApproved}`
+    });
+    
+  } catch (error) {
+    console.error('Erro na verificação de auth:', error);
+    return NextResponse.json(
+      { success: false, message: 'Erro na verificação' },
+      { status: 500 }
+    );
   }
 } 

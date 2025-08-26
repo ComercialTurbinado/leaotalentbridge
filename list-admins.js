@@ -4,7 +4,7 @@ const options = {
   hostname: 'uaecareers.com',
   port: 443,
   path: '/api/debug-admin/',
-  method: 'DELETE'
+  method: 'GET'
 };
 
 const req = https.request(options, (res) => {
