@@ -14,7 +14,14 @@ async function verifyAdminAuth(request: NextRequest) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
     await connectMongoDB();
     const user = await User.findById(decoded.userId);
-    return user?.type === 'admin' ? user : null;
+    
+    // Admin deve ter acesso total independente do status
+    if (user?.type === 'admin') {
+      console.log('✅ Admin verificado:', user.email, 'Status:', user.status);
+      return user;
+    }
+    
+    return null;
   } catch (error) {
     console.error('Erro na verificação de admin:', error);
     return null;
