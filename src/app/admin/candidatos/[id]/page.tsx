@@ -314,7 +314,7 @@ export default function AdminCandidatoPage() {
         console.log('✅ Documento processado com sucesso!');
       } catch (error) {
         console.error('❌ Erro ao visualizar documento:', error);
-        alert('Erro ao visualizar documento: ' + error.message);
+        alert('Erro ao visualizar documento: ' + (error instanceof Error ? error.message : 'Erro desconhecido'));
       }
     } else if (doc.fileUrl && doc.fileUrl.startsWith('http')) {
       console.log('🌐 Abrindo URL externa...');
