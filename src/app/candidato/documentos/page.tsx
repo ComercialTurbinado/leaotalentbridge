@@ -67,17 +67,25 @@ export default function CandidatoDocumentos() {
       
       if (!user?._id) return;
 
-      const response = await ApiService.getCandidateDocuments(user._id) as any;
+      const response = await fetch(`/api/candidates/${user._id}/documents`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       
-      if (response.success) {
-        setDocuments(response.data);
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setDocuments(result.data);
+        } else {
+          setError('Erro ao carregar documentos');
+        }
       } else {
         setError('Erro ao carregar documentos');
       }
     } catch (error) {
       console.error('Erro ao carregar documentos:', error);
       setError('Erro ao carregar documentos');
-      // Fallback para array vazio em caso de erro
       setDocuments([]);
     } finally {
       setLoading(false);
@@ -109,34 +117,80 @@ export default function CandidatoDocumentos() {
     }
   };
 
-  const handleFiles = (files: FileList) => {
-    Array.from(files).forEach(file => {
-      // Simular upload
-      const newDoc: Document = {
-        _id: Date.now() + Math.random().toString(), // Gerar um ID único para simulação
-        id: Date.now() + Math.random().toString(), // Para compatibilidade
-        title: file.name,
-        name: file.name,
-        type: 'other',
-        fileType: 'pdf',
-        fileName: file.name,
-        fileUrl: '',
-        fileSize: file.size,
-        mimeType: file.type,
-        status: 'pending',
-        uploadedBy: 'candidate',
-        createdAt: new Date().toISOString(),
-        category: 'sent',
-        size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
-        uploadDate: new Date().toISOString().split('T')[0],
-        description: 'Documento enviado para análise',
-        tags: ['novo', 'pendente']
-      };
-      
-      setDocuments(prev => [newDoc, ...prev]);
-    });
+  const handleFiles = async (files: FileList) => {
+    if (!user?._id) return;
+
+    for (const file of Array.from(files)) {
+      try {
+        // Converter arquivo para base64
+        const base64 = await fileToBase64(file);
+        
+        // Determinar tipo de arquivo
+        const fileType = getFileType(file.name);
+        
+        // Preparar dados do documento
+        const documentData = {
+          title: file.name,
+          type: 'other', // Pode ser melhorado para detectar tipo automaticamente
+          fileType: fileType,
+          fileName: file.name,
+          fileUrl: base64,
+          fileSize: file.size,
+          mimeType: file.type,
+          description: 'Documento enviado para análise'
+        };
+
+        // Fazer upload via API
+        const response = await fetch(`/api/candidates/${user._id}/documents`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(documentData)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) {
+            // Recarregar documentos
+            await loadDocuments();
+          } else {
+            alert('Erro ao enviar documento: ' + result.message);
+          }
+        } else {
+          alert('Erro ao enviar documento');
+        }
+      } catch (error) {
+        console.error('Erro ao processar arquivo:', error);
+        alert('Erro ao processar arquivo');
+      }
+    }
     
     setShowUploadModal(false);
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  const getFileType = (fileName: string): string => {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    switch (extension) {
+      case 'pdf': return 'pdf';
+      case 'doc': return 'doc';
+      case 'docx': return 'docx';
+      case 'jpg':
+      case 'jpeg': return 'jpg';
+      case 'png': return 'png';
+      case 'txt': return 'txt';
+      default: return 'pdf';
+    }
   };
 
   const handleViewDocument = (doc: Document) => {

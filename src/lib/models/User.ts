@@ -164,11 +164,9 @@ const UserSchema = new Schema<IUser>({
   timestamps: true
 });
 
-// Índices para performance
+// Índices para performance (otimizados para reduzir custos)
 UserSchema.index({ email: 1, type: 1 }, { unique: true });
-UserSchema.index({ type: 1 });
-UserSchema.index({ status: 1 });
-UserSchema.index({ createdAt: -1 });
-UserSchema.index({ type: 1, status: 1 });
+UserSchema.index({ type: 1, status: 1 }); // Índice composto para queries comuns
+UserSchema.index({ createdAt: -1 }); // Para ordenação por data
 
 export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema); 

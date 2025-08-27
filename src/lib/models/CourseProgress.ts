@@ -40,14 +40,12 @@ const CourseProgressSchema = new Schema<ICourseProgress>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: true
   },
   courseId: {
     type: Schema.Types.ObjectId,
     ref: 'Course',
-    required: true,
-    index: true
+    required: true
   },
   progress: {
     type: Number,
@@ -64,8 +62,7 @@ const CourseProgressSchema = new Schema<ICourseProgress>({
   completedAt: Date,
   lastAccessedAt: {
     type: Date,
-    default: Date.now,
-    index: true
+    default: Date.now
   },
   
   lessons: [{
@@ -132,12 +129,10 @@ const CourseProgressSchema = new Schema<ICourseProgress>({
   timestamps: true
 });
 
-// Índices compostos para performance
+// Índices compostos para performance (otimizados para reduzir custos)
 CourseProgressSchema.index({ userId: 1, courseId: 1 }, { unique: true });
-CourseProgressSchema.index({ userId: 1, status: 1 });
-CourseProgressSchema.index({ courseId: 1, status: 1 });
-CourseProgressSchema.index({ progress: -1 });
-CourseProgressSchema.index({ completedAt: -1 });
+CourseProgressSchema.index({ userId: 1, status: 1, progress: -1 }); // Índice composto para dashboard do usuário
+CourseProgressSchema.index({ courseId: 1, status: 1, completedAt: -1 }); // Índice composto para estatísticas do curso
 
 // Middleware para atualizar lastAccessedAt
 CourseProgressSchema.pre('save', function(next) {

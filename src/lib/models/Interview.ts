@@ -36,19 +36,16 @@ const InterviewSchema = new Schema<IInterview>({
   candidateId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
-    index: true
+    required: true
   },
   companyId: {
     type: Schema.Types.ObjectId,
     ref: 'Company',
-    required: true,
-    index: true
+    required: true
   },
   jobId: {
     type: Schema.Types.ObjectId,
-    ref: 'Job',
-    index: true
+    ref: 'Job'
   },
   title: {
     type: String,

@@ -368,20 +368,14 @@ const JobSchema = new Schema<IJob>({
   timestamps: true
 });
 
-// Índices para performance e busca
+// Índices para performance (otimizados para reduzir custos)
 JobSchema.index({ slug: 1 }, { unique: true });
-JobSchema.index({ companyId: 1, status: 1 });
-JobSchema.index({ status: 1, publishedAt: -1 });
-JobSchema.index({ category: 1, 'location.city': 1 });
-JobSchema.index({ 'location.country': 1, 'location.isRemote': 1 });
-JobSchema.index({ workType: 1, 'requirements.experience.level': 1 });
-JobSchema.index({ tags: 1 });
-JobSchema.index({ 
-  title: 'text', 
-  description: 'text', 
-  summary: 'text',
-  tags: 'text'
-}); // Busca textual
+JobSchema.index({ companyId: 1, status: 1, publishedAt: -1 }); // Índice composto para vagas da empresa
+JobSchema.index({ status: 1, publishedAt: -1, category: 1 }); // Índice composto para busca pública
+JobSchema.index({ 'location.country': 1, 'location.city': 1, 'location.isRemote': 1 }); // Para filtros de localização
+JobSchema.index({ workType: 1, 'requirements.experience.level': 1, status: 1 }); // Para filtros de experiência
+JobSchema.index({ tags: 1, status: 1 }); // Para busca por tags
+JobSchema.index({ expiresAt: 1, status: 1 }); // Para vagas expiradas
 
 // Middleware para gerar slug
 JobSchema.pre('save', function(next) {

@@ -65,35 +65,29 @@ export async function POST(
     const data = await request.json();
     
     // Validar dados obrigatórios
-    if (!data.name || !data.type || !data.url) {
+    if (!data.title || !data.type || !data.fileUrl || !data.fileName) {
       return NextResponse.json({ 
         success: false, 
-        message: 'Nome, tipo e URL do documento são obrigatórios' 
+        message: 'Título, tipo, URL e nome do arquivo são obrigatórios' 
       }, { status: 400 });
     }
 
-    const newDocument = {
-      id: Date.now().toString(),
-      name: data.name,
+    // Criar novo documento usando o modelo CandidateDocument
+    const newDocument = new CandidateDocument({
+      candidateId: resolvedParams.id,
       type: data.type,
-      url: data.url,
-      status: 'pending',
-      uploadedAt: new Date(),
+      fileType: data.fileType || 'pdf',
+      title: data.title,
       description: data.description || '',
-      size: data.size || '',
-      format: data.format || ''
-    };
+      fileName: data.fileName,
+      fileUrl: data.fileUrl,
+      fileSize: data.fileSize || 0,
+      mimeType: data.mimeType || 'application/pdf',
+      status: 'pending',
+      uploadedBy: 'candidate'
+    });
 
-    // Adicionar documento ao perfil do usuário
-    const updatedUser = await User.findByIdAndUpdate(
-      resolvedParams.id,
-      {
-        $push: {
-          'profile.documents': newDocument
-        }
-      },
-      { new: true }
-    ).select('-password -__v');
+    await newDocument.save();
 
     return NextResponse.json({
       success: true,

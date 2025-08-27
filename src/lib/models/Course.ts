@@ -358,8 +358,7 @@ const CourseSchema = new Schema<ICourse>({
     required: true,
     unique: true,
     lowercase: true,
-    trim: true,
-    index: true
+    trim: true
   },
   shortDescription: {
     type: String,
@@ -380,8 +379,7 @@ const CourseSchema = new Schema<ICourse>({
   category: {
     type: String,
     enum: ['technology', 'design', 'business', 'languages', 'soft_skills', 'other'],
-    required: true,
-    index: true
+    required: true
   },
   subcategory: String,
   tags: [{
@@ -391,8 +389,7 @@ const CourseSchema = new Schema<ICourse>({
   level: {
     type: String,
     enum: ['beginner', 'intermediate', 'advanced'],
-    required: true,
-    index: true
+    required: true
   },
   
   modules: [CourseModuleSchema],
@@ -473,13 +470,12 @@ const CourseSchema = new Schema<ICourse>({
   timestamps: true
 });
 
-// Índices para performance
+// Índices para performance (otimizados para reduzir custos)
 CourseSchema.index({ title: 'text', shortDescription: 'text', tags: 'text' });
-CourseSchema.index({ category: 1, level: 1 });
-CourseSchema.index({ status: 1, isPublic: 1 });
-CourseSchema.index({ isFeatured: 1, 'metrics.popularityScore': -1 });
-CourseSchema.index({ createdAt: -1 });
-CourseSchema.index({ 'metrics.averageRating': -1 });
+CourseSchema.index({ category: 1, level: 1, status: 1 }); // Índice composto para filtros comuns
+CourseSchema.index({ status: 1, isPublic: 1, isFeatured: 1 }); // Índice composto para listagem
+CourseSchema.index({ createdAt: -1 }); // Para ordenação por data
+CourseSchema.index({ 'metrics.averageRating': -1, 'metrics.popularityScore': -1 }); // Para ranking
 
 // Middleware para calcular totais automaticamente
 CourseSchema.pre('save', function(this: any, next) {
