@@ -94,6 +94,29 @@ export default function AdminCandidatoPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
+  // Estados para entrevistas
+  const [interviews, setInterviews] = useState<any[]>([]);
+  const [interviewsLoading, setInterviewsLoading] = useState(false);
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
+  const [interviewForm, setInterviewForm] = useState({
+    companyId: '',
+    jobId: '',
+    title: '',
+    description: '',
+    scheduledDate: '',
+    scheduledTime: '',
+    duration: 60,
+    type: 'online' as 'presential' | 'online' | 'phone',
+    location: '',
+    meetingUrl: '',
+    interviewerName: '',
+    interviewerEmail: '',
+    interviewerPhone: '',
+    notes: ''
+  });
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
+
   useEffect(() => {
     const currentUser = AuthService.getUser();
     if (!currentUser || currentUser.type !== 'admin') {
@@ -147,6 +170,62 @@ export default function AdminCandidatoPage() {
       console.error('Erro ao carregar documentos:', error);
     } finally {
       setDocumentsLoading(false);
+    }
+  };
+
+  const loadInterviews = async () => {
+    if (!candidatoId) return;
+    
+    try {
+      setInterviewsLoading(true);
+      const response = await fetch(`/api/admin/candidates/${candidatoId}/interviews`, {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setInterviews(data.data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar entrevistas:', error);
+    } finally {
+      setInterviewsLoading(false);
+    }
+  };
+
+  const loadCompanies = async () => {
+    try {
+      const response = await fetch('/api/admin/companies', {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCompanies(data.data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar empresas:', error);
+    }
+  };
+
+  const loadJobs = async () => {
+    try {
+      const response = await fetch('/api/admin/jobs', {
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setJobs(data.data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar vagas:', error);
     }
   };
 
@@ -386,6 +465,94 @@ export default function AdminCandidatoPage() {
     }
   };
 
+  const handleInterviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!interviewForm.companyId || !interviewForm.title || !interviewForm.scheduledDate || !interviewForm.scheduledTime) {
+      alert('Por favor, preencha todos os campos obrigatórios');
+      return;
+    }
+
+    try {
+      // Combinar data e hora
+      const scheduledDateTime = new Date(`${interviewForm.scheduledDate}T${interviewForm.scheduledTime}`);
+      
+      const interviewData = {
+        ...interviewForm,
+        scheduledDate: scheduledDateTime.toISOString()
+      };
+
+      const response = await fetch(`/api/admin/candidates/${candidatoId}/interviews`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        },
+        body: JSON.stringify(interviewData)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setInterviews([data.data, ...interviews]);
+        setShowInterviewModal(false);
+        setInterviewForm({
+          companyId: '',
+          jobId: '',
+          title: '',
+          description: '',
+          scheduledDate: '',
+          scheduledTime: '',
+          duration: 60,
+          type: 'online',
+          location: '',
+          meetingUrl: '',
+          interviewerName: '',
+          interviewerEmail: '',
+          interviewerPhone: '',
+          notes: ''
+        });
+        alert('Entrevista agendada com sucesso!');
+      } else {
+        const errorData = await response.json();
+        alert(`Erro ao agendar entrevista: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error('Erro ao agendar entrevista:', error);
+      alert('Erro ao processar solicitação');
+    }
+  };
+
+  const getInterviewStatusBadge = (status: string) => {
+    const statusConfig = {
+      scheduled: { label: 'Agendada', className: styles.statusPending, icon: <GrClock size={12} /> },
+      completed: { label: 'Concluída', className: styles.statusApproved, icon: <GrCheckmark size={12} /> },
+      cancelled: { label: 'Cancelada', className: styles.statusRejected, icon: <GrClose size={12} /> },
+      no_show: { label: 'Não Compareceu', className: styles.statusSuspended, icon: <GrStatusCritical size={12} /> }
+    };
+
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.scheduled;
+
+    return (
+      <span className={`${styles.statusBadge} ${config.className}`}>
+        {config.icon}
+        {config.label}
+      </span>
+    );
+  };
+
+  const getInterviewTypeIcon = (type: string) => {
+    switch (type) {
+      case 'presential':
+        return <GrLocation size={16} />;
+      case 'online':
+        return <GrConnect size={16} />;
+      case 'phone':
+        return <GrPhone size={16} />;
+      default:
+        return <GrCalendar size={16} />;
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       pending: { label: 'Pendente', className: styles.statusPending, icon: <GrPending size={14} /> },
@@ -442,10 +609,15 @@ export default function AdminCandidatoPage() {
     { id: 'timeline', label: 'Timeline', icon: <GrClock size={16} /> }
   ];
 
-  // Carregar documentos quando a aba for ativada
+  // Carregar dados quando a aba for ativada
   useEffect(() => {
     if (activeTab === 'documents' && candidatoId) {
       loadDocuments();
+    }
+    if (activeTab === 'interviews' && candidatoId) {
+      loadInterviews();
+      loadCompanies();
+      loadJobs();
     }
   }, [activeTab, candidatoId]);
 
@@ -660,7 +832,7 @@ export default function AdminCandidatoPage() {
                         <div className={styles.metricLabel}>Candidaturas</div>
                       </div>
                       <div className={styles.metricItem}>
-                        <div className={styles.metricValue}>0</div>
+                        <div className={styles.metricValue}>{interviews.length}</div>
                         <div className={styles.metricLabel}>Entrevistas</div>
                       </div>
                       <div className={styles.metricItem}>
@@ -786,13 +958,118 @@ export default function AdminCandidatoPage() {
                 <div className={styles.tabHeader}>
                   <h2>Gestão de Entrevistas</h2>
                   <div className={styles.tabActions}>
-                    <button className="btn btn-primary">
+                    <button 
+                      className="btn btn-primary"
+                      onClick={() => setShowInterviewModal(true)}
+                    >
                       <GrAdd size={16} />
                       Agendar Entrevista
                     </button>
                   </div>
                 </div>
-                <p>Funcionalidade de entrevistas em desenvolvimento...</p>
+
+                {interviewsLoading ? (
+                  <div className={styles.loadingContainer}>
+                    <div className={styles.loadingSpinner}></div>
+                    <p>Carregando entrevistas...</p>
+                  </div>
+                ) : interviews.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    <GrCalendar size={48} />
+                    <h3>Nenhuma entrevista encontrada</h3>
+                    <p>Este candidato ainda não possui entrevistas agendadas.</p>
+                    <button 
+                      className="btn btn-primary"
+                      onClick={() => setShowInterviewModal(true)}
+                    >
+                      <GrAdd size={16} />
+                      Agendar Primeira Entrevista
+                    </button>
+                  </div>
+                ) : (
+                  <div className={styles.interviewsGrid}>
+                    {interviews.map((interview) => (
+                      <div key={interview._id} className={styles.interviewCard}>
+                        <div className={styles.interviewHeader}>
+                          <div className={styles.interviewType}>
+                            {getInterviewTypeIcon(interview.type)}
+                            <span className={styles.interviewTypeLabel}>
+                              {interview.type === 'presential' && 'Presencial'}
+                              {interview.type === 'online' && 'Online'}
+                              {interview.type === 'phone' && 'Telefone'}
+                            </span>
+                          </div>
+                          {getInterviewStatusBadge(interview.status)}
+                        </div>
+                        
+                        <div className={styles.interviewContent}>
+                          <h4>{interview.title}</h4>
+                          {interview.description && (
+                            <p className={styles.interviewDescription}>{interview.description}</p>
+                          )}
+                          
+                          <div className={styles.interviewInfo}>
+                            <div className={styles.interviewMeta}>
+                              <span><strong>Empresa:</strong> {interview.companyId?.name || 'N/A'}</span>
+                              {interview.jobId && (
+                                <span><strong>Vaga:</strong> {interview.jobId.title}</span>
+                              )}
+                              <span><strong>Data:</strong> {new Date(interview.scheduledDate).toLocaleDateString('pt-BR')}</span>
+                              <span><strong>Hora:</strong> {new Date(interview.scheduledDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+                              <span><strong>Duração:</strong> {interview.duration} min</span>
+                            </div>
+                          </div>
+
+                          {interview.type === 'presential' && interview.location && (
+                            <div className={styles.interviewLocation}>
+                              <strong>Local:</strong> {interview.location}
+                            </div>
+                          )}
+
+                          {interview.type === 'online' && interview.meetingUrl && (
+                            <div className={styles.interviewMeeting}>
+                              <strong>Link da Reunião:</strong> 
+                              <a href={interview.meetingUrl} target="_blank" rel="noopener noreferrer">
+                                {interview.meetingUrl}
+                              </a>
+                            </div>
+                          )}
+
+                          {interview.interviewerName && (
+                            <div className={styles.interviewerInfo}>
+                              <strong>Entrevistador:</strong> {interview.interviewerName}
+                              {interview.interviewerEmail && ` (${interview.interviewerEmail})`}
+                            </div>
+                          )}
+
+                          {interview.notes && (
+                            <div className={styles.interviewNotes}>
+                              <strong>Observações:</strong>
+                              <p>{interview.notes}</p>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className={styles.interviewActions}>
+                          <button className="btn btn-secondary btn-sm">
+                            <GrEdit size={14} />
+                            Editar
+                          </button>
+                          <button className="btn btn-primary btn-sm">
+                            <GrView size={14} />
+                            Detalhes
+                          </button>
+                          {interview.status === 'scheduled' && (
+                            <button className="btn btn-danger btn-sm">
+                              <GrClose size={14} />
+                              Cancelar
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -943,6 +1220,212 @@ export default function AdminCandidatoPage() {
                       Enviar Documento
                     </>
                   )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para Agendar Entrevista */}
+      {showInterviewModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h3>Agendar Entrevista</h3>
+              <button 
+                className={styles.modalClose}
+                onClick={() => setShowInterviewModal(false)}
+              >
+                <GrClose size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleInterviewSubmit} className={styles.modalForm}>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Empresa *</label>
+                  <select
+                    value={interviewForm.companyId}
+                    onChange={(e) => setInterviewForm({...interviewForm, companyId: e.target.value})}
+                    required
+                  >
+                    <option value="">Selecione uma empresa</option>
+                    {companies.map((company) => (
+                      <option key={company._id} value={company._id}>
+                        {company.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Vaga (opcional)</label>
+                  <select
+                    value={interviewForm.jobId}
+                    onChange={(e) => setInterviewForm({...interviewForm, jobId: e.target.value})}
+                  >
+                    <option value="">Sem vaga específica</option>
+                    {jobs.map((job) => (
+                      <option key={job._id} value={job._id}>
+                        {job.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Título da Entrevista *</label>
+                <input
+                  type="text"
+                  value={interviewForm.title}
+                  onChange={(e) => setInterviewForm({...interviewForm, title: e.target.value})}
+                  placeholder="Ex: Entrevista para Desenvolvedor Frontend"
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Descrição (opcional)</label>
+                <textarea
+                  value={interviewForm.description}
+                  onChange={(e) => setInterviewForm({...interviewForm, description: e.target.value})}
+                  placeholder="Descrição da entrevista..."
+                  rows={3}
+                />
+              </div>
+
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Data *</label>
+                  <input
+                    type="date"
+                    value={interviewForm.scheduledDate}
+                    onChange={(e) => setInterviewForm({...interviewForm, scheduledDate: e.target.value})}
+                    required
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Hora *</label>
+                  <input
+                    type="time"
+                    value={interviewForm.scheduledTime}
+                    onChange={(e) => setInterviewForm({...interviewForm, scheduledTime: e.target.value})}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Duração (min)</label>
+                  <select
+                    value={interviewForm.duration}
+                    onChange={(e) => setInterviewForm({...interviewForm, duration: parseInt(e.target.value)})}
+                  >
+                    <option value={30}>30 min</option>
+                    <option value={45}>45 min</option>
+                    <option value={60}>1 hora</option>
+                    <option value={90}>1h 30min</option>
+                    <option value={120}>2 horas</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Tipo de Entrevista *</label>
+                <select
+                  value={interviewForm.type}
+                  onChange={(e) => setInterviewForm({...interviewForm, type: e.target.value as any})}
+                  required
+                >
+                  <option value="online">Online</option>
+                  <option value="presential">Presencial</option>
+                  <option value="phone">Telefone</option>
+                </select>
+              </div>
+
+              {interviewForm.type === 'presential' && (
+                <div className={styles.formGroup}>
+                  <label>Local</label>
+                  <input
+                    type="text"
+                    value={interviewForm.location}
+                    onChange={(e) => setInterviewForm({...interviewForm, location: e.target.value})}
+                    placeholder="Endereço ou local da entrevista"
+                  />
+                </div>
+              )}
+
+              {interviewForm.type === 'online' && (
+                <div className={styles.formGroup}>
+                  <label>Link da Reunião</label>
+                  <input
+                    type="url"
+                    value={interviewForm.meetingUrl}
+                    onChange={(e) => setInterviewForm({...interviewForm, meetingUrl: e.target.value})}
+                    placeholder="https://meet.google.com/..."
+                  />
+                </div>
+              )}
+
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Nome do Entrevistador</label>
+                  <input
+                    type="text"
+                    value={interviewForm.interviewerName}
+                    onChange={(e) => setInterviewForm({...interviewForm, interviewerName: e.target.value})}
+                    placeholder="Nome do entrevistador"
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Email do Entrevistador</label>
+                  <input
+                    type="email"
+                    value={interviewForm.interviewerEmail}
+                    onChange={(e) => setInterviewForm({...interviewForm, interviewerEmail: e.target.value})}
+                    placeholder="email@empresa.com"
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Telefone do Entrevistador</label>
+                  <input
+                    type="tel"
+                    value={interviewForm.interviewerPhone}
+                    onChange={(e) => setInterviewForm({...interviewForm, interviewerPhone: e.target.value})}
+                    placeholder="(11) 99999-9999"
+                  />
+                </div>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Observações (opcional)</label>
+                <textarea
+                  value={interviewForm.notes}
+                  onChange={(e) => setInterviewForm({...interviewForm, notes: e.target.value})}
+                  placeholder="Observações adicionais..."
+                  rows={3}
+                />
+              </div>
+
+              <div className={styles.modalActions}>
+                <button 
+                  type="button" 
+                  className="btn btn-secondary"
+                  onClick={() => setShowInterviewModal(false)}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="submit" 
+                  className="btn btn-primary"
+                >
+                  <GrCalendar size={16} />
+                  Agendar Entrevista
                 </button>
               </div>
             </form>

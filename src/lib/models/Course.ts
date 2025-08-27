@@ -454,10 +454,7 @@ const CourseSchema = new Schema<ICourse>({
     default: Date.now
   },
   
-  metrics: {
-    type: CourseMetricsSchema,
-    default: {}
-  },
+  metrics: CourseMetricsSchema,
   
   seoTitle: String,
   seoDescription: String,
@@ -485,10 +482,10 @@ CourseSchema.index({ createdAt: -1 });
 CourseSchema.index({ 'metrics.averageRating': -1 });
 
 // Middleware para calcular totais automaticamente
-CourseSchema.pre('save', function(next) {
+CourseSchema.pre('save', function(this: any, next) {
   if (this.modules && this.modules.length > 0) {
-    this.totalDuration = this.modules.reduce((total, module) => total + module.estimatedDuration, 0);
-    this.totalLessons = this.modules.reduce((total, module) => total + module.lessons.length, 0);
+    this.totalDuration = this.modules.reduce((total: number, module: any) => total + module.estimatedDuration, 0);
+    this.totalLessons = this.modules.reduce((total: number, module: any) => total + module.lessons.length, 0);
   }
   
   this.lastUpdatedAt = new Date();

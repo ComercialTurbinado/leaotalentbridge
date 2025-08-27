@@ -199,10 +199,7 @@ const CompanySchema = new Schema<ICompany>({
     maxlength: 2000
   },
   
-  address: {
-    type: CompanyAddressSchema,
-    required: true
-  },
+  address: CompanyAddressSchema,
   phone: String,
   
   industry: {
@@ -226,10 +223,7 @@ const CompanySchema = new Schema<ICompany>({
     max: new Date().getFullYear()
   },
   
-  primaryContact: {
-    type: CompanyContactSchema,
-    required: true
-  },
+  primaryContact: CompanyContactSchema,
   additionalContacts: [CompanyContactSchema],
   
   status: {
@@ -243,10 +237,7 @@ const CompanySchema = new Schema<ICompany>({
   },
   verificationDate: Date,
   
-  plan: {
-    type: CompanyPlanSchema,
-    required: true
-  },
+  plan: CompanyPlanSchema,
   
   totalJobs: {
     type: Number,

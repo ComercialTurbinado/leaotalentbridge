@@ -246,7 +246,7 @@ CourseProgressSchema.statics.getUserProgress = function(userId: string, courseId
 
 CourseProgressSchema.statics.getCourseStats = function(courseId: string) {
   return this.aggregate([
-    { $match: { courseId: new mongoose.Types.ObjectId(courseId) } },
+    { $match: { courseId: courseId } },
     {
       $group: {
         _id: '$status',

@@ -278,10 +278,7 @@ const JobSchema = new Schema<IJob>({
     trim: true
   },
   
-  location: {
-    type: JobLocationSchema,
-    required: true
-  },
+  location: JobLocationSchema,
   workType: {
     type: String,
     required: true,
@@ -293,15 +290,9 @@ const JobSchema = new Schema<IJob>({
     default: 'standard'
   },
   
-  salary: {
-    type: JobSalarySchema,
-    required: true
-  },
+  salary: JobSalarySchema,
   
-  requirements: {
-    type: JobRequirementsSchema,
-    required: true
-  },
+  requirements: JobRequirementsSchema,
   
   status: {
     type: String,
@@ -344,10 +335,7 @@ const JobSchema = new Schema<IJob>({
     required: Boolean
   }],
   
-  metrics: {
-    type: JobMetricsSchema,
-    default: () => ({})
-  },
+  metrics: JobMetricsSchema,
   
   tags: [{
     type: String,

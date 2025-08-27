@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 // Verificar autenticação de admin
 async function verifyAdminAuth(request: NextRequest) {
@@ -121,11 +122,15 @@ export async function POST(request: NextRequest) {
     const userPassword = tempPassword || password || Math.random().toString(36).slice(-8);
     console.log('🔑 Senha definida para usuário:', userPassword);
     
+    // Encriptar senha
+    const hashedPassword = await bcrypt.hash(userPassword, 12);
+    console.log('🔐 Senha encriptada com sucesso');
+    
     // Preparar objeto do usuário
     const userData = {
       name,
       email,
-      password: userPassword, // Será hasheada pelo middleware do Mongoose
+      password: hashedPassword, // Senha já encriptada
       type,
       status,
       profile: {
