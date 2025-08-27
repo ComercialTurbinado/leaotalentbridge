@@ -12,9 +12,11 @@ import styles from './documentos.module.css';
 
 interface Document {
   _id: string;
+  id?: string; // Para compatibilidade com código existente
   type: 'cv' | 'certificate' | 'contract' | 'form' | 'other';
   fileType: 'pdf' | 'doc' | 'docx' | 'jpg' | 'jpeg' | 'png' | 'txt';
   title: string;
+  name?: string; // Para compatibilidade com código existente
   description?: string;
   fileName: string;
   fileUrl: string;
@@ -25,6 +27,12 @@ interface Document {
   createdAt: string;
   verifiedAt?: string;
   adminComments?: string;
+  category?: 'sent' | 'received'; // Para compatibilidade com código existente
+  uploadDate?: string; // Para compatibilidade com código existente
+  size?: string; // Para compatibilidade com código existente
+  tags?: string[]; // Para compatibilidade com código existente
+  feedback?: string; // Para compatibilidade com código existente
+  downloadUrl?: string; // Para compatibilidade com código existente
 }
 
 export default function CandidatoDocumentos() {
@@ -105,14 +113,22 @@ export default function CandidatoDocumentos() {
     Array.from(files).forEach(file => {
       // Simular upload
       const newDoc: Document = {
-        id: Date.now() + Math.random().toString(), // Gerar um ID único para simulação
+        _id: Date.now() + Math.random().toString(), // Gerar um ID único para simulação
+        id: Date.now() + Math.random().toString(), // Para compatibilidade
+        title: file.name,
         name: file.name,
         type: 'other',
+        fileType: 'pdf',
+        fileName: file.name,
+        fileUrl: '',
+        fileSize: file.size,
+        mimeType: file.type,
+        status: 'pending',
+        uploadedBy: 'candidate',
+        createdAt: new Date().toISOString(),
         category: 'sent',
         size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
-        format: file.name.split('.').pop()?.toUpperCase() || 'UNKNOWN',
         uploadDate: new Date().toISOString().split('T')[0],
-        status: 'pending',
         description: 'Documento enviado para análise',
         tags: ['novo', 'pendente']
       };
@@ -121,6 +137,60 @@ export default function CandidatoDocumentos() {
     });
     
     setShowUploadModal(false);
+  };
+
+  const handleViewDocument = (doc: Document) => {
+    if (doc.fileUrl && !doc.fileUrl.startsWith('http')) {
+      try {
+        // Para arquivos base64, abrir em nova aba
+        const base64Data = doc.fileUrl.includes(',') ? doc.fileUrl.split(',')[1] : doc.fileUrl;
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: doc.mimeType || 'application/octet-stream' });
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      } catch (error) {
+        console.error('Erro ao visualizar documento:', error);
+        alert('Erro ao visualizar documento');
+      }
+    } else if (doc.fileUrl && doc.fileUrl.startsWith('http')) {
+      window.open(doc.fileUrl, '_blank');
+    } else {
+      alert('Documento não pode ser visualizado');
+    }
+  };
+
+  const handleDownloadDocument = (doc: Document) => {
+    if (doc.fileUrl && !doc.fileUrl.startsWith('http')) {
+      try {
+        const base64Data = doc.fileUrl.includes(',') ? doc.fileUrl.split(',')[1] : doc.fileUrl;
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: doc.mimeType || 'application/octet-stream' });
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = doc.fileName;
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      } catch (error) {
+        console.error('Erro ao baixar documento:', error);
+        alert('Erro ao baixar documento');
+      }
+    } else if (doc.fileUrl && doc.fileUrl.startsWith('http')) {
+      window.open(doc.fileUrl, '_blank');
+    } else {
+      alert('Documento não pode ser baixado');
+    }
   };
 
   const getFileIcon = (format: string) => {
@@ -192,7 +262,7 @@ export default function CandidatoDocumentos() {
   };
 
   const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = (doc.title || doc.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doc.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doc.fileType?.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -299,7 +369,7 @@ export default function CandidatoDocumentos() {
               >
                 <GrUpload size={18} />
                 Documentos Enviados
-                <span className={styles.tabBadge}>{documents.filter(d => d.category === 'sent').length}</span>
+                <span className={styles.tabBadge}>{documents.filter(d => d.uploadedBy === 'candidate').length}</span>
               </button>
               
               <button 
@@ -308,7 +378,7 @@ export default function CandidatoDocumentos() {
               >
                 <GrDownload size={18} />
                 Documentos Recebidos
-                <span className={styles.tabBadge}>{documents.filter(d => d.category === 'received').length}</span>
+                <span className={styles.tabBadge}>{documents.filter(d => d.uploadedBy === 'admin').length}</span>
               </button>
             </div>
           </div>
@@ -388,11 +458,11 @@ export default function CandidatoDocumentos() {
             )}
 
             {filteredDocuments.map((document) => (
-              <div key={document.id} className={styles.documentCard}>
+              <div key={document._id || document.id} className={styles.documentCard}>
                 <div className={styles.documentHeader}>
                   <div className={styles.documentInfo}>
                     <div className={styles.documentTitle}>
-                      <h3>{document.name}</h3>
+                      <h3>{document.title || document.name}</h3>
                       <div className={styles.documentMeta}>
                         <div className={styles.metaItem}>
                           <GrDocument size={14} />
@@ -400,7 +470,7 @@ export default function CandidatoDocumentos() {
                         </div>
                         <div className={styles.metaItem}>
                           <GrClock size={14} />
-                          <span>{document.uploadDate}</span>
+                          <span>{document.uploadDate || new Date(document.createdAt).toLocaleDateString()}</span>
                         </div>
                         {document.size && (
                           <div className={styles.metaItem}>
@@ -428,7 +498,7 @@ export default function CandidatoDocumentos() {
                   
                   {document.tags && document.tags.length > 0 && (
                     <div className={styles.documentTags}>
-                      {document.tags.map((tag, index) => (
+                      {document.tags.map((tag: string, index: number) => (
                         <span key={index} className={styles.tag}>
                           {tag}
                         </span>
@@ -436,33 +506,32 @@ export default function CandidatoDocumentos() {
                     </div>
                   )}
 
-                  {document.feedback && (
+                  {document.adminComments && (
                     <div className={styles.feedback}>
                       <h4>Feedback do Admin:</h4>
-                      <p>&ldquo;{document.feedback}&rdquo;</p>
+                      <p>&ldquo;{document.adminComments}&rdquo;</p>
                     </div>
                   )}
                 </div>
 
                 <div className={styles.documentActions}>
-                  {document.downloadUrl && (
-                    <a 
-                      href={document.downloadUrl}
-                      className="btn btn-secondary btn-small"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <GrDownload size={16} />
-                      Download
-                    </a>
-                  )}
+                  <button 
+                    className="btn btn-secondary btn-small"
+                    onClick={() => handleDownloadDocument(document)}
+                  >
+                    <GrDownload size={16} />
+                    Download
+                  </button>
                   
-                  <button className="btn btn-primary btn-small">
+                  <button 
+                    className="btn btn-primary btn-small"
+                    onClick={() => handleViewDocument(document)}
+                  >
                     <GrView size={16} />
                     Visualizar
                   </button>
                   
-                  {document.category === 'sent' && (
+                  {document.uploadedBy === 'candidate' && (
                     <button className="btn btn-danger btn-small">
                       <GrTrash size={16} />
                       Remover
