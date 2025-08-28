@@ -24,8 +24,18 @@ export async function GET(
       return NextResponse.json({ success: false, message: 'Candidato não encontrado' }, { status: 404 });
     }
 
+    console.log('🔍 [ADMIN] Buscando documentos para candidato:', resolvedParams.id);
+    
     const documents = await CandidateDocument.find({ candidateId: resolvedParams.id })
       .sort({ createdAt: -1 });
+
+    console.log('📄 [ADMIN] Documentos encontrados:', documents.length);
+    console.log('📋 [ADMIN] Documentos:', documents.map(d => ({ 
+      id: d._id, 
+      title: d.title, 
+      uploadedBy: d.uploadedBy, 
+      status: d.status 
+    })));
 
     return NextResponse.json({
       success: true,

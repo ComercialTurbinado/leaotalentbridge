@@ -57,15 +57,25 @@ export default function CandidatoDocumentos() {
       return;
     }
     setUser(currentUser);
-    loadDocuments();
   }, [router]);
+
+  useEffect(() => {
+    if (user?._id) {
+      loadDocuments();
+    }
+  }, [user]);
 
   const loadDocuments = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      if (!user?._id) return;
+      if (!user?._id) {
+        console.log('❌ Usuário não definido');
+        return;
+      }
+
+      console.log('🔍 Carregando documentos para usuário:', user._id);
 
       const response = await fetch(`/api/candidates/${user._id}/documents`, {
         headers: {
@@ -73,18 +83,30 @@ export default function CandidatoDocumentos() {
         }
       });
       
+      console.log('📡 Response status:', response.status);
+      
       if (response.ok) {
         const result = await response.json();
+        console.log('📄 Resultado da API:', result);
+        
         if (result.success) {
+          console.log('✅ Documentos carregados:', result.data.length);
+          console.log('📋 Documentos:', result.data.map(d => ({ 
+            title: d.title, 
+            uploadedBy: d.uploadedBy, 
+            status: d.status 
+          })));
           setDocuments(result.data);
         } else {
+          console.error('❌ Erro na resposta da API:', result.message);
           setError('Erro ao carregar documentos');
         }
       } else {
+        console.error('❌ Erro HTTP:', response.status);
         setError('Erro ao carregar documentos');
       }
     } catch (error) {
-      console.error('Erro ao carregar documentos:', error);
+      console.error('❌ Erro ao carregar documentos:', error);
       setError('Erro ao carregar documentos');
       setDocuments([]);
     } finally {
@@ -414,26 +436,15 @@ export default function CandidatoDocumentos() {
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className={styles.tabsSection}>
-            <div className={styles.tabs}>
-              <button 
-                className={`${styles.tab} ${activeTab === 'enviados' ? styles.active : ''}`}
-                onClick={() => setActiveTab('enviados')}
-              >
-                <GrUpload size={18} />
-                Documentos Enviados
-                <span className={styles.tabBadge}>{documents.filter(d => d.uploadedBy === 'candidate').length}</span>
-              </button>
-              
-              <button 
-                className={`${styles.tab} ${activeTab === 'recebidos' ? styles.active : ''}`}
-                onClick={() => setActiveTab('recebidos')}
-              >
-                <GrDownload size={18} />
-                Documentos Recebidos
-                <span className={styles.tabBadge}>{documents.filter(d => d.uploadedBy === 'admin').length}</span>
-              </button>
+          {/* Documentos Info */}
+          <div className={styles.documentsInfo}>
+            <div className={styles.infoCard}>
+              <GrUpload size={20} />
+              <span>Enviados: {documents.filter(d => d.uploadedBy === 'candidate').length}</span>
+            </div>
+            <div className={styles.infoCard}>
+              <GrDownload size={20} />
+              <span>Recebidos: {documents.filter(d => d.uploadedBy === 'admin').length}</span>
             </div>
           </div>
 

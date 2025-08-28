@@ -29,8 +29,18 @@ export async function GET(
       return NextResponse.json({ success: false, message: 'Acesso negado aos documentos' }, { status: 403 });
     }
 
+    console.log('🔍 Buscando documentos para candidato:', resolvedParams.id);
+    
     const documents = await CandidateDocument.find({ candidateId: resolvedParams.id })
       .sort({ createdAt: -1 });
+
+    console.log('📄 Documentos encontrados:', documents.length);
+    console.log('📋 Documentos:', documents.map(d => ({ 
+      id: d._id, 
+      title: d.title, 
+      uploadedBy: d.uploadedBy, 
+      status: d.status 
+    })));
 
     return NextResponse.json({
       success: true,
