@@ -91,7 +91,7 @@ export default function CandidatoDocumentos() {
         
         if (result.success) {
           console.log('✅ Documentos carregados:', result.data.length);
-          console.log('📋 Documentos:', result.data.map(d => ({ 
+          console.log('📋 Documentos:', result.data.map((d: any) => ({ 
             title: d.title, 
             uploadedBy: d.uploadedBy, 
             status: d.status 
