@@ -1,17 +1,18 @@
 /* Página de Candidatos - Admin */
 .candidatosPage {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary-black);
+  color: var(--white);
 }
 
 .mainContent {
-  padding: 2rem 0;
+  padding: var(--spacing-xl) 0;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--spacing-lg);
 }
 
 /* Page Header */
@@ -19,22 +20,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--spacing-xl);
+  background: var(--secondary-black);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-md);
 }
 
 .titleSection h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: #1a202c;
-  margin: 0 0 0.5rem 0;
+  color: var(--white);
+  margin: 0 0 var(--spacing-sm) 0;
 }
 
 .titleSection p {
-  color: #4a5568;
+  color: var(--gray-700);
   margin: 0;
   font-size: 1rem;
 }
@@ -48,45 +50,49 @@
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
 }
 
 .statCard {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: var(--secondary-black);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: transform 0.2s ease;
+  gap: var(--spacing-md);
+  transition: all var(--transition-medium);
 }
 
 .statCard:hover {
+  background: var(--black-light);
+  border-color: var(--primary-gold);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .statIcon {
   width: 48px;
   height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius-lg);
+  background: rgba(212, 175, 55, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--primary-gold);
 }
 
 .statContent h3 {
   font-size: 2rem;
   font-weight: 700;
-  color: #1a202c;
+  color: var(--white);
   margin: 0;
 }
 
 .statContent p {
-  color: #4a5568;
+  color: var(--gray-700);
   margin: 0;
   font-size: 0.9rem;
 }

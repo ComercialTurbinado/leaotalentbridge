@@ -1,0 +1,504 @@
+/* ========================================
+   SISTEMA DE COMPONENTES INTERNOS PADRONIZADOS
+   UAE Careers - Áreas Internas
+   ======================================== */
+
+/* ========================================
+   LAYOUT BASE PADRÃO
+   ======================================== */
+.internalPage {
+  min-height: 100vh;
+  background: var(--primary-black);
+  color: var(--white);
+}
+
+.internalLoadingPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-black);
+}
+
+.internalMainContent {
+  padding: var(--spacing-xl) 0;
+}
+
+.internalContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+/* ========================================
+   HEADERS PADRONIZADOS
+   ======================================== */
+.internalHeader {
+  background: var(--secondary-black);
+  border-bottom: 1px solid var(--gray-300);
+  padding: var(--spacing-md) 0;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.internalHeaderContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.internalPageHeader {
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.internalPageHeader h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-sm);
+}
+
+.internalPageHeader p {
+  color: var(--gray-700);
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* ========================================
+   CARDS PADRONIZADOS
+   ======================================== */
+.internalCard {
+  background: var(--secondary-black);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  transition: all var(--transition-medium);
+}
+
+.internalCard:hover {
+  background: var(--black-light);
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.internalCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.internalCardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+  margin: 0;
+}
+
+/* ========================================
+   STATS PADRONIZADOS
+   ======================================== */
+.internalStatsSection {
+  margin-bottom: var(--spacing-xl);
+}
+
+.internalStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.internalStatCard {
+  background: var(--secondary-black);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.internalStatCard:hover {
+  background: var(--black-light);
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.internalStatIcon {
+  width: 60px;
+  height: 60px;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--primary-gold);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.internalStatContent h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-xs);
+}
+
+.internalStatContent p {
+  color: var(--gray-700);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* ========================================
+   BOTÕES PADRONIZADOS
+   ======================================== */
+.internalBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  text-decoration: none;
+  justify-content: center;
+}
+
+.internalBtnPrimary {
+  background: var(--primary-gold);
+  color: var(--primary-black);
+}
+
+.internalBtnPrimary:hover {
+  background: var(--gold-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.internalBtnSecondary {
+  background: var(--gray-200);
+  color: var(--gray-800);
+  border: 1px solid var(--gray-300);
+}
+
+.internalBtnSecondary:hover {
+  background: var(--gray-300);
+  border-color: var(--gray-400);
+}
+
+.internalBtnOutline {
+  background: transparent;
+  color: var(--primary-gold);
+  border: 2px solid var(--primary-gold);
+}
+
+.internalBtnOutline:hover {
+  background: var(--primary-gold);
+  color: var(--primary-black);
+}
+
+.internalBtnSmall {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 0.75rem;
+}
+
+.internalBtnLarge {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  font-size: 1rem;
+}
+
+/* ========================================
+   FORMULÁRIOS PADRONIZADOS
+   ======================================== */
+.internalFormSection {
+  background: var(--secondary-black);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  margin-bottom: var(--spacing-xl);
+}
+
+.internalFormGroup {
+  margin-bottom: var(--spacing-lg);
+}
+
+.internalFormLabel {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  font-weight: 500;
+  color: var(--white);
+}
+
+.internalFormInput {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  background: var(--primary-black);
+  color: var(--white);
+  transition: all var(--transition-medium);
+}
+
+.internalFormInput:focus {
+  outline: none;
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.internalFormSelect {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  background: var(--primary-black);
+  color: var(--white);
+  transition: all var(--transition-medium);
+}
+
+.internalFormSelect:focus {
+  outline: none;
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* ========================================
+   TABELAS PADRONIZADAS
+   ======================================== */
+.internalTableContainer {
+  background: var(--secondary-black);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+
+.internalTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.internalTable th {
+  background: var(--black-light);
+  padding: var(--spacing-md);
+  text-align: left;
+  font-weight: 600;
+  color: var(--white);
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.internalTable td {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-200);
+  color: var(--gray-700);
+}
+
+.internalTable tr:hover {
+  background: var(--black-light);
+}
+
+/* ========================================
+   STATUS BADGES PADRONIZADOS
+   ======================================== */
+.internalStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.internalStatusPending {
+  background: rgba(253, 126, 20, 0.1);
+  color: var(--warning);
+  border: 1px solid rgba(253, 126, 20, 0.3);
+}
+
+.internalStatusApproved {
+  background: rgba(25, 135, 84, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(25, 135, 84, 0.3);
+}
+
+.internalStatusRejected {
+  background: rgba(220, 53, 69, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.internalStatusSuspended {
+  background: rgba(108, 117, 125, 0.1);
+  color: var(--gray-600);
+  border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+/* ========================================
+   FILTROS PADRONIZADOS
+   ======================================== */
+.internalFiltersSection {
+  background: var(--secondary-black);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  margin-bottom: var(--spacing-xl);
+}
+
+.internalFiltersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  align-items: end;
+}
+
+.internalSearchBar {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: end;
+}
+
+.internalSearchInput {
+  flex: 1;
+  position: relative;
+}
+
+.internalSearchInput input {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) var(--spacing-xl);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-md);
+  background: var(--primary-black);
+  color: var(--white);
+}
+
+.internalSearchInput svg {
+  position: absolute;
+  left: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-500);
+}
+
+/* ========================================
+   MODAIS PADRONIZADOS
+   ======================================== */
+.internalModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-lg);
+}
+
+.internalModal {
+  background: var(--primary-black);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.internalModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.internalModalTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--white);
+  margin: 0;
+}
+
+.internalModalClose {
+  background: none;
+  border: none;
+  color: var(--gray-500);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-medium);
+}
+
+.internalModalClose:hover {
+  color: var(--error);
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.internalModalContent {
+  padding: var(--spacing-lg);
+}
+
+/* ========================================
+   RESPONSIVIDADE PADRÃO
+   ======================================== */
+@media (max-width: 768px) {
+  .internalContainer {
+    padding: 0 var(--spacing-md);
+  }
+  
+  .internalStatsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .internalFiltersGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .internalSearchBar {
+    flex-direction: column;
+  }
+  
+  .internalModal {
+    margin: var(--spacing-md);
+    max-height: calc(100vh - 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .internalPageHeader h1 {
+    font-size: 2rem;
+  }
+  
+  .internalStatCard {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .internalCardHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+}
