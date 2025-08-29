@@ -9,7 +9,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata = {
-  title: 'Leão Talent Bridge',
+  title: 'UAE Careers',
   description: 'Plataforma de carreiras para brasileiros nos Emirados Árabes Unidos',
 }
 

@@ -521,7 +521,7 @@ function DashboardContent() {
           {showSuccessMessage && (
             <div className={styles.successMessage}>
               <GrStatusGood size={20} />
-              <span>Cadastro realizado com sucesso! Bem-vindo ao Leão Talent Bridge!</span>
+                              <span>Cadastro realizado com sucesso! Bem-vindo ao UAE Careers!</span>
             </div>
           )}
 

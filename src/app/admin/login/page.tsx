@@ -56,11 +56,11 @@ export default function AdminLogin() {
         <div className={styles.logo}>
           <Image 
             src="/images/UAECareers-ow.svg" 
-            alt="Leão Talent Bridge" 
+            alt="UAE Careers" 
             width={32} 
             height={32}
           />
-          <span>Leão <span className="text-gold">Talent Bridge</span></span>
+                      <span>UAE <span className="text-gold">Careers</span></span>
         </div>
 
         {/* Login Form */}

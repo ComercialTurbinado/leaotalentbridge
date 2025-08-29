@@ -25,7 +25,7 @@ export default function Header({ transparent = false }: HeaderProps) {
           <Link href="/" className={styles.logo}>
             <Image 
               src="/images/UAECareers-ow.svg" 
-              alt="Leão Talent Bridge" 
+              alt="UAE Careers" 
               width={200} 
               height={100}
               className={styles.logoIcon}

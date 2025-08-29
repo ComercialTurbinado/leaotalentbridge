@@ -353,7 +353,7 @@ export default function HomePage() {
       <section id="beneficios" className={`section ${styles.benefitsSection}`}>
         <div className="container">
           <AnimatedHeading
-            title="Por que Escolher a Leão Talent Bridge?"
+            title="Por que Escolher a UAE Careers?"
             subtitle="Oferecemos Muito Mais Que Simples Conexões - Somos Seu Parceiro De Sucesso"
           />
 
@@ -397,19 +397,19 @@ export default function HomePage() {
           <div className="grid grid-2">
             <div className={styles.aboutContent}>
               <AnimatedHeading
-                title="Sobre a Leão Talent Bridge"
+                title="Sobre a UAE Careers"
                 level={2}
                 className={styles.leftAligned}
               />
               <h3 className="heading-3 mb-md">Conectando Talentos Ao Futuro</h3>
               <p>
-                A partir de uma escuta ativa das demandas do mercado dos Emirados Árabes Unidos — e com o respaldo de líderes empresariais e apoio institucional — nasceu a Leão Talent Bridge, com um propósito claro: criar oportunidades reais para brasileiros no cenário internacional, com foco em todos os Emirados.
+                A partir de uma escuta ativa das demandas do mercado dos Emirados Árabes Unidos — e com o respaldo de líderes empresariais e apoio institucional — nasceu a UAE Careers, com um propósito claro: criar oportunidades reais para brasileiros no cenário internacional, com foco em todos os Emirados.
               </p>
               <p>
                 Aliamos o conhecimento das necessidades das empresas locais aos objetivos e competências dos profissionais que desejam atuar fora do Brasil.
               </p>
               <p className={styles.highlightText}>
-                Como uma vertente da Leão Group Global, a Leão Talent Bridge se destaca pela sólida experiência na mobilidade e recolocação de talentos, sendo amplamente reconhecida nos Emirados Árabes por sua atuação estratégica e comprometida.
+                Como uma vertente da Leão Group Global, a UAE Careers se destaca pela sólida experiência na mobilidade e recolocação de talentos, sendo amplamente reconhecida nos Emirados Árabes por sua atuação estratégica e comprometida.
               </p>
             </div>
             
@@ -476,7 +476,7 @@ export default function HomePage() {
             <div className={styles.footerLogo}>
               <Image 
                 src="/images/UAECareers-white-icon.svg" 
-                alt="Leão Talent Bridge" 
+                alt="UAE Careers" 
                 width={24} 
                 height={24}
               />

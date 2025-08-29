@@ -118,7 +118,7 @@ export default function EmpresaCadastroPage() {
           
           <div className={styles.logo}>
             <GrStar size={32} />
-            <span> Leão Talent Bridge</span>
+                            <span> UAE Careers</span>
           </div>
         </div>
 

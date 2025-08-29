@@ -319,7 +319,7 @@ export default function AdminCandidatosPage() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Gestão de Candidatos</h1>
-              <p>Gerencie todos os candidatos cadastrados na plataforma Leão Talent Bridge</p>
+              <p>Gerencie todos os candidatos cadastrados na plataforma UAE Careers</p>
             </div>
             
             <div className={styles.headerActions}>

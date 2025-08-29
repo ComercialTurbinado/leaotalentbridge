@@ -99,7 +99,7 @@ export default function CandidaturasPage() {
           status: app.status,
           appliedAt: app.appliedAt,
           updatedAt: app.updatedAt,
-          coverLetter: app.coverLetter || 'Candidatura enviada através da plataforma Leão Talent Bridge.',
+          coverLetter: app.coverLetter || 'Candidatura enviada através da plataforma UAE Careers.',
           source: app.source || 'platform'
         }));
 

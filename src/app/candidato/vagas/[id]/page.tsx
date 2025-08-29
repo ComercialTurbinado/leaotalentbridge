@@ -133,7 +133,7 @@ export default function DetalhesVagaPage() {
     try {
       await ApiService.createApplication({
         jobId: job._id,
-        coverLetter: 'Candidatura enviada através da plataforma Leão Talent Bridge.',
+        coverLetter: 'Candidatura enviada através da plataforma UAE Careers.',
         source: 'platform'
       });
 

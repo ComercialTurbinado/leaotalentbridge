@@ -374,7 +374,7 @@ export default function AdminEmpresasPage() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Gestão de Empresas</h1>
-              <p>Gerencie todas as empresas cadastradas na plataforma Leão Talent Bridge</p>
+              <p>Gerencie todas as empresas cadastradas na plataforma UAE Careers</p>
             </div>
             
             <div className={styles.headerActions}>

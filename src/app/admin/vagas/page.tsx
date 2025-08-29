@@ -376,7 +376,7 @@ export default function AdminVagasPage() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Gestão de Vagas</h1>
-              <p>Gerencie todas as vagas publicadas na plataforma Leão Talent Bridge</p>
+              <p>Gerencie todas as vagas publicadas na plataforma UAE Careers</p>
             </div>
             
             <div className={styles.headerActions}>

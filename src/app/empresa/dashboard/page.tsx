@@ -213,7 +213,7 @@ export default function EmpresaDashboardPage() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Dashboard</h1>
-              <p>Visão geral da sua empresa no Leão Talent Bridge</p>
+              <p>Visão geral da sua empresa no UAE Careers</p>
             </div>
             <div className={styles.headerActions}>
               <Link href="/empresa/vagas/nova" className="btn btn-primary">

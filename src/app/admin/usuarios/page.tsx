@@ -353,7 +353,7 @@ export default function AdminUsuariosPage() {
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
               <h1>Gestão de Usuários</h1>
-              <p>Gerencie todos os usuários da plataforma Leão Talent Bridge</p>
+              <p>Gerencie todos os usuários da plataforma UAE Careers</p>
             </div>
             
             <div className={styles.headerActions}>

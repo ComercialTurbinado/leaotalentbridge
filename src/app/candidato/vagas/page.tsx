@@ -122,7 +122,7 @@ export default function CandidatoVagasPage() {
     try {
       await ApiService.createApplication({
         jobId,
-        coverLetter: 'Candidatura enviada através da plataforma Leão Talent Bridge.',
+        coverLetter: 'Candidatura enviada através da plataforma UAE Careers.',
         source: 'platform'
       });
 
