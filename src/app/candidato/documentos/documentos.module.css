@@ -2,6 +2,8 @@
   min-height: 100vh;
   background: var(--primary-black);
   color: var(--white);
+  position: relative;
+  z-index: 1;
 }
 
 .loadingPage {
@@ -656,7 +658,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   backdrop-filter: blur(4px);
 }
 

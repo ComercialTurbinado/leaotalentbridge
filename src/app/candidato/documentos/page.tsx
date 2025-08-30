@@ -77,9 +77,19 @@ export default function CandidatoDocumentos() {
 
       console.log('🔍 Carregando documentos para usuário:', user._id);
 
+      const token = AuthService.getToken();
+      if (!token) {
+        console.error('❌ Token não encontrado');
+        setError('Token de autenticação não encontrado');
+        return;
+      }
+
+      console.log('🔑 Token encontrado:', token.substring(0, 20) + '...');
+
       const response = await fetch(`/api/candidates/${user._id}/documents`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       });
       
@@ -163,11 +173,18 @@ export default function CandidatoDocumentos() {
         };
 
         // Fazer upload via API
+        const token = AuthService.getToken();
+        if (!token) {
+          console.error('❌ Token não encontrado para upload');
+          alert('Token de autenticação não encontrado');
+          return;
+        }
+
         const response = await fetch(`/api/candidates/${user._id}/documents`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify(documentData)
         });
