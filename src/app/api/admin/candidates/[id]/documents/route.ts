@@ -3,6 +3,7 @@ import connectMongoDB from '@/lib/mongodb';
 import CandidateDocument from '@/lib/models/CandidateDocument';
 import User from '@/lib/models/User';
 import { verifyAuth } from '@/lib/middleware/auth';
+import { DocumentValidationService } from '@/lib/services/DocumentValidationService';
 
 // GET - Listar documentos do candidato
 export async function GET(
@@ -88,6 +89,20 @@ export async function POST(
       }, { status: 400 });
     }
 
+    // Validar documento antes de salvar
+    console.log('🔍 [ADMIN] Validando documento...');
+    const validationResult = await DocumentValidationService.validateDocument({
+      type: data.type,
+      fileType: data.fileType,
+      title: data.title,
+      fileName: data.fileName,
+      fileUrl: data.fileUrl || data.base64Data,
+      fileSize: data.fileSize,
+      mimeType: data.mimeType
+    });
+
+    console.log('✅ [ADMIN] Resultado da validação:', validationResult);
+
     const newDocument = new CandidateDocument({
       candidateId: resolvedParams.id,
       type: data.type,
@@ -101,7 +116,18 @@ export async function POST(
       uploadedBy: 'admin',
       status: 'verified', // Documentos enviados pelo admin são automaticamente verificados
       verifiedBy: user._id,
-      verifiedAt: new Date()
+      verifiedAt: new Date(),
+      priority: DocumentValidationService.getDocumentPriority(data.type),
+      validationResults: {
+        fileIntegrity: validationResult.fileIntegrity,
+        formatValid: validationResult.formatValid,
+        sizeValid: validationResult.sizeValid,
+        contentValid: validationResult.contentValid,
+        errors: validationResult.errors
+      },
+      adminComments: validationResult.warnings.length > 0 ? 
+        `Documento enviado pelo admin. Avisos: ${validationResult.warnings.join(', ')}` : 
+        'Documento enviado pelo administrador'
     });
 
     await newDocument.save();

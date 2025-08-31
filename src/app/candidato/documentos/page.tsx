@@ -13,7 +13,7 @@ import styles from './documentos.module.css';
 interface Document {
   _id: string;
   id?: string; // Para compatibilidade com código existente
-  type: 'cv' | 'certificate' | 'contract' | 'form' | 'other';
+  type: 'cv' | 'certificate' | 'contract' | 'form' | 'passport' | 'visa' | 'diploma' | 'other';
   fileType: 'pdf' | 'doc' | 'docx' | 'jpg' | 'jpeg' | 'png' | 'txt';
   title: string;
   name?: string; // Para compatibilidade com código existente
@@ -22,11 +22,24 @@ interface Document {
   fileUrl: string;
   fileSize: number;
   mimeType: string;
-  status: 'pending' | 'verified' | 'rejected';
+  status: 'pending' | 'verified' | 'rejected' | 'under_review';
+  priority: 'low' | 'medium' | 'high';
   uploadedBy: 'candidate' | 'admin';
   createdAt: string;
   verifiedAt?: string;
+  verifiedBy?: {
+    _id: string;
+    name: string;
+  };
   adminComments?: string;
+  rejectionReason?: string;
+  validationResults?: {
+    fileIntegrity: boolean;
+    formatValid: boolean;
+    sizeValid: boolean;
+    contentValid?: boolean;
+    errors: string[];
+  };
   category?: 'sent' | 'received'; // Para compatibilidade com código existente
   uploadDate?: string; // Para compatibilidade com código existente
   size?: string; // Para compatibilidade com código existente
@@ -283,6 +296,20 @@ export default function CandidatoDocumentos() {
       window.open(doc.fileUrl, '_blank');
     } else {
       alert('Documento não pode ser baixado');
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'verified':
+        return <span className={styles.statusBadge + ' ' + styles.statusVerified}>✅ Aprovado</span>;
+      case 'rejected':
+        return <span className={styles.statusBadge + ' ' + styles.statusRejected}>❌ Rejeitado</span>;
+      case 'under_review':
+        return <span className={styles.statusBadge + ' ' + styles.statusUnderReview}>🔍 Em Análise</span>;
+      case 'pending':
+      default:
+        return <span className={styles.statusBadge + ' ' + styles.statusPending}>⏳ Pendente</span>;
     }
   };
 
@@ -564,18 +591,63 @@ export default function CandidatoDocumentos() {
                   </div>
                   
                   <div className={styles.documentStatus}>
-                    <div 
-                      className={styles.statusBadge}
-                      style={{ backgroundColor: getStatusColor(document.status) }}
-                    >
-                      {getStatusText(document.status)}
-                    </div>
+                    {getStatusBadge(document.status)}
                   </div>
                 </div>
 
                 <div className={styles.documentContent}>
                   {document.description && (
                     <p>{document.description}</p>
+                  )}
+
+                  {/* Informações de validação */}
+                  {document.validationResults && (
+                    <div className={styles.validationInfo}>
+                      <h4>Status da Validação:</h4>
+                      <div className={styles.validationDetails}>
+                        <div className={styles.validationItem}>
+                          <span className={document.validationResults.fileIntegrity ? styles.valid : styles.invalid}>
+                            {document.validationResults.fileIntegrity ? '✅' : '❌'} Integridade do arquivo
+                          </span>
+                        </div>
+                        <div className={styles.validationItem}>
+                          <span className={document.validationResults.formatValid ? styles.valid : styles.invalid}>
+                            {document.validationResults.formatValid ? '✅' : '❌'} Formato válido
+                          </span>
+                        </div>
+                        <div className={styles.validationItem}>
+                          <span className={document.validationResults.sizeValid ? styles.valid : styles.invalid}>
+                            {document.validationResults.sizeValid ? '✅' : '❌'} Tamanho válido
+                          </span>
+                        </div>
+                        {document.validationResults.errors && document.validationResults.errors.length > 0 && (
+                          <div className={styles.validationErrors}>
+                            <strong>Erros encontrados:</strong>
+                            <ul>
+                              {document.validationResults.errors.map((error: string, index: number) => (
+                                <li key={index}>{error}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Comentários do admin */}
+                  {document.adminComments && (
+                    <div className={styles.adminComments}>
+                      <h4>Comentários do Administrador:</h4>
+                      <p>{document.adminComments}</p>
+                    </div>
+                  )}
+
+                  {/* Motivo da rejeição */}
+                  {document.rejectionReason && (
+                    <div className={styles.rejectionReason}>
+                      <h4>Motivo da Rejeição:</h4>
+                      <p>{document.rejectionReason}</p>
+                    </div>
                   )}
                   
                   {document.tags && document.tags.length > 0 && (

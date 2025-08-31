@@ -131,6 +131,26 @@ export function requirePermission(permission: keyof AuthenticatedUser['permissio
   };
 }
 
+export async function verifyAdminAuth(request: NextRequest): Promise<AuthenticatedUser | null> {
+  try {
+    const user = await verifyAuth(request);
+    
+    if (!user) {
+      return null;
+    }
+
+    // Verificar se é admin
+    if (user.type !== 'admin') {
+      return null;
+    }
+
+    return user;
+  } catch (error) {
+    console.error('Erro na verificação de admin auth:', error);
+    return null;
+  }
+}
+
 export function createProtectedRoute(
   routeHandler: (user: AuthenticatedUser, request: NextRequest) => Promise<NextResponse>,
   options?: {

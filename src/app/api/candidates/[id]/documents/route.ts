@@ -3,6 +3,7 @@ import connectMongoDB from '@/lib/mongodb';
 import CandidateDocument from '@/lib/models/CandidateDocument';
 import User from '@/lib/models/User';
 import { verifyAuth } from '@/lib/middleware/auth';
+import { DocumentValidationService } from '@/lib/services/DocumentValidationService';
 
 // GET - Listar documentos do candidato
 export async function GET(
@@ -82,6 +83,28 @@ export async function POST(
       }, { status: 400 });
     }
 
+    // Validar documento antes de salvar
+    console.log('🔍 Validando documento...');
+    const validationResult = await DocumentValidationService.validateDocument({
+      type: data.type,
+      fileType: data.fileType || 'pdf',
+      title: data.title,
+      fileName: data.fileName,
+      fileUrl: data.fileUrl,
+      fileSize: data.fileSize || 0,
+      mimeType: data.mimeType || 'application/pdf'
+    });
+
+    console.log('✅ Resultado da validação:', validationResult);
+
+    // Determinar status inicial baseado na validação
+    let initialStatus = 'pending';
+    if (validationResult.errors.length > 0) {
+      initialStatus = 'rejected';
+    } else if (validationResult.warnings.length > 0) {
+      initialStatus = 'under_review';
+    }
+
     // Criar novo documento usando o modelo CandidateDocument
     const newDocument = new CandidateDocument({
       candidateId: resolvedParams.id,
@@ -93,8 +116,18 @@ export async function POST(
       fileUrl: data.fileUrl,
       fileSize: data.fileSize || 0,
       mimeType: data.mimeType || 'application/pdf',
-      status: 'pending',
-      uploadedBy: 'candidate'
+      status: initialStatus,
+      uploadedBy: 'candidate',
+      priority: DocumentValidationService.getDocumentPriority(data.type),
+      validationResults: {
+        fileIntegrity: validationResult.fileIntegrity,
+        formatValid: validationResult.formatValid,
+        sizeValid: validationResult.sizeValid,
+        contentValid: validationResult.contentValid,
+        errors: validationResult.errors
+      },
+      adminComments: validationResult.warnings.length > 0 ? 
+        `Avisos de validação: ${validationResult.warnings.join(', ')}` : undefined
     });
 
     await newDocument.save();
