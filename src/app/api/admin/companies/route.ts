@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
     const existingCompany = await Company.findOne({ email });
     if (existingCompany) {
       return NextResponse.json(
-        { success: false, message: 'Email já cadastrado' },
+        { success: false, message: 'E-mail já cadastrado' },
         { status: 400 }
       );
     }
@@ -183,7 +183,7 @@ export async function POST(request: NextRequest) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { success: false, message: 'Email já cadastrado como usuário' },
+        { success: false, message: 'E-mail já cadastrado como usuário' },
         { status: 400 }
       );
     }

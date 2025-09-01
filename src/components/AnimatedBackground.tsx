@@ -51,7 +51,7 @@ const AnimatedBackground: React.FC = () => {
         const x = Math.random() * 100;
         const y = Math.random() * 100;
         
-        // Tamanho aleatório com maior variação
+        // Porte aleatório com maior variação
         const size = Math.random() * 10 + 2;
         
         // Opacidade aleatória

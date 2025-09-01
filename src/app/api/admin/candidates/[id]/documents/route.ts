@@ -85,7 +85,7 @@ export async function POST(
     if (data.fileSize > maxSizeBytes) {
       return NextResponse.json({ 
         success: false, 
-        message: 'Arquivo muito grande. Tamanho máximo: 10MB' 
+        message: 'Arquivo muito grande. Porte máximo: 10MB' 
       }, { status: 400 });
     }
 

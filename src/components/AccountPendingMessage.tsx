@@ -107,7 +107,7 @@ export default function AccountPendingMessage({
               <div>
                 <h4>Contato</h4>
                 <p>{userEmail}</p>
-                <small>Email de cadastro confirmado</small>
+                <small>E-mail de cadastro confirmado</small>
               </div>
             </div>
           </div>
@@ -139,8 +139,8 @@ export default function AccountPendingMessage({
             <h4>Precisa de ajuda?</h4>
             <p>
               Entre em contato conosco pelo email{' '}
-              <a href="mailto:suporte@leaotalentbridge.com">
-                suporte@leaotalentbridge.com
+              <a href="mailto:suporte@UAE Careers.com">
+                suporte@UAE Careers.com
               </a>
               {' '}ou através do WhatsApp{' '}
               <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer">

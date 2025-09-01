@@ -19,7 +19,7 @@ export class EmailService {
 
   private static async getTransporter(): Promise<nodemailer.Transporter> {
     if (!this.transporter) {
-      this.transporter = nodemailer.createTransporter({
+      this.transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT || '587'),
         secure: false,
@@ -76,14 +76,14 @@ export class EmailService {
     return {
       // Template base
       base: (content: string, actionUrl?: string, actionText?: string): EmailTemplate => ({
-        subject: 'Leão Talent Bridge - Notificação',
+        subject: 'UAE Careers - Notificação',
         html: `
           <!DOCTYPE html>
           <html>
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Leão Talent Bridge</title>
+            <title>UAE Careers</title>
             <style>
               body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
               .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -97,7 +97,7 @@ export class EmailService {
           <body>
             <div class="container">
               <div class="header">
-                <h1>🦁 Leão Talent Bridge</h1>
+                <h1>🦁 UAE Careers</h1>
                 <p>Conectando talentos aos Emirados Árabes Unidos</p>
               </div>
               <div class="content">
@@ -105,7 +105,7 @@ export class EmailService {
                 ${actionUrl && actionText ? `<a href="${actionUrl}" class="button">${actionText}</a>` : ''}
               </div>
               <div class="footer">
-                <p>Esta é uma mensagem automática do Leão Talent Bridge.</p>
+                <p>Esta é uma mensagem automática do UAE Careers.</p>
                 <p>Se você não deseja receber mais emails, pode alterar suas preferências em seu perfil.</p>
               </div>
             </div>

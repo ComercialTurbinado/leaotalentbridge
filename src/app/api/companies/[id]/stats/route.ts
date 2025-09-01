@@ -190,7 +190,7 @@ export async function GET(
         applications: recentApplications.map(app => ({
           id: app._id,
           candidateName: app.candidateId?.name || 'Nome não informado',
-          candidateEmail: app.candidateId?.email || 'Email não informado',
+          candidateEmail: app.candidateId?.email || 'E-mail não informado',
           jobTitle: app.jobId?.title || 'Vaga não informada',
           status: app.status,
           appliedAt: app.appliedAt

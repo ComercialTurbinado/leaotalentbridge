@@ -207,7 +207,7 @@ export default function NotificationPreferences({ userId, userRole }: Notificati
               <div className={styles.preferenceInfo}>
                 <span className={styles.preferenceIcon}>📧</span>
                 <div>
-                  <label className={styles.preferenceLabel}>Notificações por Email</label>
+                  <label className={styles.preferenceLabel}>Notificações por E-mail</label>
                   <p className={styles.preferenceDescription}>
                     Receber notificações por email
                   </p>
@@ -298,7 +298,7 @@ export default function NotificationPreferences({ userId, userRole }: Notificati
             <div className={styles.preference}>
               <div className={styles.preferenceInfo}>
                 <span className={styles.preferenceIcon}>📧</span>
-                <label className={styles.preferenceLabel}>Frequência de Email</label>
+                <label className={styles.preferenceLabel}>Frequência de E-mail</label>
               </div>
               <select
                 className={styles.select}

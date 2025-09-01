@@ -304,7 +304,7 @@ export default function CandidatoDocumentos() {
       case 'verified':
         return <span className={styles.statusBadge + ' ' + styles.statusVerified}>✅ Aprovado</span>;
       case 'rejected':
-        return <span className={styles.statusBadge + ' ' + styles.statusRejected}>❌ Rejeitado</span>;
+        return <span className={styles.statusBadge + ' ' + styles.statusRejected}>❌ Reprovado</span>;
       case 'under_review':
         return <span className={styles.statusBadge + ' ' + styles.statusUnderReview}>🔍 Em Análise</span>;
       case 'pending':
@@ -525,7 +525,7 @@ export default function CandidatoDocumentos() {
                   <option value="">Todos os status</option>
                   <option value="approved">Aprovado</option>
                   <option value="pending">Em Análise</option>
-                  <option value="rejected">Rejeitado</option>
+                  <option value="rejected">Reprovado</option>
                 </select>
               </div>
             </div>
@@ -617,7 +617,7 @@ export default function CandidatoDocumentos() {
                         </div>
                         <div className={styles.validationItem}>
                           <span className={document.validationResults.sizeValid ? styles.valid : styles.invalid}>
-                            {document.validationResults.sizeValid ? '✅' : '❌'} Tamanho válido
+                            {document.validationResults.sizeValid ? '✅' : '❌'} Porte válido
                           </span>
                         </div>
                         {document.validationResults.errors && document.validationResults.errors.length > 0 && (

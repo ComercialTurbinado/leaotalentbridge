@@ -393,7 +393,13 @@ export class DashboardAlertService {
         .limit(3)
     ]);
 
-    const activities = [];
+    const activities: Array<{
+      type: string;
+      title: string;
+      description: string;
+      date: Date;
+      status: string;
+    }> = [];
 
     // Atividades de documentos
     recentDocuments.forEach(doc => {

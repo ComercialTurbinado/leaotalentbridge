@@ -373,7 +373,7 @@ export default function AdminAprovacaoUsuariosPage() {
                     <span>{selectedUser.name}</span>
                   </div>
                   <div className={styles.detailItem}>
-                    <label>Email:</label>
+                    <label>E-mail:</label>
                     <span>{selectedUser.email}</span>
                   </div>
                   <div className={styles.detailItem}>

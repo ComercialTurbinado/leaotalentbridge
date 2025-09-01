@@ -312,7 +312,7 @@ async function seedJobs() {
             required: true
           },
           skills: {
-            technical: ['Google Analytics', 'Facebook Ads', 'SEO', 'Email Marketing'],
+            technical: ['Google Analytics', 'Facebook Ads', 'SEO', 'E-mail Marketing'],
             soft: ['Liderança', 'Estratégia', 'Análise de dados'],
             languages: [
               { language: 'Inglês', level: 'fluent', required: true },

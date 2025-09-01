@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     const existingCompany = await Company.findOne({ email: data.email.toLowerCase() });
     if (existingCompany) {
       return NextResponse.json(
-        { success: false, message: 'Email já cadastrado' },
+        { success: false, message: 'E-mail já cadastrado' },
         { status: 409 }
       );
     }

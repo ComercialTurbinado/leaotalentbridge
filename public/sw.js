@@ -56,7 +56,7 @@ self.addEventListener('push', (event) => {
       data = event.data.json();
     } catch (e) {
       data = {
-        title: 'Leão Talent Bridge',
+        title: 'UAE Careers',
         body: event.data.text() || 'Nova notificação',
         icon: '/icons/icon-192x192.png',
         badge: '/icons/badge-72x72.png'
@@ -65,7 +65,7 @@ self.addEventListener('push', (event) => {
   }
 
   const options = {
-    title: data.title || 'Leão Talent Bridge',
+    title: data.title || 'UAE Careers',
     body: data.body || 'Nova notificação',
     icon: data.icon || '/icons/icon-192x192.png',
     badge: data.badge || '/icons/badge-72x72.png',

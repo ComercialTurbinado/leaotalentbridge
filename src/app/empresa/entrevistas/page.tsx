@@ -722,7 +722,7 @@ function CreateInterviewModal({ applications, onClose, onSubmit, loading }: {
           </div>
 
           <div className={styles.formGroup}>
-            <label>Email do Entrevistador:</label>
+            <label>E-mail do Entrevistador:</label>
             <input
               type="email"
               value={formData.interviewerEmail}

@@ -461,7 +461,7 @@ export default function AdminEmpresasPage() {
                 onChange={(e) => setFiltroTamanho(e.target.value)}
                 className={styles.filterSelect}
               >
-                <option value="all">Todos os Tamanhos</option>
+                <option value="all">Todos os Portes</option>
                 <option value="small">Pequena</option>
                 <option value="medium">Média</option>
                 <option value="large">Grande</option>
@@ -490,7 +490,7 @@ export default function AdminEmpresasPage() {
                   <tr>
                     <th>Empresa</th>
                     <th>Indústria</th>
-                    <th>Tamanho</th>
+                    <th>Porte</th>
                     <th>Localização</th>
                     <th>Status</th>
                     <th>Cadastro</th>
@@ -659,7 +659,7 @@ export default function AdminEmpresasPage() {
                     <div className={styles.infoItem}>
                       <GrMail size={16} />
                       <div>
-                        <span className={styles.infoLabel}>Email</span>
+                        <span className={styles.infoLabel}>E-mail</span>
                         <span className={styles.infoValue}>{empresaSelecionada.email}</span>
                       </div>
                     </div>
@@ -682,7 +682,7 @@ export default function AdminEmpresasPage() {
                     <div className={styles.infoItem}>
                       <GrOrganization size={16} />
                       <div>
-                        <span className={styles.infoLabel}>Tamanho</span>
+                        <span className={styles.infoLabel}>Porte</span>
                         <span className={styles.infoValue}>{getTamanhoLabel(empresaSelecionada.size)}</span>
                       </div>
                     </div>
@@ -862,7 +862,7 @@ export default function AdminEmpresasPage() {
                       </div>
                       
                       <div className={styles.formGroup}>
-                        <label>Tamanho da Empresa *</label>
+                        <label>Porte da Empresa *</label>
                         <select
                           value={formData.size}
                           onChange={(e) => setFormData({ ...formData, size: e.target.value as any })}
@@ -924,7 +924,7 @@ export default function AdminEmpresasPage() {
                       </div>
                       
                       <div className={styles.formGroup}>
-                        <label>Email do Contato *</label>
+                        <label>E-mail do Contato *</label>
                         <input
                           type="email"
                           value={formData.primaryContact.email}

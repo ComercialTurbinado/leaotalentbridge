@@ -457,7 +457,7 @@ export class InterviewService {
     }
   }
 
-  private static async notifyCandidateInterviewApproved(interview: IInterview, candidate: any, company: any, job: any) {
+  private static async notifyCandidateInterviewApproved(interview: any, candidate: any, company: any, job: any) {
     await NotificationService.createInterviewScheduledNotification(
       interview.candidateId.toString(),
       job?.title || 'Entrevista',

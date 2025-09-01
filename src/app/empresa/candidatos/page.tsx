@@ -391,7 +391,7 @@ function CandidatosContent() {
                     <div className={styles.candidatoContato}>
                       <a href={`mailto:${application.userId.email}`} className={styles.contatoBtn}>
                         <GrMail size={16} />
-                        Email
+                        E-mail
                       </a>
                       {application.userId.phone && (
                         <a href={`tel:${application.userId.phone}`} className={styles.contatoBtn}>
@@ -654,7 +654,7 @@ function CandidatosContent() {
                       className="btn btn-primary"
                     >
                       <GrMail size={16} />
-                      Enviar Email
+                      Enviar E-mail
                     </a>
                     <button 
                       onClick={() => setCandidatoSelecionado(null)}

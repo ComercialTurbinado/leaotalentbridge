@@ -386,7 +386,7 @@ export default function AdminAprovacaoCandidaturasPage() {
             <div className={styles.modalBody}>
               <div className={styles.candidateDetails}>
                 <h3>Candidato: {selectedApplication.candidateId.name}</h3>
-                <p><strong>Email:</strong> {selectedApplication.candidateId.email}</p>
+                <p><strong>E-mail:</strong> {selectedApplication.candidateId.email}</p>
                 <p><strong>Telefone:</strong> {selectedApplication.candidateId.profile?.phone || 'Não informado'}</p>
                 <p><strong>Experiência:</strong> {selectedApplication.candidateId.profile?.experience || 'Não informado'}</p>
                 <p><strong>Educação:</strong> {selectedApplication.candidateId.profile?.education || 'Não informado'}</p>

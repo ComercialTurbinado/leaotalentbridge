@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { success: false, message: 'Email já cadastrado' },
+        { success: false, message: 'E-mail já cadastrado' },
         { status: 400 }
       );
     }

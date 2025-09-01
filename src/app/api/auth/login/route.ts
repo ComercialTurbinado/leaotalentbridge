@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     // Validar dados de entrada
     if (!email || !password || !type) {
       return NextResponse.json(
-        { success: false, message: 'Email, senha e tipo são obrigatórios' },
+        { success: false, message: 'E-mail, senha e tipo são obrigatórios' },
         { status: 400 }
       );
     }

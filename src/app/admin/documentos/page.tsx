@@ -244,7 +244,7 @@ export default function AdminDocumentosPage() {
       case 'verified':
         return <span className={styles.statusBadge + ' ' + styles.statusVerified}>✅ Aprovado</span>;
       case 'rejected':
-        return <span className={styles.statusBadge + ' ' + styles.statusRejected}>❌ Rejeitado</span>;
+        return <span className={styles.statusBadge + ' ' + styles.statusRejected}>❌ Reprovado</span>;
       case 'under_review':
         return <span className={styles.statusBadge + ' ' + styles.statusUnderReview}>🔍 Em Análise</span>;
       case 'pending':
@@ -376,7 +376,7 @@ export default function AdminDocumentosPage() {
                   <option value="pending">Pendente</option>
                   <option value="under_review">Em Análise</option>
                   <option value="verified">Aprovado</option>
-                  <option value="rejected">Rejeitado</option>
+                  <option value="rejected">Reprovado</option>
                 </select>
                 
                 <select 
@@ -470,7 +470,7 @@ export default function AdminDocumentosPage() {
                           </div>
                           <div className={styles.validationItem}>
                             <span className={document.validationResults.sizeValid ? styles.valid : styles.invalid}>
-                              {document.validationResults.sizeValid ? '✅' : '❌'} Tamanho
+                              {document.validationResults.sizeValid ? '✅' : '❌'} Porte
                             </span>
                           </div>
                         </div>
@@ -595,9 +595,9 @@ export default function AdminDocumentosPage() {
               <div className={styles.documentPreview}>
                 <h3>{selectedDocument.title}</h3>
                 <p><strong>Candidato:</strong> {selectedDocument.candidateId.name}</p>
-                <p><strong>Email:</strong> {selectedDocument.candidateId.email}</p>
+                <p><strong>E-mail:</strong> {selectedDocument.candidateId.email}</p>
                 <p><strong>Tipo:</strong> {selectedDocument.type}</p>
-                <p><strong>Tamanho:</strong> {formatFileSize(selectedDocument.fileSize)}</p>
+                <p><strong>Porte:</strong> {formatFileSize(selectedDocument.fileSize)}</p>
                 <p><strong>Enviado em:</strong> {new Date(selectedDocument.createdAt).toLocaleString()}</p>
                 
                 {selectedDocument.description && (
@@ -634,7 +634,7 @@ export default function AdminDocumentosPage() {
                       <option value="">Selecione um motivo</option>
                       <option value="documento_invalido">Documento inválido ou corrompido</option>
                       <option value="formato_nao_aceito">Formato não aceito</option>
-                      <option value="tamanho_excedido">Tamanho excedido</option>
+                      <option value="tamanho_excedido">Porte excedido</option>
                       <option value="conteudo_inadequado">Conteúdo inadequado</option>
                       <option value="documento_duplicado">Documento duplicado</option>
                       <option value="qualidade_baixa">Qualidade muito baixa</option>

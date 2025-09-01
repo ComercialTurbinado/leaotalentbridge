@@ -55,7 +55,7 @@ export class DocumentValidationService {
     // 3. Validação de tamanho
     result.sizeValid = this.validateFileSize(document);
     if (!result.sizeValid) {
-      result.errors.push(`Arquivo muito grande. Tamanho máximo: ${this.MAX_FILE_SIZE / (1024 * 1024)}MB`);
+      result.errors.push(`Arquivo muito grande. Porte máximo: ${this.MAX_FILE_SIZE / (1024 * 1024)}MB`);
     }
 
     // 4. Validação de conteúdo (básica)

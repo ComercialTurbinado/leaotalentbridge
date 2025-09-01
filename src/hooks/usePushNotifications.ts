@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-interface PushSubscription {
+interface CustomPushSubscription {
   endpoint: string;
   keys: {
     p256dh: string;
@@ -13,7 +13,7 @@ interface PushSubscription {
 interface UsePushNotificationsReturn {
   isSupported: boolean;
   isSubscribed: boolean;
-  subscription: PushSubscription | null;
+  subscription: CustomPushSubscription | null;
   subscribe: () => Promise<boolean>;
   unsubscribe: () => Promise<boolean>;
   loading: boolean;
@@ -23,7 +23,7 @@ interface UsePushNotificationsReturn {
 export function usePushNotifications(): UsePushNotificationsReturn {
   const [isSupported, setIsSupported] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+  const [subscription, setSubscription] = useState<CustomPushSubscription | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +42,15 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       const existingSubscription = await registration.pushManager.getSubscription();
       
       if (existingSubscription) {
-        setSubscription(existingSubscription);
+        // Converter PushSubscription nativo para CustomPushSubscription
+        const customSubscription: CustomPushSubscription = {
+          endpoint: existingSubscription.endpoint,
+          keys: {
+            p256dh: arrayBufferToBase64(existingSubscription.getKey('p256dh')!),
+            auth: arrayBufferToBase64(existingSubscription.getKey('auth')!)
+          }
+        };
+        setSubscription(customSubscription);
         setIsSubscribed(true);
       }
     } catch (error) {
@@ -100,7 +108,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       // Criar subscription
       const newSubscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: applicationServerKey
+        applicationServerKey: applicationServerKey as unknown as ArrayBuffer
       });
 
       // Enviar subscription para o servidor
@@ -121,7 +129,15 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       });
 
       if (response.ok) {
-        setSubscription(newSubscription);
+        // Converter PushSubscription nativo para CustomPushSubscription
+        const customSubscription: CustomPushSubscription = {
+          endpoint: newSubscription.endpoint,
+          keys: {
+            p256dh: arrayBufferToBase64(newSubscription.getKey('p256dh')!),
+            auth: arrayBufferToBase64(newSubscription.getKey('auth')!)
+          }
+        };
+        setSubscription(customSubscription);
         setIsSubscribed(true);
         return true;
       } else {
@@ -149,25 +165,34 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     setError(null);
 
     try {
-      // Cancelar subscription no navegador
-      const success = await subscription.unsubscribe();
+      // Buscar subscription nativa do navegador para cancelar
+      const registration = await navigator.serviceWorker.ready;
+      const nativeSubscription = await registration.pushManager.getSubscription();
       
-      if (success) {
-        // Remover do servidor
-        const response = await fetch(`/api/notifications/push-subscription?endpoint=${encodeURIComponent(subscription.endpoint)}`, {
-          method: 'DELETE'
-        });
+      if (nativeSubscription) {
+        // Cancelar subscription no navegador
+        const success = await nativeSubscription.unsubscribe();
+        
+        if (success) {
+          // Remover do servidor
+          const response = await fetch(`/api/notifications/push-subscription?endpoint=${encodeURIComponent(subscription.endpoint)}`, {
+            method: 'DELETE'
+          });
 
-        if (response.ok) {
-          setSubscription(null);
-          setIsSubscribed(false);
-          return true;
+          if (response.ok) {
+            setSubscription(null);
+            setIsSubscribed(false);
+            return true;
+          } else {
+            setError('Erro ao remover subscription do servidor');
+            return false;
+          }
         } else {
-          setError('Erro ao remover subscription do servidor');
+          setError('Erro ao cancelar subscription');
           return false;
         }
       } else {
-        setError('Erro ao cancelar subscription');
+        setError('Subscription nativa não encontrada');
         return false;
       }
     } catch (error) {
@@ -203,7 +228,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i);
   }
-  return outputArray;
+  return outputArray as Uint8Array;
 }
 
 // Função auxiliar para converter ArrayBuffer para base64

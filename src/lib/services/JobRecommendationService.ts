@@ -206,18 +206,22 @@ export class JobRecommendationService {
    * Calcula match de habilidades
    */
   private static calculateSkillsMatch(user: IUser, job: IJob): any {
-    const userSkills = user.skills || [];
-    const jobSkills = job.requiredSkills || [];
+    // Como o modelo User não tem skills, vamos usar experience como alternativa
+    const userExperience = user.profile?.experience || '';
+    const jobSkills = job.requirements?.skills?.technical || [];
     
-    const matched = userSkills.filter(skill => 
-      jobSkills.some(jobSkill => 
+    // Simular skills baseado na experiência
+    const userSkills = userExperience ? [userExperience] : [];
+    
+    const matched = userSkills.filter((skill: string) => 
+      jobSkills.some((jobSkill: string) => 
         jobSkill.toLowerCase().includes(skill.toLowerCase()) ||
         skill.toLowerCase().includes(jobSkill.toLowerCase())
       )
     );
 
-    const missing = jobSkills.filter(jobSkill =>
-      !userSkills.some(skill =>
+    const missing = jobSkills.filter((jobSkill: string) =>
+      !userSkills.some((skill: string) =>
         jobSkill.toLowerCase().includes(skill.toLowerCase()) ||
         skill.toLowerCase().includes(jobSkill.toLowerCase())
       )
@@ -236,8 +240,8 @@ export class JobRecommendationService {
    * Calcula match de experiência
    */
   private static calculateExperienceMatch(user: IUser, job: IJob): any {
-    const userExperience = user.experience || 'entry';
-    const jobExperience = job.experienceLevel || 'entry';
+    const userExperience = user.profile?.experience || 'entry';
+    const jobExperience = job.requirements?.experience?.level || 'entry';
 
     const experienceLevels = {
       'entry': 1,
@@ -269,32 +273,26 @@ export class JobRecommendationService {
    * Calcula match de localização
    */
   private static calculateLocationMatch(user: IUser, job: IJob): any {
-    const userLocation = user.location || '';
-    const jobLocation = job.location || '';
+    // Como o modelo User não tem location, vamos usar um valor padrão
+    const userLocation = '';
+    const jobLocation = job.location;
 
     if (!userLocation || !jobLocation) {
       return {
-        required: jobLocation,
+        required: jobLocation ? `${jobLocation.city}, ${jobLocation.state}` : '',
         candidate: userLocation,
         score: 50
       };
     }
 
-    // Lógica simples de match de localização
-    const userCity = userLocation.toLowerCase().split(',')[0].trim();
-    const jobCity = jobLocation.toLowerCase().split(',')[0].trim();
-
+    // Como userLocation é vazio, sempre retornar score baixo
     let score = 50;
-    if (userCity === jobCity) {
-      score = 100;
-    } else if (userLocation.toLowerCase().includes(jobCity) || jobLocation.toLowerCase().includes(userCity)) {
-      score = 80;
-    } else if (userLocation.toLowerCase().includes('remote') || jobLocation.toLowerCase().includes('remote')) {
-      score = 90;
+    if (jobLocation.isRemote) {
+      score = 70; // Score um pouco melhor para trabalhos remotos
     }
 
     return {
-      required: jobLocation,
+      required: `${jobLocation.city}, ${jobLocation.state}`,
       candidate: userLocation,
       score: Math.round(score)
     };
@@ -304,9 +302,10 @@ export class JobRecommendationService {
    * Calcula match de salário
    */
   private static calculateSalaryMatch(user: IUser, job: IJob): any {
-    const userExpectedSalary = user.expectedSalary || 0;
-    const jobMinSalary = job.salaryRange?.min || 0;
-    const jobMaxSalary = job.salaryRange?.max || 0;
+    // Como o modelo User não tem expectedSalary, vamos usar um valor padrão
+    const userExpectedSalary = 0;
+    const jobMinSalary = job.salary?.min || 0;
+    const jobMaxSalary = job.salary?.max || 0;
 
     if (!userExpectedSalary || !jobMinSalary) {
       return {

@@ -67,7 +67,7 @@ async function checkAdminUsers() {
       
       await adminUser.save();
       console.log('✅ Usuário admin criado com sucesso!');
-      console.log('📧 Email: admin@teste.com');
+      console.log('📧 E-mail: admin@teste.com');
       console.log('🔑 Senha: admin123');
     } else {
       console.log(`✅ Encontrados ${adminUsers.length} usuário(s) admin:`);
@@ -102,7 +102,7 @@ async function checkAdminUsers() {
       
       await newAdmin.save();
       console.log('✅ Usuário admin@teste.com criado com sucesso!');
-      console.log('📧 Email: admin@teste.com');
+      console.log('📧 E-mail: admin@teste.com');
       console.log('🔑 Senha: admin123');
     }
     

@@ -245,7 +245,7 @@ export default function AdminCandidatoPage() {
 
       // Validar tamanho (máximo 10MB)
       if (file.size > 10 * 1024 * 1024) {
-        alert('Arquivo muito grande. Tamanho máximo: 10MB');
+        alert('Arquivo muito grande. Porte máximo: 10MB');
         return;
       }
 
@@ -362,7 +362,7 @@ export default function AdminCandidatoPage() {
 
         // Converter base64 para blob
         const base64Data = doc.fileUrl.includes(',') ? doc.fileUrl.split(',')[1] : doc.fileUrl;
-        console.log('📊 Tamanho base64:', base64Data.length);
+        console.log('📊 Porte base64:', base64Data.length);
         
         const byteCharacters = atob(base64Data);
         const byteNumbers = new Array(byteCharacters.length);
@@ -740,7 +740,7 @@ export default function AdminCandidatoPage() {
                         <span>{candidato.name}</span>
                       </div>
                       <div className={styles.infoItem}>
-                        <label>Email:</label>
+                        <label>E-mail:</label>
                         <span>{candidato.email}</span>
                       </div>
                       <div className={styles.infoItem}>
@@ -912,7 +912,7 @@ export default function AdminCandidatoPage() {
                           <div className={styles.documentInfo}>
                             <div className={styles.documentMeta}>
                               <span><strong>Arquivo:</strong> {doc.fileName}</span>
-                              <span><strong>Tamanho:</strong> {formatFileSize(doc.fileSize)}</span>
+                              <span><strong>Porte:</strong> {formatFileSize(doc.fileSize)}</span>
                               <span><strong>Enviado por:</strong> {doc.uploadedBy === 'admin' ? 'Admin' : 'Candidato'}</span>
                               <span><strong>Data:</strong> {formatDate(doc.createdAt)}</span>
                             </div>
@@ -1140,7 +1140,7 @@ export default function AdminCandidatoPage() {
                   className={styles.fileInput}
                 />
                 <small className={styles.fileHelp}>
-                  Tipos aceitos: PDF, DOC, DOCX, JPG, PNG, TXT. Tamanho máximo: 10MB
+                  Tipos aceitos: PDF, DOC, DOCX, JPG, PNG, TXT. Porte máximo: 10MB
                 </small>
                 {selectedFile && (
                   <div className={styles.fileInfo}>
@@ -1382,7 +1382,7 @@ export default function AdminCandidatoPage() {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label>Email do Entrevistador</label>
+                  <label>E-mail do Entrevistador</label>
                   <input
                     type="email"
                     value={interviewForm.interviewerEmail}

@@ -604,7 +604,7 @@ export default function AdminUsuariosPage() {
                     <div className={styles.infoItem}>
                       <GrMail size={16} />
                       <div>
-                        <span className={styles.infoLabel}>Email</span>
+                        <span className={styles.infoLabel}>E-mail</span>
                         <span className={styles.infoValue}>{usuarioSelecionado.email}</span>
                       </div>
                     </div>
@@ -650,7 +650,7 @@ export default function AdminUsuariosPage() {
                   </div>
                   
                   <div className={styles.formGroup}>
-                    <label>Email</label>
+                    <label>E-mail</label>
                     <input
                       type="email"
                       value={formData.email}
@@ -691,7 +691,7 @@ export default function AdminUsuariosPage() {
                     >
                       <option value="approved">Aprovado</option>
                       <option value="pending">Pendente</option>
-                      <option value="rejected">Rejeitado</option>
+                      <option value="rejected">Reprovado</option>
                       <option value="suspended">Suspenso</option>
                     </select>
                   </div>

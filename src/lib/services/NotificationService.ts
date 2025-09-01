@@ -73,7 +73,8 @@ export class NotificationService {
    */
   private static shouldSendEmail(notification: INotification, preferences: INotificationPreferences | null): boolean {
     if (!preferences?.emailNotifications) return false;
-    if (!preferences.preferences[this.getPreferenceKey(notification.type)]) return false;
+    const preferenceKey = this.getPreferenceKey(notification.type);
+    if (!preferences.preferences[preferenceKey as keyof typeof preferences.preferences]) return false;
     
     // Verificar horário de silêncio
     if (preferences.quietHours.enabled) {
@@ -96,7 +97,8 @@ export class NotificationService {
    */
   private static shouldSendPush(notification: INotification, preferences: INotificationPreferences | null): boolean {
     if (!preferences?.pushNotifications) return false;
-    if (!preferences.preferences[this.getPreferenceKey(notification.type)]) return false;
+    const preferenceKey = this.getPreferenceKey(notification.type);
+    if (!preferences.preferences[preferenceKey as keyof typeof preferences.preferences]) return false;
     
     // Verificar horário de silêncio
     if (preferences.quietHours.enabled) {

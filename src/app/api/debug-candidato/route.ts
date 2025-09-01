@@ -39,7 +39,7 @@ export async function PATCH(request: NextRequest) {
     if (!email) {
       return NextResponse.json({
         success: false,
-        message: 'Email é obrigatório'
+        message: 'E-mail é obrigatório'
       }, { status: 400 });
     }
     

@@ -312,7 +312,7 @@ export default function EmpresaCadastroPage() {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Tamanho da Empresa *</label>
+                  <label className="form-label">Porte da Empresa *</label>
                   <select
                     name="tamanho"
                     className="form-select"

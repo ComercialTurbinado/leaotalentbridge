@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     
     if (!data.email || !data.password || !data.name || !data.type) {
       return NextResponse.json(
-        { success: false, message: 'Email, senha, nome e tipo são obrigatórios' },
+        { success: false, message: 'E-mail, senha, nome e tipo são obrigatórios' },
         { status: 400 }
       );
     }
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     
     const existingUser = await User.findOne({ email: data.email.toLowerCase() });
     if (existingUser) {
-      return NextResponse.json({ success: false, message: 'Email já cadastrado' }, { status: 409 });
+      return NextResponse.json({ success: false, message: 'E-mail já cadastrado' }, { status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 12);

@@ -406,7 +406,7 @@ export default function AdminCandidatosPage() {
               <thead>
                 <tr>
                   <th>Nome</th>
-                  <th>Email</th>
+                  <th>E-mail</th>
                   <th>Telefone</th>
                   <th>Status</th>
                   <th>Verificação</th>
@@ -607,7 +607,7 @@ export default function AdminCandidatosPage() {
                         <span>{candidatoSelecionado?.name}</span>
                       </div>
                       <div className={styles.detailItem}>
-                        <label>Email:</label>
+                        <label>E-mail:</label>
                         <span>{candidatoSelecionado?.email}</span>
                       </div>
                       <div className={styles.detailItem}>
@@ -699,7 +699,7 @@ export default function AdminCandidatosPage() {
                         />
                       </div>
                       <div className={styles.formGroup}>
-                        <label>Email *</label>
+                        <label>E-mail *</label>
                         <input
                           type="email"
                           value={formData.email}
@@ -715,7 +715,7 @@ export default function AdminCandidatosPage() {
                         >
                           <option value="pending">Pendente</option>
                           <option value="approved">Aprovado</option>
-                          <option value="rejected">Rejeitado</option>
+                          <option value="rejected">Reprovado</option>
                           <option value="suspended">Suspenso</option>
                         </select>
                       </div>

@@ -141,7 +141,7 @@ export default function EmpresaPagamentoPage() {
           <div className={styles.logo}>
             <Image 
               src="/images/UAECareers-orig.svg" 
-              alt="Leao Talent Bridge" 
+              alt="UAE Careers" 
               width={200} 
               height={140}
               priority

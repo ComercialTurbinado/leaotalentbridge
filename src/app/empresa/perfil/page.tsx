@@ -248,7 +248,7 @@ export default function EmpresaPerfilPage() {
 
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
-                      <label htmlFor="tamanho">Tamanho da Empresa</label>
+                      <label htmlFor="tamanho">Porte da Empresa</label>
                       <select
                         id="tamanho"
                         value={profile.tamanho}
