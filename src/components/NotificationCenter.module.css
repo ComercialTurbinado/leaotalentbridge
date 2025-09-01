@@ -1,0 +1,255 @@
+/* Container principal */
+.container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f8fafc;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unreadBadge {
+  background: #ef4444;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.markAllButton {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.markAllButton:hover {
+  background: #2563eb;
+}
+
+/* Lista de notificações */
+.notificationsList {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+/* Notificação individual */
+.notification {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.notification:hover {
+  background: #f8fafc;
+}
+
+.notification.unread {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+}
+
+.notification.unread:hover {
+  background: #fde68a;
+}
+
+/* Ícone da notificação */
+.notificationIcon {
+  font-size: 24px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Conteúdo da notificação */
+.notificationContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.notificationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.notificationTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+.notificationMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.priority {
+  font-size: 14px;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.notificationMessage {
+  margin: 0;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.actionLink {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+
+.actionLink:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Indicador de não lida */
+.unreadIndicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+}
+
+/* Estados vazios */
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.error {
+  padding: 40px 20px;
+  text-align: center;
+  color: #ef4444;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  margin: 20px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .container {
+    max-height: 500px;
+  }
+  
+  .header {
+    padding: 16px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .title {
+    font-size: 16px;
+  }
+  
+  .markAllButton {
+    align-self: flex-start;
+  }
+  
+  .notification {
+    padding: 12px 16px;
+  }
+  
+  .notificationHeader {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+  
+  .notificationMeta {
+    align-self: flex-end;
+  }
+  
+  .notificationTitle {
+    font-size: 15px;
+  }
+  
+  .notificationMessage {
+    font-size: 13px;
+  }
+}
+
+/* Scrollbar personalizada */
+.notificationsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notificationsList::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.notificationsList::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.notificationsList::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

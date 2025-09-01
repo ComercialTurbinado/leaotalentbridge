@@ -4,29 +4,55 @@ export interface IInterview extends Document {
   candidateId: mongoose.Types.ObjectId;
   companyId: mongoose.Types.ObjectId;
   jobId?: mongoose.Types.ObjectId;
+  applicationId?: mongoose.Types.ObjectId;
   title: string;
   description?: string;
   scheduledDate: Date;
   duration: number; // em minutos
   type: 'presential' | 'online' | 'phone';
-  status: 'scheduled' | 'completed' | 'cancelled' | 'no_show';
+  status: 'pending_approval' | 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no_show' | 'rejected';
   location?: string;
   meetingUrl?: string;
   interviewerName?: string;
   interviewerEmail?: string;
   interviewerPhone?: string;
   notes?: string;
-  feedback?: {
+  
+  // Sistema de moderação do admin
+  adminStatus: 'pending' | 'approved' | 'rejected';
+  adminComments?: string;
+  adminApprovedBy?: mongoose.Types.ObjectId;
+  adminApprovedAt?: Date;
+  
+  // Confirmação do candidato
+  candidateResponse?: 'pending' | 'accepted' | 'rejected';
+  candidateResponseAt?: Date;
+  candidateComments?: string;
+  
+  // Feedback da empresa
+  companyFeedback?: {
     technical: number;
     communication: number;
     experience: number;
     overall: number;
     comments?: string;
+    submittedAt?: Date;
+    submittedBy?: mongoose.Types.ObjectId;
   };
+  
+  // Feedback do candidato
   candidateFeedback?: {
     rating: number;
     comments?: string;
+    submittedAt?: Date;
   };
+  
+  // Moderação do feedback
+  feedbackStatus: 'pending' | 'approved' | 'rejected';
+  feedbackApprovedBy?: mongoose.Types.ObjectId;
+  feedbackApprovedAt?: Date;
+  feedbackAdminComments?: string;
+  
   createdBy: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -46,6 +72,10 @@ const InterviewSchema = new Schema<IInterview>({
   jobId: {
     type: Schema.Types.ObjectId,
     ref: 'Job'
+  },
+  applicationId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Application'
   },
   title: {
     type: String,
@@ -73,8 +103,8 @@ const InterviewSchema = new Schema<IInterview>({
   },
   status: {
     type: String,
-    enum: ['scheduled', 'completed', 'cancelled', 'no_show'],
-    default: 'scheduled'
+    enum: ['pending_approval', 'scheduled', 'confirmed', 'completed', 'cancelled', 'no_show', 'rejected'],
+    default: 'pending_approval'
   },
   location: {
     type: String,
@@ -100,7 +130,41 @@ const InterviewSchema = new Schema<IInterview>({
     type: String,
     trim: true
   },
-  feedback: {
+  
+  // Sistema de moderação do admin
+  adminStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
+  adminComments: {
+    type: String,
+    trim: true
+  },
+  adminApprovedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  adminApprovedAt: {
+    type: Date
+  },
+  
+  // Confirmação do candidato
+  candidateResponse: {
+    type: String,
+    enum: ['pending', 'accepted', 'rejected'],
+    default: 'pending'
+  },
+  candidateResponseAt: {
+    type: Date
+  },
+  candidateComments: {
+    type: String,
+    trim: true
+  },
+  
+  // Feedback da empresa
+  companyFeedback: {
     technical: {
       type: Number,
       min: 1,
@@ -124,8 +188,17 @@ const InterviewSchema = new Schema<IInterview>({
     comments: {
       type: String,
       trim: true
+    },
+    submittedAt: {
+      type: Date
+    },
+    submittedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
     }
   },
+  
+  // Feedback do candidato
   candidateFeedback: {
     rating: {
       type: Number,
@@ -135,7 +208,28 @@ const InterviewSchema = new Schema<IInterview>({
     comments: {
       type: String,
       trim: true
+    },
+    submittedAt: {
+      type: Date
     }
+  },
+  
+  // Moderação do feedback
+  feedbackStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending'
+  },
+  feedbackApprovedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  feedbackApprovedAt: {
+    type: Date
+  },
+  feedbackAdminComments: {
+    type: String,
+    trim: true
   },
   createdBy: {
     type: Schema.Types.ObjectId,
