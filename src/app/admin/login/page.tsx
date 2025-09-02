@@ -90,7 +90,7 @@ export default function AdminLogin() {
                 type="email"
                 name="email"
                 className="form-input"
-                placeholder="admin@leaocareers.com"
+                placeholder="user@uaecareers.com"
                 value={formData.email}
                 onChange={handleInputChange}
                 required

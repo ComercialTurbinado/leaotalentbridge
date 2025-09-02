@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-require('dotenv').config();
+require('dotenv').config({ path: '.env.local' });
 
 // Schema simplificado para User
 const userSchema = new mongoose.Schema({
@@ -26,15 +26,23 @@ const User = mongoose.model('User', userSchema);
 
 async function connectDB() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    const MONGODB_URI = process.env.MONGODB_URI;
+    if (!MONGODB_URI) {
+      throw new Error('MONGODB_URI não configurada no arquivo .env');
+    }
+    
+    console.log('🔗 Conectando ao MongoDB Atlas...');
+    console.log('📍 URI:', MONGODB_URI.substring(0, 50) + '...');
+    
+    await mongoose.connect(MONGODB_URI, {
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       bufferCommands: false,
       maxPoolSize: 10
     });
-    console.log('✅ Conectado ao MongoDB');
+    console.log('✅ Conectado ao MongoDB Atlas com sucesso!');
   } catch (error) {
-    console.error('❌ Erro ao conectar ao MongoDB:', error);
+    console.error('❌ Erro ao conectar ao MongoDB:', error.message);
     process.exit(1);
   }
 }

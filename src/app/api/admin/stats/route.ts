@@ -6,17 +6,30 @@ import Job from '@/lib/models/Job';
 import Application from '@/lib/models/Application';
 import Course from '@/lib/models/Course';
 import Simulation from '@/lib/models/Simulation';
+import jwt from 'jsonwebtoken';
 
 // Verificar autenticação de admin
 async function verifyAdminAuth(request: NextRequest) {
   try {
-    const token = request.headers.get('authorization')?.replace('Bearer ', '');
-    if (!token) return null;
-
-    // TODO: Implementar verificação JWT real
-    // Por enquanto, aceitar qualquer token para desenvolvimento
-    return { type: 'admin', _id: 'admin' };
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+    
+    const token = authHeader.substring(7);
+    const jwtSecret = process.env.JWT_SECRET || 'default-jwt-secret-key-for-production-leao-careers-2024-mongodb-atlas-amplify';
+    
+    // Verificar JWT
+    const decoded = jwt.verify(token, jwtSecret) as any;
+    if (!decoded || !decoded.userId || !decoded.type) return null;
+    
+    // Conectar ao MongoDB e verificar se o usuário é realmente admin
+    await connectMongoDB();
+    const user = await User.findById(decoded.userId);
+    
+    if (!user || user.type !== 'admin') return null;
+    
+    return user;
   } catch (error) {
+    console.error('Erro na verificação de admin:', error);
     return null;
   }
 }
