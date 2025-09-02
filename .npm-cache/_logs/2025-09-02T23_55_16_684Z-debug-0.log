@@ -7,13 +7,13 @@
 6 silly config load:file:/opt/homebrew/etc/npmrc
 7 verbose title npm run build
 8 verbose argv "run" "build"
-9 verbose logfile logs-max:10 dir:/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/.npm-cache/_logs/2025-09-02T14_40_27_843Z-
-10 verbose logfile /Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/.npm-cache/_logs/2025-09-02T14_40_27_843Z-debug-0.log
-11 silly logfile start cleaning logs, removing 1 files
+9 verbose logfile logs-max:10 dir:/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/.npm-cache/_logs/2025-09-02T23_55_16_684Z-
+10 verbose logfile /Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/.npm-cache/_logs/2025-09-02T23_55_16_684Z-debug-0.log
+11 silly logfile start cleaning logs, removing 2 files
 12 silly logfile done cleaning log files
 13 verbose cwd /Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers
 14 verbose os Darwin 23.4.0
 15 verbose node v23.6.1
 16 verbose npm  v11.3.0
-17 verbose exit 1
-18 verbose code 1
+17 verbose exit 0
+18 info ok

@@ -15,6 +15,8 @@ import {
   GrSearch,
   GrFilter
 } from 'react-icons/gr';
+import { AuthService, User as UserType } from '@/lib/auth';
+import DashboardHeader from '@/components/DashboardHeader';
 import styles from './dashboard.module.css';
 
 interface DashboardStats {
@@ -26,6 +28,7 @@ interface DashboardStats {
 
 export default function Dashboard() {
   const router = useRouter();
+  const [user, setUser] = useState<UserType | null>(null);
   const [stats, setStats] = useState<DashboardStats>({
     totalApplications: 0,
     pendingDocuments: 0,
@@ -34,6 +37,13 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
+    const currentUser = AuthService.getUser();
+    if (!currentUser || currentUser.type !== 'candidato') {
+      router.push('/candidato/login');
+      return;
+    }
+    setUser(currentUser);
+
     // Simular carregamento de dados
     setStats({
       totalApplications: 12,
@@ -41,74 +51,15 @@ export default function Dashboard() {
       upcomingInterviews: 1,
       profileCompletion: 85
     });
-  }, []);
+  }, [router]);
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className={styles.dashboardPage}>
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          {/* Logo */}
-          <div className={styles.logo}>
-            <div className={styles.logoIcon}>
-              <div className={styles.logoEmblem}>
-                <div className={styles.logoGreen}></div>
-                <div className={styles.logoRed}></div>
-              </div>
-            </div>
-            <div className={styles.logoText}>
-              <h1>UAE careers</h1>
-              <p>Connecting talent to the future</p>
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <nav className={styles.navigation}>
-            <Link href="/candidato/dashboard" className={styles.navLink}>
-              Dashboard
-            </Link>
-            <Link href="/candidato/entrevistas" className={styles.navLink}>
-              Entrevistas
-            </Link>
-            <Link href="/candidato/simulacoes" className={styles.navLink}>
-              Simulações
-            </Link>
-            <Link href="/candidato/documentos" className={styles.navLink}>
-              Documentos
-            </Link>
-            <Link href="/candidato/cultura" className={styles.navLink}>
-              Cultura
-            </Link>
-            <Link href="/candidato/perfil" className={styles.navLink}>
-              Perfil
-            </Link>
-          </nav>
-
-          {/* User Actions */}
-          <div className={styles.userActions}>
-            {/* Notifications */}
-            <div className={styles.notifications}>
-              <GrNotification size={20} />
-              <span className={styles.notificationBadge}>3</span>
-            </div>
-
-            {/* User Profile */}
-            <div className={styles.userProfile}>
-              <div className={styles.profilePicture}>
-                <GrUser size={20} />
-              </div>
-              <Link href="/candidato/perfil" className={styles.profileLink}>
-                <GrUser size={16} />
-                Perfil
-              </Link>
-              <Link href="/candidato/login" className={styles.logoutLink}>
-                Sair
-                <GrLogout size={16} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader user={user} userType="candidato" />
 
       {/* Main Content */}
       <main className={styles.mainContent}>
