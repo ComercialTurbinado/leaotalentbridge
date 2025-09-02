@@ -242,4 +242,316 @@ export class EmailService {
       }
     };
   }
+
+  // 7. EMAILS PARA NOTIFICAÇÕES AUTOMÁTICAS
+  async sendCandidaturaStatusEmail(
+    email: string,
+    candidatoName: string,
+    jobTitle: string,
+    newStatus: string,
+    companyName: string
+  ) {
+    const statusLabel = this.getStatusLabel(newStatus);
+    
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 10px;">
+          <h1 style="color: #d4af37; text-align: center; margin-bottom: 30px;">Status da Candidatura Atualizado</h1>
+          
+          <div style="background: #ffffff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="color: #333; font-size: 16px; margin-bottom: 15px;">Olá <strong>${candidatoName}</strong>,</p>
+            
+            <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+              O status da sua candidatura foi atualizado:
+            </p>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #d4af37;">
+              <h3 style="color: #333; margin: 0 0 10px 0;">Vaga: ${jobTitle}</h3>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>Empresa:</strong> ${companyName}</p>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>Novo Status:</strong> <span style="color: #d4af37; font-weight: bold;">${statusLabel}</span></p>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">
+              Acesse sua conta para mais detalhes sobre a candidatura.
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px;">
+            <p style="color: #999; font-size: 12px;">
+              Leão Talent Bridge - Conectando talentos e oportunidades
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return EmailService.sendEmail({ to: email, subject: 'Status da Candidatura Atualizado', html: html });
+  }
+
+  async sendEntrevistaEmail(
+    email: string,
+    candidatoName: string,
+    jobTitle: string,
+    entrevistaData: Date,
+    companyName: string
+  ) {
+    const dataFormatada = new Date(entrevistaData).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 10px;">
+          <h1 style="color: #d4af37; text-align: center; margin-bottom: 30px;">🎯 Entrevista Agendada!</h1>
+          
+          <div style="background: #ffffff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="color: #333; font-size: 16px; margin-bottom: 15px;">Parabéns <strong>${candidatoName}</strong>! 🎉</p>
+            
+            <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+              Sua candidatura foi aprovada e uma entrevista foi agendada:
+            </p>
+            
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; border-left: 4px solid #28a745;">
+              <h3 style="color: #333; margin: 0 0 10px 0;">📋 Vaga: ${jobTitle}</h3>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>🏢 Empresa:</strong> ${companyName}</p>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>📅 Data/Hora:</strong> <span style="color: #28a745; font-weight: bold;">${dataFormatada}</span></p>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107; margin-top: 20px;">
+              <p style="color: #856404; margin: 0; font-size: 14px;">
+                <strong>💡 Dica:</strong> Prepare-se para a entrevista revisando sua experiência e os requisitos da vaga.
+              </p>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">
+              Boa sorte! Acesse sua conta para mais detalhes.
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px;">
+            <p style="color: #999; font-size: 12px;">
+              Leão Talent Bridge - Conectando talentos e oportunidades
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return EmailService.sendEmail({ to: email, subject: '🎯 Entrevista Agendada!', html: html });
+  }
+
+  async sendFeedbackEmail(
+    email: string,
+    candidatoName: string,
+    jobTitle: string,
+    companyName: string
+  ) {
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 10px;">
+          <h1 style="color: #d4af37; text-align: center; margin-bottom: 30px;">📝 Feedback Disponível</h1>
+          
+          <div style="background: #ffffff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="color: #333; font-size: 16px; margin-bottom: 15px;">Olá <strong>${candidatoName}</strong>,</p>
+            
+            <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+              O feedback da sua candidatura está disponível:
+            </p>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #17a2b8;">
+              <h3 style="color: #333; margin: 0 0 10px 0;">📋 Vaga: ${jobTitle}</h3>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>🏢 Empresa:</strong> ${companyName}</p>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>📊 Status:</strong> <span style="color: #17a2b8; font-weight: bold;">Feedback Disponível</span></p>
+            </div>
+            
+            <div style="background: #d1ecf1; padding: 15px; border-radius: 6px; border-left: 4px solid #17a2b8; margin-top: 20px;">
+              <p style="color: #0c5460; margin: 0; font-size: 14px;">
+                <strong>💡 Importante:</strong> Acesse sua conta para visualizar o feedback completo da empresa.
+              </p>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">
+              Use esse feedback para melhorar suas próximas candidaturas!
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px;">
+            <p style="color: #999; font-size: 12px;">
+              Leão Talent Bridge - Conectando talentos e oportunidades
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return EmailService.sendEmail({ to: email, subject: '📝 Feedback Disponível', html: html });
+  }
+
+  async sendNovaCandidaturaEmail(
+    email: string,
+    companyName: string,
+    candidatoName: string,
+    jobTitle: string
+  ) {
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 10px;">
+          <h1 style="color: #d4af37; text-align: center; margin-bottom: 30px;">🎉 Nova Candidatura Recebida!</h1>
+          
+          <div style="background: #ffffff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="color: #333; font-size: 16px; margin-bottom: 15px;">Olá <strong>${companyName}</strong>,</p>
+            
+            <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+              Você recebeu uma nova candidatura para uma de suas vagas:
+            </p>
+            
+            <div style="background: #e8f5e8; padding: 20px; border-radius: 6px; border-left: 4px solid #28a745;">
+              <h3 style="color: #333; margin: 0 0 10px 0;">👤 Candidato: ${candidatoName}</h3>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>📋 Vaga:</strong> ${jobTitle}</p>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>📅 Data:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107; margin-top: 20px;">
+              <p style="color: #856404; margin: 0; font-size: 14px;">
+                <strong>⚡ Ação:</strong> Acesse sua conta para revisar a candidatura e tomar as próximas ações.
+              </p>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">
+              Não perca essa oportunidade de encontrar o talento ideal!
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px;">
+            <p style="color: #999; font-size: 12px;">
+              Leão Talent Bridge - Conectando talentos e oportunidades
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return EmailService.sendEmail({ to: email, subject: '🎉 Nova Candidatura Recebida!', html: html });
+  }
+
+  async sendVagaExpiradaEmail(
+    email: string,
+    companyName: string,
+    jobTitle: string
+  ) {
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 10px;">
+          <h1 style="color: #d4af37; text-align: center; margin-bottom: 30px;">⏰ Vaga Expirada</h1>
+          
+          <div style="background: #ffffff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="color: #333; font-size: 16px; margin-bottom: 15px;">Olá <strong>${companyName}</strong>,</p>
+            
+            <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+              Uma de suas vagas expirou e não receberá mais candidaturas:
+            </p>
+            
+            <div style="background: #f8d7da; padding: 20px; border-radius: 6px; border-left: 4px solid #dc3545;">
+              <h3 style="color: #333; margin: 0 0 10px 0;">📋 Vaga: ${jobTitle}</h3>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>⏰ Status:</strong> <span style="color: #dc3545; font-weight: bold;">Expirada</span></p>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>📅 Data de Expiração:</strong> ${new Date().toLocaleDateString('pt-BR')}</p>
+            </div>
+            
+            <div style="background: #d1ecf1; padding: 15px; border-radius: 6px; border-left: 4px solid #17a2b8; margin-top: 20px;">
+              <p style="color: #0c5460; margin: 0; font-size: 14px;">
+                <strong>💡 Opções:</strong> Você pode renovar a vaga ou criar uma nova com base na anterior.
+              </p>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">
+              Acesse sua conta para gerenciar suas vagas.
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px;">
+            <p style="color: #999; font-size: 12px;">
+              Leão Talent Bridge - Conectando talentos e oportunidades
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return EmailService.sendEmail({ to: email, subject: '⏰ Vaga Expirada', html: html });
+  }
+
+  async sendCompanyAlertEmail(
+    email: string,
+    companyName: string,
+    alertType: string,
+    message: string
+  ) {
+    const alertTypeLabels: { [key: string]: string } = {
+      'security': 'Segurança',
+      'maintenance': 'Manutenção',
+      'update': 'Atualização',
+      'warning': 'Aviso',
+      'info': 'Informação'
+    };
+
+    const alertTypeLabel = alertTypeLabels[alertType] || alertType;
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); padding: 30px; border-radius: 10px;">
+          <h1 style="color: #d4af37; text-align: center; margin-bottom: 30px;">⚠️ Alerta da Plataforma</h1>
+          
+          <div style="background: #ffffff; padding: 25px; border-radius: 8px; margin-bottom: 20px;">
+            <p style="color: #333; font-size: 16px; margin-bottom: 15px;">Olá <strong>${companyName}</strong>,</p>
+            
+            <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
+              Recebemos um alerta importante da plataforma:
+            </p>
+            
+            <div style="background: #fff3cd; padding: 20px; border-radius: 6px; border-left: 4px solid #ffc107;">
+              <h3 style="color: #333; margin: 0 0 10px 0;">⚠️ Tipo de Alerta: ${alertTypeLabel}</h3>
+              <p style="color: #333; margin: 0 0 10px 0;"><strong>📝 Mensagem:</strong></p>
+              <p style="color: #333; margin: 0; font-style: italic;">"${message}"</p>
+            </div>
+            
+            <div style="background: #d1ecf1; padding: 15px; border-radius: 6px; border-left: 4px solid #17a2b8; margin-top: 20px;">
+              <p style="color: #0c5460; margin: 0; font-size: 14px;">
+                <strong>ℹ️ Informação:</strong> Este é um alerta automático da plataforma Leão Talent Bridge.
+              </p>
+            </div>
+            
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">
+              Se tiver dúvidas, entre em contato com nosso suporte.
+            </p>
+          </div>
+          
+          <div style="text-align: center; padding: 20px;">
+            <p style="color: #999; font-size: 12px;">
+              Leão Talent Bridge - Conectando talentos e oportunidades
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return EmailService.sendEmail({ to: email, subject: '⚠️ Alerta da Plataforma', html: html });
+  }
+
+  // 8. UTILITÁRIOS
+  private getStatusLabel(status: string): string {
+    const statusLabels: { [key: string]: string } = {
+      'pending': 'Pendente',
+      'reviewing': 'Em Análise',
+      'interviewing': 'Entrevistando',
+      'approved': 'Aprovado',
+      'rejected': 'Rejeitado',
+      'withdrawn': 'Retirado'
+    };
+    
+    return statusLabels[status] || status;
+  }
 }

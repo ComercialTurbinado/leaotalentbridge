@@ -81,16 +81,16 @@ export default function AdminLogin() {
               </div>
             )}
 
-            <div className="form-group">
-              <label className="form-label">
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
                 <GrMail size={18} />
                 E-mail Administrativo
               </label>
               <input
                 type="email"
                 name="email"
-                className="form-input"
-                placeholder="user@uaecareers.com"
+                className={styles.formInput}
+                placeholder="admin@teste.com"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
@@ -98,8 +98,8 @@ export default function AdminLogin() {
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>
                 <GrLock size={18} />
                 Senha de Administrador
               </label>
@@ -107,7 +107,7 @@ export default function AdminLogin() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
-                  className="form-input"
+                  className={styles.formInput}
                   placeholder="Digite sua senha administrativa"
                   value={formData.password}
                   onChange={handleInputChange}
@@ -137,7 +137,7 @@ export default function AdminLogin() {
 
             <button
               type="submit"
-              className={`btn btn-primary btn-large w-full ${isLoading ? 'loading' : ''}`}
+              className={`${styles.submitButton} ${isLoading ? styles.loading : ''}`}
               disabled={isLoading}
             >
               {!isLoading && (

@@ -83,7 +83,7 @@ export default function AdminDashboard() {
       <DashboardHeader user={user} userType="admin" />
 
       <main className={styles.mainContent}>
-        <div className="container">
+        <div className={styles.container}>
           <div className={styles.pageHeader}>
             <h1>Dashboard Administrativo</h1>
             <p>Bem-vindo, {user?.name}. Aqui está um resumo das atividades da plataforma.</p>

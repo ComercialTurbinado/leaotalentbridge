@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrOrganization, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrMail, GrPhone, GrCalendar, GrLocation, GrGlobe, GrDownload, GrUpload, GrMore, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrClose, GrUser, GrStar, GrBriefcase } from 'react-icons/gr';
+import { GrOrganization, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrMail, GrPhone, GrCalendar, GrLocation, GrGlobe, GrDownload, GrUpload, GrMore, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrClose, GrUser, GrStar, GrBriefcase, GrCheckmark } from 'react-icons/gr';
 import styles from './empresas.module.css';
 
 interface Empresa {
@@ -350,7 +350,54 @@ export default function AdminEmpresasPage() {
     setShowModal(true);
   };
 
+  const handleApproveCompany = async (companyId: string) => {
+    try {
+      setActionLoading('approve');
+      const response = await fetch(`/api/admin/companies/${companyId}/approve`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+      if (response.ok) {
+        await loadEmpresas();
+        setShowModal(false); // Close modal after approval
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Erro ao aprovar empresa');
+      }
+    } catch (error) {
+      console.error('Erro ao aprovar empresa:', error);
+      alert('Erro ao aprovar empresa');
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
+  const handleRejectCompany = async (companyId: string) => {
+    if (!empresaSelecionada) return;
+    try {
+      setActionLoading('reject');
+      const response = await fetch(`/api/admin/companies/${companyId}/reject`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        }
+      });
+      if (response.ok) {
+        await loadEmpresas();
+        setShowModal(false); // Close modal after rejection
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Erro ao rejeitar empresa');
+      }
+    } catch (error) {
+      console.error('Erro ao rejeitar empresa:', error);
+      alert('Erro ao rejeitar empresa');
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -369,23 +416,17 @@ export default function AdminEmpresasPage() {
       <DashboardHeader user={user} userType="admin" />
 
       <main className={styles.mainContent}>
-        <div className="container">
+        <div className={styles.container}>
           {/* Page Header */}
           <div className={styles.pageHeader}>
-            <div className={styles.titleSection}>
-              <h1>Gestão de Empresas</h1>
-              <p>Gerencie todas as empresas cadastradas na plataforma UAE Careers</p>
-            </div>
-            
-            <div className={styles.headerActions}>
-              <button 
-                onClick={handleCreateEmpresaClick}
-                className="btn btn-primary"
-              >
-                <GrAdd size={16} />
-                Nova Empresa
-              </button>
-            </div>
+            <h1>Gestão de Empresas</h1>
+            <button
+              onClick={handleCreateEmpresaClick}
+              className={styles.createButton}
+            >
+              <GrAdd size={20} />
+              Nova Empresa
+            </button>
           </div>
 
           {/* Stats Cards */}

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
-import { GrGroup, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrMail, GrPhone, GrCalendar, GrLocation, GrBriefcase, GrOrganization, GrDownload, GrUpload, GrMore, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrClose, GrUser, GrStar } from 'react-icons/gr';
+import { GrGroup, GrSearch, GrFilter, GrAdd, GrEdit, GrTrash, GrView, GrMail, GrPhone, GrCalendar, GrLocation, GrBriefcase, GrOrganization, GrDownload, GrUpload, GrMore, GrStatusGood, GrStatusCritical, GrClock, GrStatusWarning, GrClose, GrUser, GrStar, GrCheckmark } from 'react-icons/gr';
 import styles from './usuarios.module.css';
 
 interface Usuario {
@@ -348,23 +348,17 @@ export default function AdminUsuariosPage() {
       <DashboardHeader user={user} userType="admin" />
 
       <main className={styles.mainContent}>
-        <div className="container">
+        <div className={styles.container}>
           {/* Page Header */}
           <div className={styles.pageHeader}>
-            <div className={styles.titleSection}>
-              <h1>Gestão de Usuários</h1>
-              <p>Gerencie todos os usuários da plataforma UAE Careers</p>
-            </div>
-            
-            <div className={styles.headerActions}>
-              <button 
-                onClick={handleCreateUserClick}
-                className="btn btn-primary"
-              >
-                <GrAdd size={16} />
-                Novo Usuário
-              </button>
-            </div>
+            <h1>Gestão de Usuários</h1>
+            <button
+              onClick={() => handleCreateUserClick()}
+              className={styles.createButton}
+            >
+              <GrAdd size={20} />
+              Novo Usuário
+            </button>
           </div>
 
           {/* Stats Cards */}
