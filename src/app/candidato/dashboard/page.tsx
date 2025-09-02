@@ -80,8 +80,8 @@ interface TimelineItem {
     id: string;
     jobTitle: string;
     companyName: string;
-  status: string;
-  appliedAt: string;
+    status: string;
+    appliedAt: string;
   };
   progress: number;
   timeline: Array<{
@@ -124,12 +124,12 @@ interface Interview {
     experience: number;
     overall: number;
     comments?: string;
-    submittedAt?: string;
+    submittedAt: string;
   };
   candidateFeedback?: {
     rating: number;
     comments?: string;
-    submittedAt?: string;
+    submittedAt: string;
   };
   feedbackStatus: 'pending' | 'approved' | 'rejected';
   
@@ -167,14 +167,14 @@ interface DashboardSummary {
   };
   recentActivity: Array<{
     type: string;
-  title: string;
-  description: string;
-  date: string;
+    title: string;
+    description: string;
+    date: string;
     status: string;
   }>;
 }
 
-export default function CandidateDashboard() {
+export default function Dashboard() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [recommendations, setRecommendations] = useState<JobRecommendation[]>([]);
@@ -183,7 +183,6 @@ export default function CandidateDashboard() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
   const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
@@ -303,7 +302,7 @@ export default function CandidateDashboard() {
         setShowInterviewModal(false);
         setSelectedInterview(null);
         alert(`Entrevista ${response === 'accepted' ? 'aceita' : 'rejeitada'} com sucesso!`);
-    } else {
+      } else {
         const error = await responseData.json();
         alert(error.error || 'Erro ao responder entrevista');
       }
@@ -372,687 +371,368 @@ export default function CandidateDashboard() {
 
   return (
     <div className={styles.dashboard}>
+      {/* Header com navegação */}
       <div className={styles.header}>
-        <h1>Dashboard do Candidato</h1>
-        <div className={styles.headerActions}>
-          <button 
-            className={styles.refreshBtn}
-            onClick={loadDashboardData}
-          >
-            🔄 Atualizar
+        <div className={styles.logoSection}>
+          <div className={styles.logo}>
+            <span className={styles.logoUae}>UAE</span>
+            <span className={styles.logoCareers}>Careers</span>
+          </div>
+          <p className={styles.slogan}>Conectando talentos às melhores oportunidades</p>
+        </div>
+        
+        <div className={styles.navigation}>
+          <button className={`${styles.navButton} ${styles.active}`}>
+            Dashboard
+          </button>
+          <button className={styles.navButton}>
+            Vagas
+          </button>
+          <button className={styles.navButton}>
+            Candidaturas
+          </button>
+          <button className={styles.navButton}>
+            Entrevistas
+          </button>
+          <button className={styles.navButton}>
+            Documentos
+          </button>
+        </div>
+        
+        <div className={styles.userSection}>
+          <div className={styles.profileInfo}>
+            <img 
+              src="/images/profile-placeholder.png" 
+              alt="Perfil" 
+              className={styles.profileImage}
+            />
+            <span>João Silva</span>
+          </div>
+          <button className={styles.logoutButton}>
+            Sair
           </button>
         </div>
       </div>
 
-      {/* Tabs de navegação */}
-      <div className={styles.tabs}>
-        <button 
-          className={`${styles.tab} ${activeTab === 'overview' ? styles.active : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          📊 Visão Geral
-        </button>
-        <button 
-          className={`${styles.tab} ${activeTab === 'alerts' ? styles.active : ''}`}
-          onClick={() => setActiveTab('alerts')}
-        >
-          🚨 Alertas
-          {(dashboardSummary?.alerts?.filter(alert => alert.priority === 'urgent' || alert.priority === 'high').length || 0) > 0 && (
-            <span className={styles.alertBadge}>
-              {dashboardSummary?.alerts?.filter(alert => alert.priority === 'urgent' || alert.priority === 'high').length || 0}
-            </span>
-          )}
-        </button>
-        <button 
-          className={`${styles.tab} ${activeTab === 'recommendations' ? styles.active : ''}`}
-          onClick={() => setActiveTab('recommendations')}
-        >
-          💼 Vagas Recomendadas
-        </button>
-        <button 
-          className={`${styles.tab} ${activeTab === 'timeline' ? styles.active : ''}`}
-          onClick={() => setActiveTab('timeline')}
-        >
-          📅 Timeline
-        </button>
-        <button 
-          className={`${styles.tab} ${activeTab === 'metrics' ? styles.active : ''}`}
-          onClick={() => setActiveTab('metrics')}
-        >
-          📈 Métricas
-        </button>
-      </div>
-
-      {/* Conteúdo das tabs */}
-      <div className={styles.content}>
-        {activeTab === 'overview' && (
-          <div className={styles.overview}>
-            {/* Alertas importantes */}
-            {(dashboardSummary?.alerts?.filter(alert => alert.priority === 'urgent' || alert.priority === 'high').length || 0) > 0 && (
-              <div className={styles.urgentAlerts}>
-                <h2>🚨 Atenção Necessária</h2>
-                <div className={styles.alertsGrid}>
-                  {dashboardSummary?.alerts
-                    ?.filter(alert => alert.priority === 'urgent' || alert.priority === 'high')
-                    .slice(0, 3)
-                    .map(alert => (
-                      <div key={alert.id} className={`${styles.alertCard} ${styles[alert.priority]}`}>
-                        <div className={styles.alertHeader}>
-                          <h3>{alert.title}</h3>
-                          <span className={styles.alertPriority}>{alert.priority.toUpperCase()}</span>
-                        </div>
-                        <p>{alert.message}</p>
-                        {alert.action && (
-                          <button 
-                            className={styles.alertAction}
-                            onClick={() => router.push(alert.action!.url)}
-                          >
-                            {alert.action.label}
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                </div>
-            </div>
-          )}
-
-            {/* Widgets informativos */}
-            <div className={styles.infoWidgets}>
-              <div className={styles.widget}>
-                <div className={styles.widgetHeader}>
-                  <h3>📄 Documentos</h3>
-                  <span className={styles.widgetCount}>{dashboardSummary?.quickStats.pendingDocuments || 0}</span>
-            </div>
-                <div className={styles.widgetContent}>
-                  <p>{dashboardSummary?.quickStats.pendingDocuments || 0} documento(s) pendente(s)</p>
-                  <button 
-                    className={styles.widgetAction}
-                    onClick={() => router.push('/candidato/documentos')}
-                  >
-                    Gerenciar Documentos
-                  </button>
-            </div>
-          </div>
-
-              <div className={styles.widget}>
-                <div className={styles.widgetHeader}>
-                  <h3>🎯 Entrevistas</h3>
-                  <span className={styles.widgetCount}>{dashboardSummary?.quickStats.upcomingInterviews || 0}</span>
-              </div>
-                <div className={styles.widgetContent}>
-                  <p>{dashboardSummary?.quickStats.upcomingInterviews || 0} entrevista(s) próxima(s)</p>
-                  <button 
-                    className={styles.widgetAction}
-                    onClick={() => router.push('/candidato/entrevistas')}
-                  >
-                    Ver Entrevistas
-                  </button>
-              </div>
-            </div>
-
-              <div className={styles.widget}>
-                <div className={styles.widgetHeader}>
-                  <h3>📝 Candidaturas</h3>
-                  <span className={styles.widgetCount}>{dashboardSummary?.quickStats.pendingApplications || 0}</span>
-              </div>
-                <div className={styles.widgetContent}>
-                  <p>{dashboardSummary?.quickStats.pendingApplications || 0} candidatura(s) pendente(s)</p>
-                  <button 
-                    className={styles.widgetAction}
-                    onClick={() => router.push('/candidato/candidaturas')}
-                  >
-                    Ver Candidaturas
-                  </button>
-              </div>
-            </div>
-
-              <div className={styles.widget}>
-                <div className={styles.widgetHeader}>
-                  <h3>🎮 Simulações</h3>
-                  <span className={styles.widgetCount}>{dashboardSummary?.quickStats.completedSimulations || 0}</span>
-              </div>
-                <div className={styles.widgetContent}>
-                  <p>{dashboardSummary?.quickStats.completedSimulations || 0} simulação(ões) concluída(s)</p>
-                  <button 
-                    className={styles.widgetAction}
-                    onClick={() => router.push('/candidato/simulacoes')}
-                  >
-                    Fazer Simulações
-                  </button>
-              </div>
-            </div>
-
-              <div className={styles.widget}>
-                <div className={styles.widgetHeader}>
-                  <h3>👤 Perfil</h3>
-                  <span className={styles.widgetCount}>{dashboardSummary?.quickStats.profileCompletion || 0}%</span>
-              </div>
-                <div className={styles.widgetContent}>
-                  <div className={styles.progressBar}>
-                    <div 
-                      className={styles.progressFill}
-                      style={{ width: `${dashboardSummary?.quickStats.profileCompletion || 0}%` }}
-                    ></div>
-                  </div>
-                  <button 
-                    className={styles.widgetAction}
-                    onClick={() => router.push('/candidato/perfil')}
-                  >
-                    Completar Perfil
-                  </button>
-              </div>
-            </div>
-          </div>
-
-            {/* Cards de métricas principais */}
-            <div className={styles.metricsGrid}>
-              <div className={styles.metricCard}>
-                <div className={styles.metricIcon}>📊</div>
-                <div className={styles.metricContent}>
-                  <h3>Score Geral</h3>
-                  <div className={styles.metricValue}>
-                    {metrics?.overallScore || 0}
-                    <span className={styles.metricUnit}>/100</span>
-                  </div>
-                  <div 
-                    className={styles.rankingBadge}
-                    style={{ backgroundColor: getRankingColor(metrics?.ranking.category || 'average') }}
-                  >
-                    {metrics?.ranking.category === 'top' ? 'Top' :
-                     metrics?.ranking.category === 'above_average' ? 'Acima da Média' :
-                     metrics?.ranking.category === 'average' ? 'Média' : 'Abaixo da Média'}
-                  </div>
-                </div>
-              </div>
-              
-              <div className={styles.metricCard}>
-                <div className={styles.metricIcon}>📝</div>
-                <div className={styles.metricContent}>
-                  <h3>Candidaturas</h3>
-                  <div className={styles.metricValue}>
-                    {metrics?.applications.total || 0}
-                        </div>
-                  <div className={styles.metricSubtext}>
-                    {metrics?.applications.successRate || 0}% de sucesso
-                      </div>
-                </div>
-              </div>
-
-              <div className={styles.metricCard}>
-                <div className={styles.metricIcon}>👁️</div>
-                <div className={styles.metricContent}>
-                  <h3>Visualizações</h3>
-                  <div className={styles.metricValue}>
-                    {metrics?.profile.views || 0}
-                  </div>
-                  <div className={styles.metricSubtext}>
-                    {(metrics?.trends.profileViewsGrowth || 0) > 0 ? '+' : ''}{metrics?.trends.profileViewsGrowth || 0}% este mês
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.metricCard}>
-                <div className={styles.metricIcon}>📄</div>
-                <div className={styles.metricContent}>
-                  <h3>Documentos</h3>
-                  <div className={styles.metricValue}>
-                    {metrics?.documents.verified || 0}/{metrics?.documents.total || 0}
-                  </div>
-                  <div className={styles.metricSubtext}>
-                    {metrics?.documents.completionRate || 0}% completos
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Notificações recentes */}
-            <div className={styles.section}>
-              <NotificationCenter 
-                userId="current-user" 
-                maxNotifications={5}
-                showUnreadOnly={false}
-              />
-            </div>
-
-            {/* Vagas recomendadas */}
-            <div className={styles.section}>
-              <h2>💼 Vagas Recomendadas</h2>
-              <div className={styles.recommendationsGrid}>
-                {recommendations.length > 0 ? (
-                  recommendations.map(rec => (
-                    <div key={rec.recommendation._id} className={styles.recommendationCard}>
-                      <div className={styles.recommendationHeader}>
-                        <h3>{rec.job.title}</h3>
-                        <div 
-                          className={styles.matchScore}
-                          style={{ 
-                            backgroundColor: rec.matchPercentage > 80 ? '#4caf50' : 
-                                           rec.matchPercentage > 60 ? '#ff9800' : '#f44336'
-                          }}
-                        >
-                          {rec.matchPercentage}% match
-                        </div>
-                      </div>
-                      <div className={styles.recommendationDetails}>
-                        <p><strong>Localização:</strong> {rec.job.location}</p>
-                        <p><strong>Setor:</strong> {rec.job.company.industry}</p>
-                        {rec.job.salaryRange && (
-                          <p><strong>Salário:</strong> R$ {rec.job.salaryRange.min.toLocaleString()} - R$ {rec.job.salaryRange.max.toLocaleString()}</p>
-                        )}
-                      </div>
-                      <div className={styles.recommendationReasons}>
-                        <h4>Por que recomendamos:</h4>
-                        <ul>
-                          {rec.recommendation.reasons.slice(0, 2).map((reason, index) => (
-                            <li key={index}>{reason}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className={styles.recommendationActions}>
-                        <button 
-                          className={styles.applyBtn}
-                          onClick={() => router.push(`/candidato/vagas/${rec.job._id}`)}
-                        >
-                          Ver Vaga
-                        </button>
-                        <button 
-                          className={styles.dismissBtn}
-                          onClick={() => {
-                            // Implementar descarte
-                          }}
-                        >
-                          Descartar
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className={styles.emptyState}>Nenhuma vaga recomendada no momento</p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'alerts' && (
-          <div className={styles.alertsTab}>
-            <div className={styles.tabHeader}>
-              <h2>🚨 Alertas e Avisos</h2>
-              <div className={styles.alertsSummary}>
-                <span className={styles.urgentCount}>
-                  {dashboardSummary?.alerts.filter(alert => alert.priority === 'urgent').length || 0} Urgentes
-                </span>
-                <span className={styles.highCount}>
-                  {dashboardSummary?.alerts.filter(alert => alert.priority === 'high').length || 0} Importantes
-                </span>
-                <span className={styles.mediumCount}>
-                  {dashboardSummary?.alerts.filter(alert => alert.priority === 'medium').length || 0} Médios
-                </span>
-                <span className={styles.lowCount}>
-                  {dashboardSummary?.alerts.filter(alert => alert.priority === 'low').length || 0} Baixos
-                </span>
-              </div>
-              </div>
-              
-            <div className={styles.alertsList}>
-              {(dashboardSummary?.alerts?.length || 0) > 0 ? (
-                dashboardSummary?.alerts?.map(alert => (
-                  <div key={alert.id} className={`${styles.alertItem} ${styles[alert.priority]}`}>
-                    <div className={styles.alertIcon}>
-                      {alert.type === 'document' && '📄'}
-                      {alert.type === 'interview' && '🎯'}
-                      {alert.type === 'simulation' && '🎮'}
-                      {alert.type === 'application' && '📝'}
-                      {alert.type === 'profile' && '👤'}
-                      {alert.type === 'general' && 'ℹ️'}
-                    </div>
-                    <div className={styles.alertContent}>
-                      <div className={styles.alertHeader}>
-                        <h3>{alert.title}</h3>
-                        <div className={styles.alertMeta}>
-                          <span className={`${styles.priorityBadge} ${styles[alert.priority]}`}>
-                            {alert.priority.toUpperCase()}
-                          </span>
-                          <span className={styles.alertDate}>
-                            {new Date(alert.createdAt).toLocaleDateString('pt-BR')}
-                          </span>
-                        </div>
-                      </div>
-                      <p className={styles.alertMessage}>{alert.message}</p>
-                      {alert.data && (
-                        <div className={styles.alertData}>
-                          {alert.data.rejectedCount && (
-                            <span className={styles.dataItem}>
-                              📄 {alert.data.rejectedCount} documento(s) rejeitado(s)
-                              </span>
-                          )}
-                          {alert.data.pendingCount && (
-                            <span className={styles.dataItem}>
-                              ⏳ {alert.data.pendingCount} documento(s) pendente(s)
-                              </span>
-                            )}
-                          {alert.data.missingTypes && (
-                            <span className={styles.dataItem}>
-                              ❌ Faltando: {alert.data.missingTypes.join(', ')}
-                            </span>
-                          )}
-                          {alert.data.upcomingCount && (
-                            <span className={styles.dataItem}>
-                              🎯 {alert.data.upcomingCount} entrevista(s) próxima(s)
-                            </span>
-                          )}
-                          {alert.data.completion && (
-                            <span className={styles.dataItem}>
-                              📊 Perfil {alert.data.completion}% completo
-                            </span>
-                        )}
-                      </div>
-                      )}
-                      {alert.action && (
-                        <button 
-                          className={styles.alertActionBtn}
-                          onClick={() => router.push(alert.action!.url)}
-                        >
-                          {alert.action.label}
-                        </button>
-                      )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className={styles.emptyState}>
-                  <h3>🎉 Nenhum alerta!</h3>
-                  <p>Tudo está em ordem. Continue assim!</p>
-                      </div>
-              )}
-                      </div>
-
-            {/* Atividade recente */}
-            {(dashboardSummary?.recentActivity?.length || 0) > 0 && (
-              <div className={styles.recentActivity}>
-                <h3>📋 Atividade Recente</h3>
-                <div className={styles.activityList}>
-                  {dashboardSummary?.recentActivity?.slice(0, 5).map((activity, index) => (
-                    <div key={index} className={styles.activityItem}>
-                      <div className={styles.activityIcon}>
-                        {activity.type === 'document' && '📄'}
-                        {activity.type === 'interview' && '🎯'}
-                        {activity.type === 'application' && '📝'}
-                      </div>
-                      <div className={styles.activityContent}>
-                        <h4>{activity.title}</h4>
-                        <p>{activity.description}</p>
-                        <span className={styles.activityDate}>
-                          {new Date(activity.date).toLocaleDateString('pt-BR')}
-                        </span>
-                      </div>
-                      <div className={`${styles.activityStatus} ${styles[activity.status]}`}>
-                        {activity.status}
-                      </div>
-                    </div>
-                  ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-        )}
-
-        {activeTab === 'recommendations' && (
-          <div className={styles.recommendationsTab}>
-            <div className={styles.tabHeader}>
-              <h2>💼 Vagas Recomendadas para Você</h2>
-              <button 
-                className={styles.generateBtn}
-                onClick={() => {
-                  // Implementar geração de novas recomendações
-                }}
-              >
-                🔄 Gerar Novas Recomendações
-              </button>
-            </div>
-            <div className={styles.recommendationsList}>
-              {recommendations.length > 0 ? (
-                recommendations.map(rec => (
-                  <div key={rec.recommendation._id} className={styles.recommendationItem}>
-                    <div className={styles.recommendationMain}>
-                      <div className={styles.recommendationInfo}>
-                        <h3>{rec.job.title}</h3>
-                        <p className={styles.companyInfo}>
-                          {rec.job.company.name} • {rec.job.company.industry} • {rec.job.location}
-                        </p>
-                        <div className={styles.jobDetails}>
-                          {rec.job.salaryRange && (
-                            <span className={styles.salary}>
-                              R$ {rec.job.salaryRange.min.toLocaleString()} - R$ {rec.job.salaryRange.max.toLocaleString()}
-                            </span>
-                          )}
-                          <span className={styles.companySize}>
-                            {rec.job.company.size} funcionários
-                          </span>
-          </div>
-                      </div>
-                      <div className={styles.matchInfo}>
-                        <div 
-                          className={styles.matchScore}
-                          style={{ 
-                            backgroundColor: rec.matchPercentage > 80 ? '#4caf50' : 
-                                           rec.matchPercentage > 60 ? '#ff9800' : '#f44336'
-                          }}
-                        >
-                          {rec.matchPercentage}%
-                        </div>
-                        <p>Compatibilidade</p>
-                      </div>
-                    </div>
-                    <div className={styles.recommendationReasons}>
-                      <h4>Por que esta vaga é ideal para você:</h4>
-                      <ul>
-                        {rec.recommendation.reasons.map((reason, index) => (
-                          <li key={index}>{reason}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className={styles.recommendationActions}>
-                      <button 
-                        className={styles.viewJobBtn}
-                        onClick={() => router.push(`/candidato/vagas/${rec.job._id}`)}
-                      >
-                        Ver Detalhes da Vaga
-                      </button>
-                      <button 
-                        className={styles.applyBtn}
-                        onClick={() => {
-                          // Implementar candidatura
-                        }}
-                      >
-                        Candidatar-se
-                      </button>
-                      <button 
-                        className={styles.dismissBtn}
-                        onClick={() => {
-                          // Implementar descarte
-                        }}
-                      >
-                        Não me interessa
-                      </button>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className={styles.emptyState}>
-                  <h3>Nenhuma vaga recomendada</h3>
-                  <p>Complete seu perfil para receber recomendações personalizadas</p>
-                  <button 
-                    className={styles.completeProfileBtn}
-                    onClick={() => router.push('/candidato/perfil')}
-                  >
-                    Completar Perfil
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'timeline' && (
-          <div className={styles.timelineTab}>
-            <h2>📅 Timeline de Candidaturas</h2>
-            <div className={styles.timelineList}>
-              {timeline.length > 0 ? (
-                timeline.map(item => (
-                  <div key={item.application.id} className={styles.timelineItem}>
-                    <div className={styles.timelineHeader}>
-                      <h3>{item.application.jobTitle}</h3>
-                      <div className={styles.timelineMeta}>
-                        <span className={styles.company}>{item.application.companyName}</span>
-                        <span className={styles.date}>
-                          {new Date(item.application.appliedAt).toLocaleDateString('pt-BR')}
-                        </span>
-                    </div>
-                    </div>
-                    <div className={styles.progressBar}>
-                      <div 
-                        className={styles.progressFill}
-                        style={{ width: `${item.progress}%` }}
-                      ></div>
-                      <span className={styles.progressText}>{item.progress}%</span>
-                    </div>
-                    <div className={styles.timelineEvents}>
-                      {item.timeline.map(event => (
-                        <div key={event.id} className={styles.timelineEvent}>
-                          <div 
-                            className={styles.eventIndicator}
-                            style={{ backgroundColor: getStatusColor(event.status) }}
-                          ></div>
-                          <div className={styles.eventContent}>
-                            <h4>{event.title}</h4>
-                            <p>{event.description}</p>
-                            <span className={styles.eventDate}>
-                              {new Date(event.date).toLocaleDateString('pt-BR')}
-                        </span>
-                      </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className={styles.emptyState}>
-                  <h3>Nenhuma candidatura encontrada</h3>
-                  <p>Comece se candidatando a vagas para acompanhar seu progresso</p>
-                  <button 
-                    className={styles.browseJobsBtn}
-                    onClick={() => router.push('/candidato/vagas')}
-                  >
-                    Buscar Vagas
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'metrics' && (
-          <div className={styles.metricsTab}>
-            <h2>📈 Métricas de Performance</h2>
-            {metrics && (
-              <div className={styles.metricsContent}>
-                <div className={styles.metricsOverview}>
-                  <div className={styles.overallScore}>
-                    <h3>Score Geral</h3>
-                    <div className={styles.scoreCircle}>
-                      <div className={styles.scoreValue}>{metrics.overallScore}</div>
-                      <div className={styles.scoreMax}>/100</div>
-                    </div>
-                    <div 
-                      className={styles.rankingBadge}
-                      style={{ backgroundColor: getRankingColor(metrics.ranking.category) }}
-                    >
-                      {metrics.ranking.percentile}º percentil
-                    </div>
-                  </div>
-                </div>
-
-                <div className={styles.metricsDetails}>
-                  <div className={styles.metricSection}>
-                    <h3>📝 Candidaturas</h3>
-                    <div className={styles.metricStats}>
-                      <div className={styles.stat}>
-                        <span className={styles.statValue}>{metrics.applications.total}</span>
-                        <span className={styles.statLabel}>Total</span>
-                      </div>
-                      <div className={styles.stat}>
-                        <span className={styles.statValue}>{metrics.applications.successRate}%</span>
-                        <span className={styles.statLabel}>Taxa de Sucesso</span>
-                      </div>
-                      <div className={styles.stat}>
-                        <span className={styles.statValue}>{metrics.applications.pending}</span>
-                        <span className={styles.statLabel}>Pendentes</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={styles.metricSection}>
-                    <h3>📄 Documentos</h3>
-                    <div className={styles.metricStats}>
-                      <div className={styles.stat}>
-                        <span className={styles.statValue}>{metrics.documents.verified}</span>
-                        <span className={styles.statLabel}>Verificados</span>
-                      </div>
-                      <div className={styles.stat}>
-                        <span className={styles.statValue}>{metrics.documents.completionRate}%</span>
-                        <span className={styles.statLabel}>Completude</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={styles.metricSection}>
-                    <h3>🎯 Entrevistas</h3>
-                    <div className={styles.metricStats}>
-                      <div className={styles.stat}>
-                        <span className={styles.statValue}>{metrics.interviews.total}</span>
-                        <span className={styles.statLabel}>Total</span>
-            </div>
-                      <div className={styles.stat}>
-                        <span className={styles.statValue}>{metrics.interviews.successRate}%</span>
-                        <span className={styles.statLabel}>Taxa de Sucesso</span>
-          </div>
-                      <div className={styles.stat}>
-                        <span className={styles.statValue}>{metrics.interviews.upcoming}</span>
-                        <span className={styles.statLabel}>Próximas</span>
+      {/* Conteúdo principal */}
+      <div className={styles.mainContent}>
+        <div className={styles.pageTitle}>
+          <h1>Gerenciamento de Interação - Dashboard</h1>
+          <p>Controle total sobre suas candidaturas, entrevistas e oportunidades</p>
         </div>
-    </div>
-                  </div>
-                </div>
 
-                <div className={styles.trendsSection}>
-                  <h3>📊 Tendências</h3>
-                  <div className={styles.trendsGrid}>
-                    <div className={styles.trendItem}>
-                      <span className={styles.trendLabel}>Candidaturas</span>
-                      <span className={`${styles.trendValue} ${metrics.trends.applicationsGrowth >= 0 ? styles.positive : styles.negative}`}>
-                        {metrics.trends.applicationsGrowth > 0 ? '+' : ''}{metrics.trends.applicationsGrowth}%
-                      </span>
-      </div>
-                    <div className={styles.trendItem}>
-                      <span className={styles.trendLabel}>Visualizações</span>
-                      <span className={`${styles.trendValue} ${metrics.trends.profileViewsGrowth >= 0 ? styles.positive : styles.negative}`}>
-                        {metrics.trends.profileViewsGrowth > 0 ? '+' : ''}{metrics.trends.profileViewsGrowth}%
-                      </span>
-                    </div>
-                    <div className={styles.trendItem}>
-                      <span className={styles.trendLabel}>Sucesso em Entrevistas</span>
-                      <span className={`${styles.trendValue} ${metrics.trends.interviewSuccessGrowth >= 0 ? styles.positive : styles.negative}`}>
-                        {metrics.trends.interviewSuccessGrowth > 0 ? '+' : ''}{metrics.trends.interviewSuccessGrowth}%
-                      </span>
-                    </div>
-                  </div>
+        {/* Cards de estatísticas críticas */}
+        <div className={styles.statsGrid}>
+          <div className={styles.statCard}>
+            <div className={styles.statIcon} style={{ background: '#00732F' }}>
+              📊
+            </div>
+            <div className={styles.statContent}>
+              <div className={styles.statNumber}>{metrics?.applications?.total || 0}</div>
+              <div className={styles.statLabel}>Candidaturas Ativas</div>
+            </div>
+          </div>
+          
+          <div className={styles.statCard}>
+            <div className={styles.statIcon} style={{ background: '#FF0000' }}>
+              🎯
+            </div>
+            <div className={styles.statContent}>
+              <div className={styles.statNumber}>{interviews?.length || 0}</div>
+              <div className={styles.statLabel}>Entrevistas Pendentes</div>
+            </div>
+          </div>
+          
+          <div className={styles.statCard}>
+            <div className={styles.statIcon} style={{ background: '#D4AF37' }}>
+              📄
+            </div>
+            <div className={styles.statContent}>
+              <div className={styles.statNumber}>{dashboardSummary?.quickStats.pendingDocuments || 0}</div>
+              <div className={styles.statLabel}>Documentos Pendentes</div>
+            </div>
+          </div>
+          
+          <div className={styles.statCard}>
+            <div className={styles.statIcon} style={{ background: '#00732F' }}>
+              ⭐
+            </div>
+            <div className={styles.statContent}>
+              <div className={styles.statNumber}>{metrics?.overallScore || 0}</div>
+              <div className={styles.statLabel}>Score de Perfil</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Seção de Ações Críticas */}
+        <div className={styles.section}>
+          <h2>🚨 Ações Críticas - Requer Atenção Imediata</h2>
+          <div className={styles.criticalActionsGrid}>
+            {/* Documentos Pendentes */}
+            {(dashboardSummary?.quickStats?.pendingDocuments || 0) > 0 && (
+              <div className={styles.criticalActionCard} style={{ borderLeftColor: '#FF0000' }}>
+                <div className={styles.criticalActionHeader}>
+                  <h3>📄 Documentos Pendentes</h3>
+                  <span className={styles.criticalBadge}>Urgente</span>
                 </div>
+                <p>{dashboardSummary?.quickStats?.pendingDocuments || 0} documento(s) aguardando upload ou verificação</p>
+                <button 
+                  className={styles.criticalActionButton}
+                  onClick={() => router.push('/candidato/documentos')}
+                >
+                  Gerenciar Documentos
+                </button>
+              </div>
+            )}
+
+            {/* Entrevistas Próximas */}
+            {(dashboardSummary?.quickStats?.upcomingInterviews || 0) > 0 && (
+              <div className={styles.criticalActionCard} style={{ borderLeftColor: '#FFA500' }}>
+                <div className={styles.criticalActionHeader}>
+                  <h3>🎯 Entrevistas Próximas</h3>
+                  <span className={styles.criticalBadge}>Importante</span>
+                </div>
+                <p>{dashboardSummary?.quickStats?.upcomingInterviews || 0} entrevista(s) aguardando confirmação</p>
+                <button 
+                  className={styles.criticalActionButton}
+                  onClick={() => router.push('/candidato/entrevistas')}
+                >
+                  Ver Entrevistas
+                </button>
+              </div>
+            )}
+
+            {/* Candidaturas Pendentes */}
+            {(dashboardSummary?.quickStats?.pendingApplications || 0) > 0 && (
+              <div className={styles.criticalActionCard} style={{ borderLeftColor: '#00732F' }}>
+                <div className={styles.criticalActionHeader}>
+                  <h3>📝 Candidaturas Pendentes</h3>
+                  <span className={styles.criticalBadge}>Ação Necessária</span>
+                </div>
+                <p>{dashboardSummary?.quickStats?.pendingApplications || 0} candidatura(s) aguardando resposta</p>
+                <button 
+                  className={styles.criticalActionButton}
+                  onClick={() => router.push('/candidato/candidaturas')}
+                >
+                  Acompanhar Status
+                </button>
+              </div>
+            )}
+
+            {/* Perfil Incompleto */}
+            {(dashboardSummary?.quickStats?.profileCompletion || 0) < 80 && (
+              <div className={styles.criticalActionCard} style={{ borderLeftColor: '#D4AF37' }}>
+                <div className={styles.criticalActionHeader}>
+                  <h3>👤 Perfil Incompleto</h3>
+                  <span className={styles.criticalBadge}>Melhorar</span>
+                </div>
+                <p>Seu perfil está {dashboardSummary?.quickStats?.profileCompletion || 0}% completo</p>
+                <button 
+                  className={styles.criticalActionButton}
+                  onClick={() => router.push('/candidato/perfil')}
+                >
+                  Completar Perfil
+                </button>
               </div>
             )}
           </div>
-        )}
+        </div>
+
+        {/* Seção de recomendações */}
+        <div className={styles.section}>
+          <h2>💼 Vagas Recomendadas para Você</h2>
+          <div className={styles.recommendationsGrid}>
+            {recommendations?.slice(0, 3).map((rec, index) => (
+              <div key={index} className={styles.recommendationCard}>
+                <div className={styles.jobHeader}>
+                  <h3>{rec.job.title}</h3>
+                  <span className={styles.matchBadge}>
+                    {rec.matchPercentage}% Match
+                  </span>
+                </div>
+                <div className={styles.companyInfo}>
+                  <strong>{rec.job.company.name}</strong>
+                  <span>• {rec.job.company.industry}</span>
+                  <span>• {rec.job.company.size}</span>
+                </div>
+                <div className={styles.jobDetails}>
+                  <span>{rec.job.location}</span>
+                  {rec.job.salaryRange && (
+                    <span>R$ {rec.job.salaryRange.min.toLocaleString()} - {rec.job.salaryRange.max.toLocaleString()}</span>
+                  )}
+                </div>
+                <div className={styles.salary}>
+                  Salário: {rec.job.salaryRange ? `R$ ${rec.job.salaryRange.min.toLocaleString()} - ${rec.job.salaryRange.max.toLocaleString()}` : 'A combinar'}
+                </div>
+                <div className={styles.recommendationActions}>
+                  <button className={styles.applyButton}>
+                    Candidatar-se
+                  </button>
+                  <button className={styles.viewButton}>
+                    Ver Detalhes
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Seção de entrevistas */}
+        <div className={styles.section}>
+          <h2>🎯 Gestão de Entrevistas</h2>
+          <div className={styles.interviewsGrid}>
+            {interviews?.slice(0, 3).map((interview) => (
+              <div key={interview._id} className={styles.interviewCard}>
+                <div className={styles.interviewHeader}>
+                  <h3>{interview.title}</h3>
+                  <span className={styles.interviewType}>
+                    {interview.type}
+                  </span>
+                </div>
+                <div className={styles.interviewDetails}>
+                  <p><strong>Data:</strong> {new Date(interview.scheduledDate).toLocaleDateString('pt-BR')}</p>
+                  <p><strong>Duração:</strong> {interview.duration} minutos</p>
+                  <p><strong>Local:</strong> {interview.location || 'Online'}</p>
+                  <p><strong>Status:</strong> <span style={{ color: getStatusColor(interview.status) }}>{interview.status}</span></p>
+                </div>
+                <div className={styles.interviewActions}>
+                  <button 
+                    className={styles.acceptButton}
+                    onClick={() => handleInterviewResponse(interview._id, 'accepted')}
+                    disabled={actionLoading}
+                  >
+                    {actionLoading ? 'Processando...' : 'Aceitar'}
+                  </button>
+                  <button 
+                    className={styles.rejectButton}
+                    onClick={() => handleInterviewResponse(interview._id, 'rejected')}
+                    disabled={actionLoading}
+                  >
+                    {actionLoading ? 'Processando...' : 'Recusar'}
+                  </button>
+                  <button 
+                    className={styles.detailsButton}
+                    onClick={() => {
+                      setSelectedInterview(interview);
+                      setShowInterviewModal(true);
+                    }}
+                  >
+                    Detalhes
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Seção de timeline */}
+        <div className={styles.section}>
+          <h2>📅 Timeline de Candidaturas</h2>
+          <div className={styles.timelineContainer}>
+            {timeline?.slice(0, 3).map((item, index) => (
+              <div key={index} className={styles.timelineItem}>
+                <div className={styles.timelineHeader}>
+                  <h3>{item.application.jobTitle}</h3>
+                  <span className={styles.companyName}>{item.application.companyName}</span>
+                  <span className={styles.status}>{item.application.status}</span>
+                </div>
+                <div className={styles.progressBar}>
+                  <div 
+                    className={styles.progressFill} 
+                    style={{ width: `${item.progress}%` }}
+                  ></div>
+                </div>
+                <div className={styles.timelineSteps}>
+                  {item.timeline.slice(0, 3).map((step, stepIndex) => (
+                    <div key={stepIndex} className={styles.timelineStep}>
+                      <div className={styles.stepIcon}>✓</div>
+                      <div className={styles.stepContent}>
+                        <strong>{step.title}</strong>
+                        <p>{step.description}</p>
+                        <small>{new Date(step.date).toLocaleDateString('pt-BR')}</small>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Seção de métricas */}
+        <div className={styles.section}>
+          <h2>📈 Métricas de Performance</h2>
+          <div className={styles.metricsGrid}>
+            <div className={styles.metricCard}>
+              <h3>Taxa de Sucesso</h3>
+              <div className={styles.metricValue}>{metrics?.applications?.successRate || 0}%</div>
+              <div className={styles.metricLabel}>Candidaturas Aprovadas</div>
+            </div>
+            <div className={styles.metricCard}>
+              <h3>Perfil Visualizado</h3>
+              <div className={styles.metricValue}>{metrics?.profile?.views || 0}</div>
+              <div className={styles.metricLabel}>Visualizações</div>
+            </div>
+            <div className={styles.metricCard}>
+              <h3>Documentos Verificados</h3>
+              <div className={styles.metricValue}>{metrics?.documents?.verified || 0}</div>
+              <div className={styles.metricLabel}>Verificados</div>
+            </div>
+            <div className={styles.metricCard}>
+              <h3>Entrevistas Realizadas</h3>
+              <div className={styles.metricValue}>{metrics?.interviews?.total || 0}</div>
+              <div className={styles.metricLabel}>Total</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Seção de alertas */}
+        <div className={styles.section}>
+          <h2>🚨 Alertas e Notificações</h2>
+          <div className={styles.alertsContainer}>
+            {dashboardSummary?.alerts?.slice(0, 3).map((alert) => (
+              <div key={alert.id} className={styles.alertItem}>
+                <div className={styles.alertIcon}>⚠️</div>
+                <div className={styles.alertContent}>
+                  <strong>{alert.title}</strong>
+                  <p>{alert.message}</p>
+                  <small>{new Date(alert.createdAt).toLocaleDateString('pt-BR')}</small>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Notification Center */}
+        <NotificationCenter userId="current-user" />
       </div>
+
+      {/* Modal de entrevista */}
+      {showInterviewModal && selectedInterview && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h2>Detalhes da Entrevista</h2>
+            <p><strong>Título:</strong> {selectedInterview.title}</p>
+            <p><strong>Data:</strong> {new Date(selectedInterview.scheduledDate).toLocaleDateString('pt-BR')}</p>
+            <p><strong>Duração:</strong> {selectedInterview.duration} minutos</p>
+            <p><strong>Tipo:</strong> {selectedInterview.type}</p>
+            {selectedInterview.location && (
+              <p><strong>Local:</strong> {selectedInterview.location}</p>
+            )}
+            {selectedInterview.description && (
+              <p><strong>Descrição:</strong> {selectedInterview.description}</p>
+            )}
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.cancelButton}
+                onClick={() => setShowInterviewModal(false)}
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-} 
+}
