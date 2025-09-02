@@ -257,6 +257,13 @@ p {
   font-weight: 700;
 }
 
+.btn-xs {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
 .btn-large {
   padding: var(--spacing-lg) var(--spacing-xl);
   font-size: 1.125rem;

@@ -87,10 +87,11 @@ export default function AdminDocumentosPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState<'view' | 'approve' | 'reject'>('view');
+  const [modalType, setModalType] = useState<'view' | 'approve' | 'reject' | 'change_status'>('view');
   const [actionLoading, setActionLoading] = useState(false);
   const [comments, setComments] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
+  const [newStatus, setNewStatus] = useState<string>('');
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -231,12 +232,60 @@ export default function AdminDocumentosPage() {
     }
   };
 
-  const openModal = (document: Document, type: 'view' | 'approve' | 'reject') => {
+  const handleChangeStatus = async () => {
+    if (!selectedDocument || !newStatus) return;
+
+    try {
+      setActionLoading(true);
+      
+      const token = AuthService.getToken();
+      if (!token) {
+        throw new Error('Token não encontrado');
+      }
+
+      const response = await fetch(`/api/admin/documents/${selectedDocument._id}/status`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          status: newStatus,
+          comments,
+          rejectionReason: newStatus === 'rejected' ? rejectionReason : undefined
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setShowModal(false);
+          setNewStatus('');
+          setComments('');
+          setRejectionReason('');
+          loadDocuments();
+          alert(`Status do documento alterado para ${newStatus} com sucesso!`);
+        } else {
+          alert('Erro ao alterar status: ' + data.message);
+        }
+      } else {
+        throw new Error('Erro ao alterar status do documento');
+      }
+    } catch (error) {
+      console.error('Erro ao alterar status do documento:', error);
+      alert('Erro ao alterar status do documento');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const openModal = (document: Document, type: 'view' | 'approve' | 'reject' | 'change_status') => {
     setSelectedDocument(document);
     setModalType(type);
     setShowModal(true);
     setComments('');
     setRejectionReason('');
+    setNewStatus(document.status);
   };
 
   const getStatusBadge = (status: string) => {
@@ -403,6 +452,54 @@ export default function AdminDocumentosPage() {
                 </select>
               </div>
             </div>
+            
+            {/* Ações em lote */}
+            <div className={styles.batchActions}>
+              <button 
+                className="btn btn-warning btn-sm"
+                onClick={async () => {
+                  const pendingDocs = documents.filter(doc => doc.status === 'pending');
+                  if (pendingDocs.length === 0) {
+                    alert('Não há documentos pendentes para colocar em análise');
+                    return;
+                  }
+                  
+                  if (!confirm(`Colocar ${pendingDocs.length} documento(s) pendente(s) em análise?`)) {
+                    return;
+                  }
+                  
+                  try {
+                    const token = AuthService.getToken();
+                    if (!token) throw new Error('Token não encontrado');
+                    
+                    let successCount = 0;
+                    for (const doc of pendingDocs) {
+                      const response = await fetch(`/api/admin/documents/${doc._id}/status`, {
+                        method: 'PUT',
+                        headers: {
+                          'Authorization': `Bearer ${token}`,
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ 
+                          status: 'under_review',
+                          comments: 'Documento colocado em análise em lote pelo administrador'
+                        })
+                      });
+                      
+                      if (response.ok) successCount++;
+                    }
+                    
+                    loadDocuments();
+                    alert(`${successCount} documento(s) colocado(s) em análise com sucesso!`);
+                  } catch (error) {
+                    console.error('Erro:', error);
+                    alert('Erro ao processar documentos em lote');
+                  }
+                }}
+              >
+                🔍 Colocar Pendentes em Análise
+              </button>
+            </div>
           </div>
 
           {/* Documents List */}
@@ -513,6 +610,49 @@ export default function AdminDocumentosPage() {
                       Visualizar
                     </button>
                     
+                    <button 
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => openModal(document, 'change_status')}
+                    >
+                      🔄 Mudar Status
+                    </button>
+                    
+                    {document.status === 'pending' && (
+                      <button 
+                        className="btn btn-warning btn-sm"
+                        onClick={async () => {
+                          try {
+                            const token = AuthService.getToken();
+                            if (!token) throw new Error('Token não encontrado');
+                            
+                            const response = await fetch(`/api/admin/documents/${document._id}/status`, {
+                              method: 'PUT',
+                              headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify({ 
+                                status: 'under_review',
+                                comments: 'Documento colocado em análise pelo administrador'
+                              })
+                            });
+                            
+                            if (response.ok) {
+                              loadDocuments();
+                              alert('Documento colocado em análise!');
+                            } else {
+                              throw new Error('Erro ao alterar status');
+                            }
+                          } catch (error) {
+                            console.error('Erro:', error);
+                            alert('Erro ao colocar documento em análise');
+                          }
+                        }}
+                      >
+                        🔍 Em Análise
+                      </button>
+                    )}
+                    
                     {document.status === 'pending' || document.status === 'under_review' ? (
                       <>
                         <button 
@@ -537,6 +677,43 @@ export default function AdminDocumentosPage() {
                         )}
                         {document.verifiedAt && (
                           <span>em {new Date(document.verifiedAt).toLocaleDateString()}</span>
+                        )}
+                        
+                        {(document.status === 'verified' || document.status === 'rejected') && (
+                          <button 
+                            className="btn btn-outline btn-xs"
+                            onClick={async () => {
+                              try {
+                                const token = AuthService.getToken();
+                                if (!token) throw new Error('Token não encontrado');
+                                
+                                const response = await fetch(`/api/admin/documents/${document._id}/status`, {
+                                  method: 'PUT',
+                                  headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                  },
+                                  body: JSON.stringify({ 
+                                    status: 'under_review',
+                                    comments: 'Status revertido para análise pelo administrador'
+                                  })
+                                });
+                                
+                                if (response.ok) {
+                                  loadDocuments();
+                                  alert('Documento retornado para análise!');
+                                } else {
+                                  throw new Error('Erro ao alterar status');
+                                }
+                              } catch (error) {
+                                console.error('Erro:', error);
+                                alert('Erro ao retornar documento para análise');
+                              }
+                            }}
+                            style={{ marginTop: '8px' }}
+                          >
+                            🔄 Retornar para Análise
+                          </button>
                         )}
                       </div>
                     )}
@@ -582,6 +759,7 @@ export default function AdminDocumentosPage() {
                 {modalType === 'view' && 'Visualizar Documento'}
                 {modalType === 'approve' && 'Aprovar Documento'}
                 {modalType === 'reject' && 'Rejeitar Documento'}
+                {modalType === 'change_status' && 'Mudar Status do Documento'}
               </h2>
               <button 
                 className={styles.closeButton}
@@ -653,6 +831,55 @@ export default function AdminDocumentosPage() {
                   </label>
                 </div>
               )}
+
+              {modalType === 'change_status' && (
+                <div className={styles.changeStatusForm}>
+                  <label>
+                    <strong>Novo Status *:</strong>
+                    <select
+                      value={newStatus}
+                      onChange={(e) => setNewStatus(e.target.value)}
+                      required
+                    >
+                      <option value="">Selecione um status</option>
+                      <option value="pending">⏳ Pendente</option>
+                      <option value="under_review">🔍 Em Análise</option>
+                      <option value="verified">✅ Aprovado</option>
+                      <option value="rejected">❌ Rejeitado</option>
+                    </select>
+                  </label>
+                  
+                  {newStatus === 'rejected' && (
+                    <label>
+                      <strong>Motivo da rejeição *:</strong>
+                      <select
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        required
+                      >
+                        <option value="">Selecione um motivo</option>
+                        <option value="documento_invalido">Documento inválido ou corrompido</option>
+                        <option value="formato_nao_aceito">Formato não aceito</option>
+                        <option value="tamanho_excedido">Porte excedido</option>
+                        <option value="conteudo_inadequado">Conteúdo inadequado</option>
+                        <option value="documento_duplicado">Documento duplicado</option>
+                        <option value="qualidade_baixa">Qualidade muito baixa</option>
+                        <option value="outro">Outro motivo</option>
+                      </select>
+                    </label>
+                  )}
+                  
+                  <label>
+                    <strong>Comentários (opcional):</strong>
+                    <textarea
+                      value={comments}
+                      onChange={(e) => setComments(e.target.value)}
+                      placeholder="Adicione comentários sobre a mudança de status..."
+                      rows={4}
+                    />
+                  </label>
+                </div>
+              )}
             </div>
 
             <div className={styles.modalActions}>
@@ -680,6 +907,16 @@ export default function AdminDocumentosPage() {
                   disabled={actionLoading || !rejectionReason}
                 >
                   {actionLoading ? 'Rejeitando...' : 'Rejeitar Documento'}
+                </button>
+              )}
+
+              {modalType === 'change_status' && (
+                <button 
+                  className="btn btn-primary"
+                  onClick={handleChangeStatus}
+                  disabled={actionLoading || !newStatus || (newStatus === 'rejected' && !rejectionReason)}
+                >
+                  {actionLoading ? 'Alterando...' : 'Alterar Status'}
                 </button>
               )}
             </div>

@@ -122,6 +122,12 @@
   flex-wrap: wrap;
 }
 
+.batchActions {
+  margin-top: var(--spacing-md);
+  display: flex;
+  justify-content: flex-end;
+}
+
 .filters select {
   padding: var(--spacing-md);
   background: var(--secondary-black);
@@ -548,18 +554,21 @@
 
 /* Form Styles */
 .approveForm,
-.rejectForm {
+.rejectForm,
+.changeStatusForm {
   margin-top: var(--spacing-xl);
 }
 
 .approveForm label,
-.rejectForm label {
+.rejectForm label,
+.changeStatusForm label {
   display: block;
   margin-bottom: var(--spacing-lg);
 }
 
 .approveForm label strong,
-.rejectForm label strong {
+.rejectForm label strong,
+.changeStatusForm label strong {
   color: var(--white);
   display: block;
   margin-bottom: var(--spacing-sm);
@@ -567,7 +576,9 @@
 
 .approveForm textarea,
 .rejectForm textarea,
-.rejectForm select {
+.rejectForm select,
+.changeStatusForm textarea,
+.changeStatusForm select {
   width: 100%;
   padding: var(--spacing-md);
   background: var(--primary-black);
@@ -580,14 +591,17 @@
 
 .approveForm textarea:focus,
 .rejectForm textarea:focus,
-.rejectForm select:focus {
+.rejectForm select:focus,
+.changeStatusForm textarea:focus,
+.changeStatusForm select:focus {
   outline: none;
   border-color: var(--primary-gold);
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
 }
 
 .approveForm textarea,
-.rejectForm textarea {
+.rejectForm textarea,
+.changeStatusForm textarea {
   resize: vertical;
   min-height: 100px;
 }
