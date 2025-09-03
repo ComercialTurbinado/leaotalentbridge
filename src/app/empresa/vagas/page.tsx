@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './vagas.module.css';
+import { AuthService } from '@/lib/auth';
 
 interface Job {
   _id: string;
@@ -44,7 +45,7 @@ export default function VagasPage() {
 
   const fetchJobs = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = AuthService.getToken();
       if (!token) {
         router.push('/empresa/login');
         return;

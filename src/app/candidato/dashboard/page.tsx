@@ -102,7 +102,7 @@ export default function Dashboard() {
       
       const summaryRes = await fetch('/api/candidates/dashboard-summary', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('leao_token') || ''}`,
+          'Authorization': `Bearer ${AuthService.getToken() || ''}`,
           'Cache-Control': 'no-cache'
         }
       });

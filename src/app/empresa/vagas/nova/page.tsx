@@ -125,8 +125,8 @@ export default function NovaVagaPage() {
     setSaving(true);
 
     try {
-      // Obter token do localStorage
-      const token = localStorage.getItem('token');
+      // Obter token do AuthService
+      const token = AuthService.getToken();
       if (!token) {
         throw new Error('Token não encontrado. Faça login novamente.');
       }

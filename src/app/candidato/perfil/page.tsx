@@ -111,7 +111,7 @@ export default function CandidatoPerfil() {
       
       const response = await fetch(`/api/candidates/${currentUser._id}/profile`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('leao_token') || ''}`
+          'Authorization': `Bearer ${AuthService.getToken()}`
         }
       });
 
@@ -248,7 +248,7 @@ export default function CandidatoPerfil() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('leao_token') || ''}`
+          'Authorization': `Bearer ${AuthService.getToken()}`
         },
         body: JSON.stringify(updateData)
       });
