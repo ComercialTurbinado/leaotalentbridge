@@ -30,6 +30,50 @@ export interface IUser extends Document {
       uploadedAt: Date;
     }[];
   };
+  
+  // Campos específicos para candidatos
+  birthDate?: string;
+  nationality?: string;
+  address?: {
+    city: string;
+    state: string;
+    country?: string;
+  };
+  professionalInfo?: {
+    summary: string;
+    experience: Array<{
+      company: string;
+      position: string;
+      location: string;
+      startDate: string;
+      endDate: string;
+      description: string;
+    }>;
+  };
+  education?: Array<{
+    institution: string;
+    degree: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    gpa?: string;
+  }>;
+  skills?: string[];
+  languages?: Array<{
+    language: string;
+    level: string;
+  }>;
+  certifications?: Array<{
+    name: string;
+    issuer: string;
+    date: string;
+    url?: string;
+  }>;
+  socialMedia?: {
+    linkedin?: string;
+    github?: string;
+    website?: string;
+  };
   // Controle de acesso específico
   permissions: {
     canAccessJobs: boolean;
@@ -125,6 +169,50 @@ const UserSchema = new Schema<IUser>({
         default: Date.now
       }
     }]
+  },
+  
+  // Campos específicos para candidatos
+  birthDate: String,
+  nationality: String,
+  address: {
+    city: String,
+    state: String,
+    country: String
+  },
+  professionalInfo: {
+    summary: String,
+    experience: [{
+      company: String,
+      position: String,
+      location: String,
+      startDate: String,
+      endDate: String,
+      description: String
+    }]
+  },
+  education: [{
+    institution: String,
+    degree: String,
+    location: String,
+    startDate: String,
+    endDate: String,
+    gpa: String
+  }],
+  skills: [String],
+  languages: [{
+    language: String,
+    level: String
+  }],
+  certifications: [{
+    name: String,
+    issuer: String,
+    date: String,
+    url: String
+  }],
+  socialMedia: {
+    linkedin: String,
+    github: String,
+    website: String
   },
   
   permissions: {

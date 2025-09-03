@@ -109,7 +109,22 @@ export default function CandidatoPerfil() {
       const currentUser = AuthService.getUser();
       if (!currentUser) return;
       
-      const userData = await ApiService.getUser(currentUser._id) as any;
+      const response = await fetch(`/api/candidates/${currentUser._id}/profile`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('leao_token') || ''}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao carregar perfil');
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Erro ao carregar perfil');
+      }
+
+      const userData = result.data;
       
       // Mapear dados do usuário para o formato do perfil
       const mappedData: ProfileData = {
@@ -149,7 +164,7 @@ export default function CandidatoPerfil() {
           id: index + 1,
           name: skill,
           level: 'Intermediário', // Default
-          years: 2 // Default
+          year: 2 // Default
         })) || [],
         languages: userData?.languages?.map((lang: any, index: number) => ({
           id: index + 1,
@@ -229,7 +244,23 @@ export default function CandidatoPerfil() {
         }
       };
 
-      await ApiService.updateUser(currentUser._id, updateData);
+      const response = await fetch(`/api/candidates/${currentUser._id}/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('leao_token') || ''}`
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar perfil');
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Erro ao atualizar perfil');
+      }
       
       setEditMode(false);
       setSuccessMessage('Perfil atualizado com sucesso!');

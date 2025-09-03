@@ -479,17 +479,7 @@ export default function CandidatoDocumentos() {
             </div>
           </div>
 
-          {/* Documentos Info */}
-          <div className={styles.documentsInfo}>
-            <div className={styles.infoCard}>
-              <GrUpload size={20} />
-              <span>Enviados: {documents.filter(d => d.uploadedBy === 'candidate').length}</span>
-            </div>
-            <div className={styles.infoCard}>
-              <GrDownload size={20} />
-              <span>Recebidos: {documents.filter(d => d.uploadedBy === 'admin').length}</span>
-            </div>
-          </div>
+
 
           {/* Navigation Cards */}
           <div className={styles.navigationCards}>

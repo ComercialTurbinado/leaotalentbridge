@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
   const isAuthenticated = !!(token && user);
   
   // Define protected routes for each user type
-  const candidatoRoutes = ['/candidato/dashboard', '/candidato/vagas', '/candidato/perfil', '/candidato/entrevistas', '/candidato/beneficios', '/candidato/cursos', '/candidato/cultural'];
+  const candidatoRoutes = ['/candidato/dashboard', '/candidato/perfil', '/candidato/entrevistas', '/candidato/beneficios', '/candidato/cursos', '/candidato/cultural'];
   const empresaRoutes = ['/empresa/dashboard', '/empresa/candidatos', '/empresa/vagas', '/empresa/perfil', '/empresa/entrevistas', '/empresa/beneficios', '/empresa/treinamento', '/empresa/agendarentrevista'];
   const adminRoutes = ['/admin'];
   

@@ -13,7 +13,10 @@ import {
   GrCheckmark,
   GrStar,
   GrSearch,
-  GrFilter
+  GrFilter,
+  GrSend,
+  GrUpload,
+  GrTrophy
 } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -26,6 +29,22 @@ interface DashboardStats {
   profileCompletion: number;
 }
 
+interface DashboardSummary {
+  alerts: any[];
+  quickStats: {
+    pendingDocuments: number;
+    upcomingInterviews: number;
+    pendingApplications: number;
+    completedSimulations: number;
+    profileCompletion: number;
+  };
+  recentActivity: Array<{
+    type: string;
+    message: string;
+    timestamp: string;
+  }>;
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
@@ -35,6 +54,7 @@ export default function Dashboard() {
     upcomingInterviews: 0,
     profileCompletion: 85
   });
+  const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary | null>(null);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -44,14 +64,31 @@ export default function Dashboard() {
     }
     setUser(currentUser);
 
-    // Simular carregamento de dados
-    setStats({
-      totalApplications: 12,
-      pendingDocuments: 2,
-      upcomingInterviews: 1,
-      profileCompletion: 85
-    });
+        // Carregar dados do dashboard
+    loadDashboardData();
   }, [router]);
+
+  const loadDashboardData = async () => {
+    try {
+      const summaryRes = await fetch('/api/candidates/dashboard-summary');
+      if (summaryRes.ok) {
+        const summaryData = await summaryRes.json();
+        setDashboardSummary(summaryData.summary || null);
+        
+        // Atualizar stats com dados reais
+        if (summaryData.summary?.quickStats) {
+          setStats({
+            totalApplications: summaryData.summary.quickStats.pendingApplications || 0,
+            pendingDocuments: summaryData.summary.quickStats.pendingDocuments || 0,
+            upcomingInterviews: summaryData.summary.quickStats.upcomingInterviews || 0,
+            profileCompletion: summaryData.summary.quickStats.profileCompletion || 0
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do dashboard:', error);
+    }
+  };
 
   if (!user) {
     return null;
@@ -117,10 +154,7 @@ export default function Dashboard() {
           <div className={styles.quickActions}>
             <h2>Ações Rápidas</h2>
             <div className={styles.actionButtons}>
-              <Link href="/candidato/vagas" className={styles.actionButton}>
-                <GrSearch size={20} />
-                Buscar Vagas
-              </Link>
+              
               <Link href="/candidato/documentos" className={styles.actionButton}>
                 <GrCheckmark size={20} />
                 Gerenciar Documentos
@@ -140,35 +174,31 @@ export default function Dashboard() {
           <div className={styles.recentActivity}>
             <h2>Atividade Recente</h2>
             <div className={styles.activityList}>
-              <div className={styles.activityItem}>
-                <div className={styles.activityIcon}>
-                  <GrCheckmark size={16} />
+              {dashboardSummary?.recentActivity && dashboardSummary.recentActivity.length > 0 ? (
+                dashboardSummary.recentActivity.slice(0, 5).map((activity, index) => (
+                  <div key={index} className={styles.activityItem}>
+                    <div className={styles.activityIcon}>
+                      {activity.type === 'profile_update' && <GrUser size={16} />}
+                      {activity.type === 'document_verified' && <GrCheckmark size={16} />}
+                      {activity.type === 'interview_scheduled' && <GrCalendar size={16} />}
+                      {activity.type === 'application_submitted' && <GrSend size={16} />}
+                      {activity.type === 'document_uploaded' && <GrUpload size={16} />}
+                      {activity.type === 'course_completed' && <GrTrophy size={16} />}
+                      {activity.type === 'simulation_completed' && <GrStar size={16} />}
+                      {!['profile_update', 'document_verified', 'interview_scheduled', 'application_submitted', 'document_uploaded', 'course_completed', 'simulation_completed'].includes(activity.type) && <GrNotification size={16} />}
+                    </div>
+                    <div className={styles.activityContent}>
+                      <p>{activity.message}</p>
+                      <span>{activity.timestamp}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className={styles.emptyActivity}>
+                  <p>Nenhuma atividade recente</p>
+                  <span>Suas atividades aparecerão aqui</span>
                 </div>
-                <div className={styles.activityContent}>
-                  <p>Perfil atualizado com sucesso</p>
-                  <span>Há 2 horas</span>
-                </div>
-              </div>
-              
-              <div className={styles.activityItem}>
-                <div className={styles.activityIcon}>
-                  <GrCalendar size={16} />
-                </div>
-                <div className={styles.activityContent}>
-                  <p>Nova vaga recomendada: Desenvolvedor Full Stack</p>
-                  <span>Há 1 dia</span>
-                </div>
-              </div>
-              
-              <div className={styles.activityItem}>
-                <div className={styles.activityIcon}>
-                  <GrStar size={16} />
-                </div>
-                <div className={styles.activityContent}>
-                  <p>Documento CV verificado e aprovado</p>
-                  <span>Há 3 dias</span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
