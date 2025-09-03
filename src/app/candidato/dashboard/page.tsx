@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { 
   GrNotification, 
   GrUser, 
@@ -16,7 +15,8 @@ import {
   GrFilter,
   GrSend,
   GrUpload,
-  GrTrophy
+  GrTrophy,
+  GrRefresh
 } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -27,6 +27,9 @@ interface DashboardStats {
   pendingDocuments: number;
   upcomingInterviews: number;
   profileCompletion: number;
+  completedSimulations: number;
+  totalDocuments: number;
+  verifiedDocuments: number;
 }
 
 interface DashboardSummary {
@@ -37,24 +40,38 @@ interface DashboardSummary {
     pendingApplications: number;
     completedSimulations: number;
     profileCompletion: number;
+    totalApplications: number;
+    totalDocuments: number;
+    verifiedDocuments: number;
   };
   recentActivity: Array<{
     type: string;
     message: string;
     timestamp: string;
+    title: string;
+    description: string;
+    date: Date;
+    status: string;
   }>;
 }
 
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<DashboardStats>({
     totalApplications: 0,
     pendingDocuments: 0,
     upcomingInterviews: 0,
-    profileCompletion: 85
+    profileCompletion: 0,
+    completedSimulations: 0,
+    totalDocuments: 0,
+    verifiedDocuments: 0
   });
   const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary | null>(null);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   useEffect(() => {
     const currentUser = AuthService.getUser();
@@ -64,34 +81,118 @@ export default function Dashboard() {
     }
     setUser(currentUser);
 
-        // Carregar dados do dashboard
+    // Carregar dados do dashboard
     loadDashboardData();
+    
+    // Atualizar dados a cada 5 minutos
+    const interval = setInterval(loadDashboardData, 5 * 60 * 1000);
+    
+    return () => clearInterval(interval);
   }, [router]);
 
-  const loadDashboardData = async () => {
+  const loadDashboardData = async (showRefreshing = false) => {
     try {
-      const summaryRes = await fetch('/api/candidates/dashboard-summary');
-      if (summaryRes.ok) {
-        const summaryData = await summaryRes.json();
-        setDashboardSummary(summaryData.summary || null);
-        
-        // Atualizar stats com dados reais
-        if (summaryData.summary?.quickStats) {
-          setStats({
-            totalApplications: summaryData.summary.quickStats.pendingApplications || 0,
-            pendingDocuments: summaryData.summary.quickStats.pendingDocuments || 0,
-            upcomingInterviews: summaryData.summary.quickStats.upcomingInterviews || 0,
-            profileCompletion: summaryData.summary.quickStats.profileCompletion || 0
-          });
-        }
+      if (showRefreshing) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
       }
+      
+      setError(null);
+      
+      const summaryRes = await fetch('/api/candidates/dashboard-summary', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('leao_token') || ''}`,
+          'Cache-Control': 'no-cache'
+        }
+      });
+      
+      if (!summaryRes.ok) {
+        throw new Error(`Erro ${summaryRes.status}: ${summaryRes.statusText}`);
+      }
+      
+      const summaryData = await summaryRes.json();
+      
+      if (!summaryData.summary) {
+        throw new Error('Dados do dashboard não encontrados');
+      }
+      
+      setDashboardSummary(summaryData.summary);
+      
+      // Atualizar stats com dados reais
+      if (summaryData.summary.quickStats) {
+        const quickStats = summaryData.summary.quickStats;
+        setStats({
+          totalApplications: quickStats.totalApplications || 0,
+          pendingDocuments: quickStats.pendingDocuments || 0,
+          upcomingInterviews: quickStats.upcomingInterviews || 0,
+          profileCompletion: quickStats.profileCompletion || 0,
+          completedSimulations: quickStats.completedSimulations || 0,
+          totalDocuments: quickStats.totalDocuments || 0,
+          verifiedDocuments: quickStats.verifiedDocuments || 0
+        });
+      }
+      
+      setLastUpdate(new Date());
+      
     } catch (error) {
       console.error('Erro ao carregar dados do dashboard:', error);
+      setError(error instanceof Error ? error.message : 'Erro desconhecido ao carregar dados');
+      
+      // Fallback para dados básicos se houver erro
+      if (!dashboardSummary) {
+        setStats({
+          totalApplications: 0,
+          pendingDocuments: 0,
+          upcomingInterviews: 0,
+          profileCompletion: 0,
+          completedSimulations: 0,
+          totalDocuments: 0,
+          verifiedDocuments: 0
+        });
+      }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const handleRefresh = () => {
+    loadDashboardData(true);
+  };
+
+  const formatTimestamp = (timestamp: string | Date) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Agora mesmo';
+    if (diffInHours < 24) return `${diffInHours}h atrás`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}d atrás`;
+    
+    return date.toLocaleDateString('pt-BR');
   };
 
   if (!user) {
     return null;
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.dashboardPage}>
+        <DashboardHeader user={user} userType="candidato" />
+        <main className={styles.mainContent}>
+          <div className={styles.container}>
+            <div className={styles.loadingContainer}>
+              <div className={styles.spinner}></div>
+              <p>Carregando dashboard...</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
@@ -101,11 +202,36 @@ export default function Dashboard() {
       {/* Main Content */}
       <main className={styles.mainContent}>
         <div className={styles.container}>
-          {/* Page Title */}
+          {/* Page Title with Refresh */}
           <div className={styles.pageHeader}>
-            <h1>Dashboard</h1>
-            <p>Acompanhe suas candidaturas, documentos e oportunidades de carreira</p>
+            <div className={styles.headerContent}>
+              <div>
+                <h1>Dashboard</h1>
+                <p>Acompanhe suas candidaturas, documentos e oportunidades de carreira</p>
+                {lastUpdate && (
+                  <small className={styles.lastUpdate}>
+                    Última atualização: {lastUpdate.toLocaleTimeString('pt-BR')}
+                  </small>
+                )}
+              </div>
+              <button 
+                className={styles.refreshButton}
+                onClick={handleRefresh}
+                disabled={refreshing}
+              >
+                <GrRefresh size={20} />
+                {refreshing ? 'Atualizando...' : 'Atualizar'}
+              </button>
+            </div>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className={styles.errorMessage}>
+              <p>⚠️ {error}</p>
+              <button onClick={() => loadDashboardData(true)}>Tentar novamente</button>
+            </div>
+          )}
 
           {/* Stats Cards */}
           <div className={styles.statsSection}>
@@ -116,6 +242,7 @@ export default function Dashboard() {
               <div className={styles.statContent}>
                 <h3>{stats.totalApplications}</h3>
                 <p>Total de Candidaturas</p>
+                <small>Ativas e históricas</small>
               </div>
             </div>
 
@@ -126,6 +253,7 @@ export default function Dashboard() {
               <div className={styles.statContent}>
                 <h3>{stats.upcomingInterviews}</h3>
                 <p>Próximas Entrevistas</p>
+                <small>Agendadas</small>
               </div>
             </div>
 
@@ -136,6 +264,7 @@ export default function Dashboard() {
               <div className={styles.statContent}>
                 <h3>{stats.profileCompletion}%</h3>
                 <p>Perfil Completo</p>
+                <small>Progresso atual</small>
               </div>
             </div>
 
@@ -146,6 +275,18 @@ export default function Dashboard() {
               <div className={styles.statContent}>
                 <h3>{stats.pendingDocuments}</h3>
                 <p>Documentos Pendentes</p>
+                <small>{stats.verifiedDocuments}/{stats.totalDocuments} verificados</small>
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>
+                <GrTrophy size={20} />
+              </div>
+              <div className={styles.statContent}>
+                <h3>{stats.completedSimulations}</h3>
+                <p>Simulações Concluídas</p>
+                <small>Performance avaliada</small>
               </div>
             </div>
           </div>
@@ -154,18 +295,33 @@ export default function Dashboard() {
           <div className={styles.quickActions}>
             <h2>Ações Rápidas</h2>
             <div className={styles.actionButtons}>
-              
               <Link href="/candidato/documentos" className={styles.actionButton}>
                 <GrCheckmark size={20} />
-                Gerenciar Documentos
+                <div>
+                  <span>Gerenciar Documentos</span>
+                  <small>{stats.pendingDocuments} pendentes</small>
+                </div>
               </Link>
               <Link href="/candidato/perfil" className={styles.actionButton}>
                 <GrUser size={20} />
-                Completar Perfil
+                <div>
+                  <span>Completar Perfil</span>
+                  <small>{stats.profileCompletion}% completo</small>
+                </div>
               </Link>
               <Link href="/candidato/simulacoes" className={styles.actionButton}>
                 <GrCalendar size={20} />
-                Fazer Simulações
+                <div>
+                  <span>Fazer Simulações</span>
+                  <small>{stats.completedSimulations} concluídas</small>
+                </div>
+              </Link>
+              <Link href="/candidato/candidaturas" className={styles.actionButton}>
+                <GrSend size={20} />
+                <div>
+                  <span>Ver Candidaturas</span>
+                  <small>{stats.totalApplications} total</small>
+                </div>
               </Link>
             </div>
           </div>
@@ -188,15 +344,18 @@ export default function Dashboard() {
                       {!['profile_update', 'document_verified', 'interview_scheduled', 'application_submitted', 'document_uploaded', 'course_completed', 'simulation_completed'].includes(activity.type) && <GrNotification size={16} />}
                     </div>
                     <div className={styles.activityContent}>
-                      <p>{activity.message}</p>
-                      <span>{activity.timestamp}</span>
+                      <h4>{activity.title || activity.message}</h4>
+                      <p>{activity.description || activity.message}</p>
+                      <span className={styles.activityDate}>
+                        {formatTimestamp(activity.timestamp || activity.date)}
+                      </span>
                     </div>
                   </div>
                 ))
               ) : (
                 <div className={styles.emptyActivity}>
                   <p>Nenhuma atividade recente</p>
-                  <span>Suas atividades aparecerão aqui</span>
+                  <span>Suas atividades aparecerão aqui conforme você usar a plataforma</span>
                 </div>
               )}
             </div>

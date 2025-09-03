@@ -353,107 +353,236 @@ export class DashboardAlertService {
    * Calcula estatísticas rápidas
    */
   private static async calculateQuickStats(userId: string) {
-    const [documents, interviews, applications, user] = await Promise.all([
-      CandidateDocument.find({ candidateId: userId }),
-      Interview.find({ candidateId: userId }),
-      Application.find({ candidateId: userId }),
-      User.findById(userId)
-    ]);
+    try {
+      const [documents, interviews, applications, user] = await Promise.all([
+        CandidateDocument.find({ candidateId: userId }).lean(),
+        Interview.find({ candidateId: userId }).lean(),
+        Application.find({ candidateId: userId }).lean(),
+        User.findById(userId).lean()
+      ]);
 
-    const pendingDocuments = documents.filter(doc => doc.status === 'pending').length;
-    const upcomingInterviews = interviews.filter(interview => 
-      new Date(interview.scheduledAt) > new Date() && interview.status === 'scheduled'
-    ).length;
-    const pendingApplications = applications.filter(app => app.status === 'pending').length;
-    const completedSimulations = 0; // Implementar quando tiver o modelo
-    const profileCompletion = user ? this.calculateProfileCompletion(user) : 0;
+      // Documentos
+      const totalDocuments = documents.length;
+      const pendingDocuments = documents.filter(doc => doc.status === 'pending').length;
+      const verifiedDocuments = documents.filter(doc => doc.status === 'verified').length;
+      const rejectedDocuments = documents.filter(doc => doc.status === 'rejected').length;
 
-    return {
-      pendingDocuments,
-      upcomingInterviews,
-      pendingApplications,
-      completedSimulations,
-      profileCompletion
-    };
+      // Entrevistas
+      const now = new Date();
+      const upcomingInterviews = interviews.filter(interview => 
+        new Date(interview.scheduledAt) > now && 
+        interview.status === 'scheduled'
+      ).length;
+
+      const totalInterviews = interviews.length;
+      const completedInterviews = interviews.filter(interview => 
+        interview.status === 'completed'
+      ).length;
+
+      // Candidaturas
+      const totalApplications = applications.length;
+      const pendingApplications = applications.filter(app => app.status === 'pending').length;
+      const shortlistedApplications = applications.filter(app => app.status === 'shortlisted').length;
+      const rejectedApplications = applications.filter(app => app.status === 'rejected').length;
+      const acceptedApplications = applications.filter(app => app.status === 'accepted').length;
+
+      // Simulações (implementar quando tiver o modelo)
+      const completedSimulations = 0; // await Simulation.countDocuments({ userId, status: 'completed' });
+      const availableSimulations = 5; // Simular simulações disponíveis
+
+      // Perfil
+      const profileCompletion = user ? this.calculateProfileCompletion(user) : 0;
+
+      return {
+        pendingDocuments,
+        upcomingInterviews,
+        pendingApplications,
+        completedSimulations,
+        profileCompletion,
+        totalApplications,
+        totalDocuments,
+        verifiedDocuments,
+        rejectedDocuments,
+        totalInterviews,
+        completedInterviews,
+        shortlistedApplications,
+        rejectedApplications,
+        acceptedApplications,
+        availableSimulations
+      };
+    } catch (error) {
+      console.error('Erro ao calcular estatísticas rápidas:', error);
+      return {
+        pendingDocuments: 0,
+        upcomingInterviews: 0,
+        pendingApplications: 0,
+        completedSimulations: 0,
+        profileCompletion: 0,
+        totalApplications: 0,
+        totalDocuments: 0,
+        verifiedDocuments: 0,
+        rejectedDocuments: 0,
+        totalInterviews: 0,
+        completedInterviews: 0,
+        shortlistedApplications: 0,
+        rejectedApplications: 0,
+        acceptedApplications: 0,
+        availableSimulations: 0
+      };
+    }
   }
 
   /**
    * Busca atividade recente
    */
   private static async getRecentActivity(userId: string) {
-    const [recentDocuments, recentInterviews, recentApplications] = await Promise.all([
-      CandidateDocument.find({ candidateId: userId })
-        .sort({ createdAt: -1 })
-        .limit(3),
-      Interview.find({ candidateId: userId })
-        .sort({ createdAt: -1 })
-        .limit(3),
-      Application.find({ candidateId: userId })
-        .sort({ createdAt: -1 })
-        .limit(3)
-    ]);
+    try {
+      const [recentDocuments, recentInterviews, recentApplications] = await Promise.all([
+        CandidateDocument.find({ candidateId: userId })
+          .sort({ createdAt: -1 })
+          .limit(5)
+          .lean(),
+        Interview.find({ candidateId: userId })
+          .sort({ createdAt: -1 })
+          .limit(5)
+          .lean(),
+        Application.find({ candidateId: userId })
+          .sort({ createdAt: -1 })
+          .limit(5)
+          .lean()
+      ]);
 
-    const activities: Array<{
-      type: string;
-      title: string;
-      description: string;
-      date: Date;
-      status: string;
-    }> = [];
+      const activities: Array<{
+        type: string;
+        title: string;
+        description: string;
+        date: Date;
+        status: string;
+        message: string;
+        timestamp: string;
+      }> = [];
 
-    // Atividades de documentos
-    recentDocuments.forEach(doc => {
-      activities.push({
-        type: 'document',
-        title: `Documento ${doc.type} ${doc.status === 'verified' ? 'aprovado' : doc.status === 'rejected' ? 'rejeitado' : 'enviado'}`,
-        description: `Documento de ${doc.type} foi ${doc.status === 'verified' ? 'aprovado' : doc.status === 'rejected' ? 'rejeitado' : 'enviado para análise'}`,
-        date: doc.createdAt,
-        status: doc.status
+      // Atividades de documentos
+      recentDocuments.forEach(doc => {
+        const statusText = doc.status === 'verified' ? 'aprovado' : 
+                          doc.status === 'rejected' ? 'rejeitado' : 'enviado para análise';
+        
+        activities.push({
+          type: 'document_uploaded',
+          title: `Documento ${doc.type} ${doc.status === 'verified' ? 'aprovado' : doc.status === 'rejected' ? 'rejeitado' : 'enviado'}`,
+          description: `Documento de ${doc.type} foi ${statusText}`,
+          date: doc.createdAt,
+          status: doc.status,
+          message: `Documento ${doc.type} ${statusText}`,
+          timestamp: doc.createdAt.toISOString()
+        });
       });
-    });
 
-    // Atividades de entrevistas
-    recentInterviews.forEach(interview => {
-      activities.push({
-        type: 'interview',
-        title: `Entrevista ${interview.status === 'scheduled' ? 'agendada' : interview.status === 'completed' ? 'realizada' : 'cancelada'}`,
-        description: `Entrevista foi ${interview.status === 'scheduled' ? 'agendada' : interview.status === 'completed' ? 'realizada' : 'cancelada'}`,
-        date: interview.createdAt,
-        status: interview.status
+      // Atividades de entrevistas
+      recentInterviews.forEach(interview => {
+        const statusText = interview.status === 'scheduled' ? 'agendada' : 
+                          interview.status === 'completed' ? 'realizada' : 
+                          interview.status === 'cancelled' ? 'cancelada' : 'pendente';
+        
+        activities.push({
+          type: 'interview_scheduled',
+          title: `Entrevista ${statusText}`,
+          description: `Entrevista foi ${statusText}${interview.scheduledAt ? ` para ${new Date(interview.scheduledAt).toLocaleDateString('pt-BR')}` : ''}`,
+          date: interview.createdAt,
+          status: interview.status,
+          message: `Entrevista ${statusText}`,
+          timestamp: interview.createdAt.toISOString()
+        });
       });
-    });
 
-    // Atividades de candidaturas
-    recentApplications.forEach(app => {
-      activities.push({
-        type: 'application',
-        title: `Candidatura ${app.status === 'pending' ? 'enviada' : app.status === 'shortlisted' ? 'pré-selecionada' : app.status === 'rejected' ? 'rejeitada' : 'aceita'}`,
-        description: `Candidatura foi ${app.status === 'pending' ? 'enviada' : app.status === 'shortlisted' ? 'pré-selecionada' : app.status === 'rejected' ? 'rejeitada' : 'aceita'}`,
-        date: app.createdAt,
-        status: app.status
+      // Atividades de candidaturas
+      recentApplications.forEach(app => {
+        const statusText = app.status === 'pending' ? 'enviada' : 
+                          app.status === 'shortlisted' ? 'pré-selecionada' : 
+                          app.status === 'rejected' ? 'rejeitada' : 
+                          app.status === 'accepted' ? 'aceita' : 'em análise';
+        
+        activities.push({
+          type: 'application_submitted',
+          title: `Candidatura ${statusText}`,
+          description: `Candidatura para vaga foi ${statusText}`,
+          date: app.createdAt,
+          status: app.status,
+          message: `Candidatura ${statusText}`,
+          timestamp: app.createdAt.toISOString()
+        });
       });
-    });
 
-    // Ordenar por data e retornar os mais recentes
-    return activities
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 10);
+      // Ordenar por data e retornar os mais recentes
+      return activities
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 10);
+    } catch (error) {
+      console.error('Erro ao buscar atividade recente:', error);
+      return [];
+    }
   }
 
   /**
-   * Calcula completude do perfil
+   * Calcula completude do perfil de forma mais precisa
    */
   private static calculateProfileCompletion(user: IUser): number {
-    const fields = [
-      'name', 'email', 'phone', 'location', 'bio', 'skills', 
-      'experience', 'education', 'expectedSalary'
-    ];
+    try {
+      const requiredFields = [
+        { field: 'name', weight: 15 },
+        { field: 'email', weight: 10 },
+        { field: 'phone', weight: 10 },
+        { field: 'birthDate', weight: 8 },
+        { field: 'nationality', weight: 5 },
+        { field: 'address.city', weight: 8 },
+        { field: 'address.state', weight: 8 },
+        { field: 'professionalInfo.summary', weight: 12 },
+        { field: 'skills', weight: 10 },
+        { field: 'education', weight: 8 },
+        { field: 'languages', weight: 6 }
+      ];
 
-    const completedFields = fields.filter(field => {
-      const value = user[field as keyof IUser];
-      return value && (typeof value !== 'string' || value.trim().length > 0);
-    });
+      let totalScore = 0;
+      let maxScore = 0;
 
-    return Math.round((completedFields.length / fields.length) * 100);
+      requiredFields.forEach(({ field, weight }) => {
+        maxScore += weight;
+        
+        if (field.includes('.')) {
+          // Campo aninhado (ex: address.city)
+          const [parent, child] = field.split('.');
+          const parentValue = user[parent as keyof IUser];
+          
+          if (parentValue && typeof parentValue === 'object' && parentValue[child as keyof typeof parentValue]) {
+            totalScore += weight;
+          }
+        } else {
+          // Campo direto
+          const value = user[field as keyof IUser];
+          
+          if (value) {
+            if (Array.isArray(value)) {
+              // Array (skills, education, languages)
+              if (value.length > 0) {
+                totalScore += weight;
+              }
+            } else if (typeof value === 'string') {
+              // String
+              if (value.trim().length > 0) {
+                totalScore += weight;
+              }
+            } else {
+              // Outros tipos (number, boolean, etc.)
+              totalScore += weight;
+            }
+          }
+        }
+      });
+
+      return Math.round((totalScore / maxScore) * 100);
+    } catch (error) {
+      console.error('Erro ao calcular completude do perfil:', error);
+      return 0;
+    }
   }
 }
