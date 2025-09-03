@@ -23,25 +23,39 @@ export interface AuthenticatedUser {
 
 export async function verifyAuth(request: NextRequest): Promise<AuthenticatedUser | null> {
   try {
+    console.log('🔍 [DEBUG] verifyAuth - Iniciando verificação...');
+    
     const authHeader = request.headers.get('authorization');
+    console.log('🔍 [DEBUG] Auth header:', authHeader ? 'presente' : 'ausente');
+    
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ [DEBUG] Header de autorização inválido ou ausente');
       return null;
     }
 
     const token = authHeader.substring(7);
+    console.log('🔍 [DEBUG] Token extraído:', token ? `${token.substring(0, 20)}...` : 'vazio');
+    
     const jwtSecret = process.env.JWT_SECRET || 'default-jwt-secret-key-for-production-leao-careers-2024-mongodb-atlas-amplify';
+    console.log('🔍 [DEBUG] JWT Secret configurado:', jwtSecret ? 'sim' : 'não');
+    
     const decoded = jwt.verify(token, jwtSecret) as any;
+    console.log('🔍 [DEBUG] Token decodificado:', decoded ? `userId: ${decoded.userId}` : 'falhou');
     
     await connectMongoDB();
+    console.log('🔍 [DEBUG] MongoDB conectado');
+    
     const user = await User.findById(decoded.userId).select('-password').lean();
+    console.log('🔍 [DEBUG] Usuário encontrado no banco:', user ? 'sim' : 'não');
     
     if (!user) {
+      console.log('❌ [DEBUG] Usuário não encontrado no banco');
       return null;
     }
 
     // Converter documento MongoDB para AuthenticatedUser
     const userData = user as any;
-    return {
+    const authenticatedUser = {
       _id: userData._id.toString(),
       email: userData.email || '',
       name: userData.name || '',
@@ -58,8 +72,17 @@ export async function verifyAuth(request: NextRequest): Promise<AuthenticatedUse
       documentsVerified: userData.documentsVerified || false,
       companyVerified: userData.companyVerified || false,
     } as AuthenticatedUser;
+    
+    console.log('✅ [DEBUG] Usuário autenticado com sucesso:', {
+      id: authenticatedUser._id,
+      name: authenticatedUser.name,
+      type: authenticatedUser.type,
+      status: authenticatedUser.status
+    });
+    
+    return authenticatedUser;
   } catch (error) {
-    console.error('Erro na verificação de auth:', error);
+    console.error('❌ [DEBUG] Erro na verificação de auth:', error);
     return null;
   }
 }
