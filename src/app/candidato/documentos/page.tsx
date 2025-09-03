@@ -390,6 +390,16 @@ export default function CandidatoDocumentos() {
     const matchesStatus = !selectedStatus || doc.status === selectedStatus;
     const matchesCategory = activeTab === 'enviados' ? doc.uploadedBy === 'candidate' : doc.uploadedBy === 'admin';
     
+    // Debug logs
+    if (activeTab === 'recebidos') {
+      console.log('🔍 Filtrando documento:', {
+        title: doc.title,
+        uploadedBy: doc.uploadedBy,
+        matchesCategory,
+        activeTab
+      });
+    }
+    
     return matchesSearch && matchesType && matchesStatus && matchesCategory;
   });
 
@@ -489,6 +499,26 @@ export default function CandidatoDocumentos() {
             <div className={styles.infoCard}>
               <GrDownload size={20} />
               <span>Recebidos: {documents.filter(d => d.uploadedBy === 'admin').length}</span>
+            </div>
+          </div>
+
+          {/* Tabs para alternar entre documentos enviados e recebidos */}
+          <div className={styles.tabsSection}>
+            <div className={styles.tabs}>
+              <button
+                className={`${styles.tab} ${activeTab === 'enviados' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('enviados')}
+              >
+                <GrUpload size={16} />
+                Documentos Enviados ({documents.filter(d => d.uploadedBy === 'candidate').length})
+              </button>
+              <button
+                className={`${styles.tab} ${activeTab === 'recebidos' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('recebidos')}
+              >
+                <GrDownload size={16} />
+                Documentos Recebidos ({documents.filter(d => d.uploadedBy === 'admin').length})
+              </button>
             </div>
           </div>
 
