@@ -363,6 +363,147 @@
   min-height: 600px;
 }
 
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-2xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-400);
+}
+
+.titleSection h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-sm);
+}
+
+.titleSection p {
+  font-size: 1.125rem;
+  color: var(--gray-700);
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+/* Botão EDITAR PERFIL dividido */
+.editProfileBtn {
+  display: flex;
+  align-items: center;
+  border: none;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  font-weight: 600;
+  font-size: 0.875rem;
+  height: 48px;
+}
+
+.splitButton {
+  display: flex;
+  align-items: stretch;
+}
+
+.btnLeft {
+  background: #dc3545;
+  color: white;
+  padding: var(--spacing-md) var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+}
+
+.btnRight {
+  background: #198754;
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.editProfileBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.editProfileBtn:hover .btnLeft {
+  background: #c82333;
+}
+
+.editProfileBtn:hover .btnRight {
+  background: #157347;
+}
+
+/* Tabs Navigation */
+.tabsNav {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-2xl);
+  border-bottom: 1px solid var(--gray-400);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-md);
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: none;
+  border: none;
+  color: var(--gray-700);
+  cursor: pointer;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  transition: all var(--transition-medium);
+  font-size: 0.875rem;
+  font-weight: 500;
+  position: relative;
+  white-space: nowrap;
+  min-height: 48px;
+}
+
+.tabButton::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: var(--primary-gold);
+  transition: width var(--transition-medium);
+}
+
+.tabButton:hover,
+.tabButton.active {
+  color: var(--white);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+.tabButton:hover::after,
+.tabButton.active::after {
+  width: 100%;
+}
+
+.tabButton svg {
+  color: var(--gray-700);
+  transition: color var(--transition-medium);
+}
+
+.tabButton:hover svg,
+.tabButton.active svg {
+  color: var(--primary-gold);
+}
+
 /* Button Styles */
 .btn {
   display: inline-flex;

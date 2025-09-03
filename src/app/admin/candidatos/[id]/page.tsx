@@ -851,25 +851,18 @@ export default function AdminCandidatoPage() {
 
             {activeTab === 'documents' && (
               <div className={styles.documentsTab}>
-                <div className={styles.tabHeader}>
-                  <h2>Gestão de Documentos</h2>
-                  <div className={styles.tabActions}>
-                    <button 
-                      className="btn btn-secondary"
-                      onClick={() => window.open(`/candidato/documentos`, '_blank')}
-                    >
-                      <GrView size={16} />
-                      Ver Página do Candidato
-                    </button>
-                    <button 
-                      className="btn btn-primary"
-                      onClick={() => setShowDocumentModal(true)}
-                    >
-                      <GrUpload size={16} />
-                      Enviar Documento
-                    </button>
-                  </div>
-                </div>
+                            <div className={styles.tabHeader}>
+              <h2>Gestão de Documentos</h2>
+              <div className={styles.tabActions}>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setShowDocumentModal(true)}
+                >
+                  <GrUpload size={16} />
+                  Enviar Documento
+                </button>
+              </div>
+            </div>
 
                 {documentsLoading ? (
                   <div className={styles.loadingContainer}>

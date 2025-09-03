@@ -1,22 +1,21 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { GrUpload, GrDocument, GrDownload, GrView, GrTrash, GrAdd, GrSearch, GrFilter, GrCalendar, GrClock, GrStatusGood, GrStatusWarning, GrStatusCritical, GrUser, GrNotification, GrLogout, GrSend, GrStar, GrMore, GrShare, GrFolderOpen, GrLineChart, GrTrophy, GrEdit, GrImage, GrVideo, GrInbox } from 'react-icons/gr';
+import { GrDownload, GrDocument, GrView, GrSearch, GrFilter, GrCalendar, GrClock, GrStatusGood, GrStatusWarning, GrStatusCritical, GrUser, GrNotification, GrLogout, GrSend, GrStar, GrMore, GrShare, GrFolderOpen, GrLineChart, GrTrophy, GrEdit, GrImage, GrVideo, GrInbox, GrFormPrevious, GrUserAdmin } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import { ApiService } from '@/lib/api';
 import DashboardHeader from '@/components/DashboardHeader';
-import styles from './documentos.module.css';
+import styles from './recebidos.module.css';
 
 interface Document {
   _id: string;
-  id?: string; // Para compatibilidade com código existente
+  id?: string;
   type: 'cv' | 'certificate' | 'contract' | 'form' | 'passport' | 'visa' | 'diploma' | 'other';
   fileType: 'pdf' | 'doc' | 'docx' | 'jpg' | 'jpeg' | 'png' | 'txt';
   title: string;
-  name?: string; // Para compatibilidade com código existente
+  name?: string;
   description?: string;
   fileName: string;
   fileUrl: string;
@@ -40,26 +39,15 @@ interface Document {
     contentValid?: boolean;
     errors: string[];
   };
-  category?: 'sent' | 'received'; // Para compatibilidade com código existente
-  uploadDate?: string; // Para compatibilidade com código existente
-  size?: string; // Para compatibilidade com código existente
-  tags?: string[]; // Para compatibilidade com código existente
-  feedback?: string; // Para compatibilidade com código existente
-  downloadUrl?: string; // Para compatibilidade com código existente
 }
 
-export default function CandidatoDocumentos() {
+export default function CandidatoDocumentosRecebidos() {
   const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [dragActive, setDragActive] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [documents, setDocuments] = useState<Document[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -88,7 +76,7 @@ export default function CandidatoDocumentos() {
         return;
       }
 
-      console.log('🔍 Carregando documentos para usuário:', user._id);
+      console.log('🔍 Carregando documentos recebidos para usuário:', user._id);
 
       const token = AuthService.getToken();
       if (!token) {
@@ -97,8 +85,6 @@ export default function CandidatoDocumentos() {
         return;
       }
 
-      console.log('🔑 Token encontrado:', token.substring(0, 20) + '...');
-
       const response = await fetch(`/api/candidates/${user._id}/documents`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -106,20 +92,14 @@ export default function CandidatoDocumentos() {
         }
       });
       
-      console.log('📡 Response status:', response.status);
-      
       if (response.ok) {
         const result = await response.json();
-        console.log('📄 Resultado da API:', result);
         
         if (result.success) {
-          console.log('✅ Documentos carregados:', result.data.length);
-          console.log('📋 Documentos:', result.data.map((d: any) => ({ 
-            title: d.title, 
-            uploadedBy: d.uploadedBy, 
-            status: d.status 
-          })));
-          setDocuments(result.data);
+          // Filtrar apenas documentos enviados pelo admin
+          const receivedDocuments = result.data.filter((doc: Document) => doc.uploadedBy === 'admin');
+          console.log('✅ Documentos recebidos carregados:', receivedDocuments.length);
+          setDocuments(receivedDocuments);
         } else {
           console.error('❌ Erro na resposta da API:', result.message);
           setError('Erro ao carregar documentos');
@@ -137,118 +117,9 @@ export default function CandidatoDocumentos() {
     }
   };
 
-  const handleLogout = () => {
-    AuthService.logout();
-    router.push('/');
-  };
-
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFiles(e.dataTransfer.files);
-    }
-  };
-
-  const handleFiles = async (files: FileList) => {
-    if (!user?._id) return;
-
-    for (const file of Array.from(files)) {
-      try {
-        // Converter arquivo para base64
-        const base64 = await fileToBase64(file);
-        
-        // Determinar tipo de arquivo
-        const fileType = getFileType(file.name);
-        
-        // Preparar dados do documento
-        const documentData = {
-          title: file.name,
-          type: 'other', // Pode ser melhorado para detectar tipo automaticamente
-          fileType: fileType,
-          fileName: file.name,
-          fileUrl: base64,
-          fileSize: file.size,
-          mimeType: file.type,
-          description: 'Documento enviado para análise'
-        };
-
-        // Fazer upload via API
-        const token = AuthService.getToken();
-        if (!token) {
-          console.error('❌ Token não encontrado para upload');
-          alert('Token de autenticação não encontrado');
-          return;
-        }
-
-        const response = await fetch(`/api/candidates/${user._id}/documents`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(documentData)
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          if (result.success) {
-            // Recarregar documentos
-            await loadDocuments();
-          } else {
-            alert('Erro ao enviar documento: ' + result.message);
-          }
-        } else {
-          alert('Erro ao enviar documento');
-        }
-      } catch (error) {
-        console.error('Erro ao processar arquivo:', error);
-        alert('Erro ao processar arquivo');
-      }
-    }
-    
-    setShowUploadModal(false);
-  };
-
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
-  };
-
-  const getFileType = (fileName: string): string => {
-    const extension = fileName.split('.').pop()?.toLowerCase();
-    switch (extension) {
-      case 'pdf': return 'pdf';
-      case 'doc': return 'doc';
-      case 'docx': return 'docx';
-      case 'jpg':
-      case 'jpeg': return 'jpg';
-      case 'png': return 'png';
-      case 'txt': return 'txt';
-      default: return 'pdf';
-    }
-  };
-
   const handleViewDocument = (doc: Document) => {
     if (doc.fileUrl && !doc.fileUrl.startsWith('http')) {
       try {
-        // Para arquivos base64, abrir em nova aba
         const base64Data = doc.fileUrl.includes(',') ? doc.fileUrl.split(',')[1] : doc.fileUrl;
         const byteCharacters = atob(base64Data);
         const byteNumbers = new Array(byteCharacters.length);
@@ -337,50 +208,6 @@ export default function CandidatoDocumentos() {
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return <GrStatusGood size={16} className={styles.statusApproved} />;
-      case 'rejected':
-        return <GrStatusCritical size={16} className={styles.statusRejected} />;
-      case 'under_review':
-        return <GrClock size={16} className={styles.statusReview} />;
-      case 'pending':
-        return <GrStatusWarning size={16} className={styles.statusPending} />;
-      default:
-        return <GrClock size={16} />;
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'approved': return '#10B981';
-      case 'pending': return '#F59E0B';
-      case 'rejected': return '#EF4444';
-      default: return '#6B7280';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'approved': return 'Aprovado';
-      case 'pending': return 'Em Análise';
-      case 'rejected': return 'Rejeitado';
-      default: return 'Desconhecido';
-    }
-  };
-
-  const getTypeText = (type: string) => {
-    switch (type) {
-      case 'curriculum': return 'Currículo';
-      case 'certificate': return 'Certificado';
-      case 'portfolio': return 'Portfólio';
-      case 'diploma': return 'Diploma';
-      case 'other': return 'Outro';
-      default: return type;
-    }
-  };
-
   const filteredDocuments = documents.filter(doc => {
     const matchesSearch = (doc.title || doc.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doc.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -393,10 +220,11 @@ export default function CandidatoDocumentos() {
   });
 
   const stats = {
-    total: documents.filter(d => d.uploadedBy === 'candidate').length,
-    approved: documents.filter(d => d.uploadedBy === 'candidate' && d.status === 'verified').length,
-    pending: documents.filter(d => d.uploadedBy === 'candidate' && d.status === 'pending').length,
-    received: documents.filter(d => d.uploadedBy === 'admin').length
+    total: documents.length,
+    approved: documents.filter(d => d.status === 'verified').length,
+    pending: documents.filter(d => d.status === 'pending').length,
+    underReview: documents.filter(d => d.status === 'under_review').length,
+    rejected: documents.filter(d => d.status === 'rejected').length
   };
 
   if (loading) {
@@ -418,21 +246,26 @@ export default function CandidatoDocumentos() {
       {/* Main Content */}
       <main className={styles.mainContent}>
         <div className="container">
+          {/* Navigation Breadcrumb */}
+          <div className={styles.breadcrumb}>
+            <Link href="/candidato/documentos" className={styles.breadcrumbLink}>
+              <GrFormPrevious size={16} />
+              Voltar para Documentos
+            </Link>
+          </div>
+
           {/* Page Header */}
           <div className={styles.pageHeader}>
             <div className={styles.titleSection}>
-              <h1>Meus Documentos</h1>
-              <p>Gerencie seus documentos e acompanhe o status de análise</p>
+              <h1>Documentos Recebidos</h1>
+              <p>Visualize os documentos enviados pelo administrador</p>
             </div>
             
             <div className={styles.headerActions}>
-              <button 
-                className="btn btn-primary"
-                onClick={() => setShowUploadModal(true)}
-              >
-                <GrUpload size={20} />
-                Enviar Documento
-              </button>
+              <div className={styles.adminInfo}>
+                <GrUserAdmin size={20} />
+                <span>Documentos do Administrador</span>
+              </div>
             </div>
           </div>
 
@@ -443,8 +276,8 @@ export default function CandidatoDocumentos() {
                 <GrDocument size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{documents.length}</h3>
-                <p>Total de Documentos</p>
+                <h3>{stats.total}</h3>
+                <p>Total Recebidos</p>
               </div>
             </div>
 
@@ -453,8 +286,8 @@ export default function CandidatoDocumentos() {
                 <GrStatusGood size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{documents.filter(d => d.status === 'verified').length}</h3>
-                <p>Verificados</p>
+                <h3>{stats.approved}</h3>
+                <p>Aprovados</p>
               </div>
             </div>
 
@@ -463,7 +296,7 @@ export default function CandidatoDocumentos() {
                 <GrClock size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{documents.filter(d => d.status === 'pending').length}</h3>
+                <h3>{stats.pending + stats.underReview}</h3>
                 <p>Em Análise</p>
               </div>
             </div>
@@ -473,59 +306,10 @@ export default function CandidatoDocumentos() {
                 <GrStatusWarning size={20} />
               </div>
               <div className={styles.statContent}>
-                <h3>{documents.filter(d => d.status === 'rejected').length}</h3>
+                <h3>{stats.rejected}</h3>
                 <p>Rejeitados</p>
               </div>
             </div>
-          </div>
-
-          {/* Documentos Info */}
-          <div className={styles.documentsInfo}>
-            <div className={styles.infoCard}>
-              <GrUpload size={20} />
-              <span>Enviados: {documents.filter(d => d.uploadedBy === 'candidate').length}</span>
-            </div>
-            <div className={styles.infoCard}>
-              <GrDownload size={20} />
-              <span>Recebidos: {documents.filter(d => d.uploadedBy === 'admin').length}</span>
-            </div>
-          </div>
-
-          {/* Navigation Cards */}
-          <div className={styles.navigationCards}>
-            <Link href="/candidato/documentos/enviados" className={styles.navCard}>
-              <div className={styles.navCardIcon}>
-                <GrUpload size={32} />
-              </div>
-              <div className={styles.navCardContent}>
-                <h3>Documentos Enviados</h3>
-                <p>Gerencie os documentos que você enviou para análise</p>
-                <div className={styles.navCardStats}>
-                  <span className={styles.navCardCount}>{documents.filter(d => d.uploadedBy === 'candidate').length}</span>
-                  <span className={styles.navCardLabel}>documentos</span>
-                </div>
-              </div>
-              <div className={styles.navCardArrow}>
-                →
-              </div>
-            </Link>
-
-            <Link href="/candidato/documentos/recebidos" className={styles.navCard}>
-              <div className={styles.navCardIcon}>
-                <GrDownload size={32} />
-              </div>
-              <div className={styles.navCardContent}>
-                <h3>Documentos Recebidos</h3>
-                <p>Visualize os documentos enviados pelo administrador</p>
-                <div className={styles.navCardStats}>
-                  <span className={styles.navCardCount}>{documents.filter(d => d.uploadedBy === 'admin').length}</span>
-                  <span className={styles.navCardLabel}>documentos</span>
-                </div>
-              </div>
-              <div className={styles.navCardArrow}>
-                →
-              </div>
-            </Link>
           </div>
 
           {/* Filters */}
@@ -547,10 +331,11 @@ export default function CandidatoDocumentos() {
                   onChange={(e) => setSelectedType(e.target.value)}
                 >
                   <option value="">Todos os tipos</option>
-                  <option value="curriculum">Currículo</option>
-                  <option value="certificate">Certificado</option>
-                  <option value="portfolio">Portfólio</option>
+                  <option value="cv">Currículo</option>
+                  <option value="passport">Passaporte</option>
                   <option value="diploma">Diploma</option>
+                  <option value="visa">Visto</option>
+                  <option value="certificate">Certificado</option>
                   <option value="other">Outro</option>
                 </select>
                 
@@ -559,9 +344,10 @@ export default function CandidatoDocumentos() {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                 >
                   <option value="">Todos os status</option>
-                  <option value="approved">Aprovado</option>
-                  <option value="pending">Em Análise</option>
-                  <option value="rejected">Reprovado</option>
+                  <option value="pending">Pendente</option>
+                  <option value="under_review">Em Análise</option>
+                  <option value="verified">Aprovado</option>
+                  <option value="rejected">Rejeitado</option>
                 </select>
               </div>
             </div>
@@ -581,10 +367,14 @@ export default function CandidatoDocumentos() {
             {filteredDocuments.length === 0 && !error && (
               <div className={styles.emptyState}>
                 <div className={styles.emptyIcon}>
-                  <GrDocument size={48} />
+                  <GrInbox size={48} />
                 </div>
-                <h3>Nenhum documento encontrado</h3>
-                <p>Use os cards de navegação acima para acessar seus documentos enviados e recebidos.</p>
+                <h3>Nenhum documento recebido</h3>
+                <p>Você ainda não recebeu nenhum documento do administrador.</p>
+                <div className={styles.emptyStateInfo}>
+                  <p>Os documentos enviados pelo administrador aparecerão aqui quando disponíveis.</p>
+                  <p>Entre em contato com o suporte se precisar de documentos específicos.</p>
+                </div>
               </div>
             )}
 
@@ -600,14 +390,16 @@ export default function CandidatoDocumentos() {
                           <span>{document.type}</span>
                         </div>
                         <div className={styles.metaItem}>
-                          <GrClock size={14} />
-                          <span>{document.uploadDate || new Date(document.createdAt).toLocaleDateString()}</span>
+                          <GrCalendar size={14} />
+                          <span>{new Date(document.createdAt).toLocaleDateString()}</span>
                         </div>
-                        {document.size && (
-                          <div className={styles.metaItem}>
-                            <span>{document.size}</span>
-                          </div>
-                        )}
+                        <div className={styles.metaItem}>
+                          <span>{Math.round(document.fileSize / 1024)} KB</span>
+                        </div>
+                        <div className={styles.metaItem}>
+                          <GrUserAdmin size={14} />
+                          <span>Enviado pelo Admin</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -622,7 +414,7 @@ export default function CandidatoDocumentos() {
                     <p>{document.description}</p>
                   )}
 
-                  {/* Informações de validação */}
+                  {/* Validation Results */}
                   {document.validationResults && (
                     <div className={styles.validationInfo}>
                       <h4>Status da Validação:</h4>
@@ -642,21 +434,21 @@ export default function CandidatoDocumentos() {
                             {document.validationResults.sizeValid ? '✅' : '❌'} Porte válido
                           </span>
                         </div>
-                        {document.validationResults.errors && document.validationResults.errors.length > 0 && (
-                          <div className={styles.validationErrors}>
-                            <strong>Erros encontrados:</strong>
-                            <ul>
-                              {document.validationResults.errors.map((error: string, index: number) => (
-                                <li key={index}>{error}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
                       </div>
+                      {document.validationResults.errors && document.validationResults.errors.length > 0 && (
+                        <div className={styles.validationErrors}>
+                          <strong>Erros encontrados:</strong>
+                          <ul>
+                            {document.validationResults.errors.map((error: string, index: number) => (
+                              <li key={index}>{error}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   )}
 
-                  {/* Comentários do admin */}
+                  {/* Admin Comments */}
                   {document.adminComments && (
                     <div className={styles.adminComments}>
                       <h4>Comentários do Administrador:</h4>
@@ -664,28 +456,11 @@ export default function CandidatoDocumentos() {
                     </div>
                   )}
 
-                  {/* Motivo da rejeição */}
+                  {/* Rejection Reason */}
                   {document.rejectionReason && (
                     <div className={styles.rejectionReason}>
                       <h4>Motivo da Rejeição:</h4>
                       <p>{document.rejectionReason}</p>
-                    </div>
-                  )}
-                  
-                  {document.tags && document.tags.length > 0 && (
-                    <div className={styles.documentTags}>
-                      {document.tags.map((tag: string, index: number) => (
-                        <span key={index} className={styles.tag}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {document.adminComments && (
-                    <div className={styles.feedback}>
-                      <h4>Feedback do Admin:</h4>
-                      <p>&ldquo;{document.adminComments}&rdquo;</p>
                     </div>
                   )}
                 </div>
@@ -706,70 +481,12 @@ export default function CandidatoDocumentos() {
                     <GrView size={16} />
                     Visualizar
                   </button>
-                  
-                  {document.uploadedBy === 'candidate' && (
-                    <button className="btn btn-danger btn-small">
-                      <GrTrash size={16} />
-                      Remover
-                    </button>
-                  )}
                 </div>
               </div>
             ))}
           </div>
         </div>
       </main>
-
-      {/* Upload Modal */}
-      {showUploadModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowUploadModal(false)}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2>Enviar Documento</h2>
-              <button 
-                className={styles.closeBtn}
-                onClick={() => setShowUploadModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            
-            <div className={styles.modalContent}>
-              <div 
-                className={`${styles.uploadArea} ${dragActive ? styles.dragActive : ''}`}
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <GrUpload size={48} />
-                <h3>Arraste arquivos aqui ou clique para selecionar</h3>
-                <p>Suportamos PDF, DOC, DOCX, JPG, PNG e ZIP até 25MB</p>
-                
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip"
-                  onChange={(e) => e.target.files && handleFiles(e.target.files)}
-                  style={{ display: 'none' }}
-                />
-              </div>
-              
-              <div className={styles.uploadTips}>
-                <h4>Dicas para upload:</h4>
-                <ul>
-                  <li>• Use nomes descritivos para seus arquivos</li>
-                  <li>• Currículos em PDF têm melhor compatibilidade</li>
-                  <li>• Certificados devem estar em alta resolução</li>
-                  <li>• Portfólios podem ser enviados em ZIP</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
-} 
+}

@@ -52,7 +52,7 @@ export default function CandidatoDocumentos() {
   const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [activeTab, setActiveTab] = useState('enviados');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -388,8 +388,9 @@ export default function CandidatoDocumentos() {
     
     const matchesType = !selectedType || doc.type === selectedType;
     const matchesStatus = !selectedStatus || doc.status === selectedStatus;
+    const matchesCategory = activeTab === 'enviados' ? doc.uploadedBy === 'candidate' : doc.uploadedBy === 'admin';
     
-    return matchesSearch && matchesType && matchesStatus;
+    return matchesSearch && matchesType && matchesStatus && matchesCategory;
   });
 
   const stats = {
@@ -491,43 +492,6 @@ export default function CandidatoDocumentos() {
             </div>
           </div>
 
-          {/* Navigation Cards */}
-          <div className={styles.navigationCards}>
-            <Link href="/candidato/documentos/enviados" className={styles.navCard}>
-              <div className={styles.navCardIcon}>
-                <GrUpload size={32} />
-              </div>
-              <div className={styles.navCardContent}>
-                <h3>Documentos Enviados</h3>
-                <p>Gerencie os documentos que você enviou para análise</p>
-                <div className={styles.navCardStats}>
-                  <span className={styles.navCardCount}>{documents.filter(d => d.uploadedBy === 'candidate').length}</span>
-                  <span className={styles.navCardLabel}>documentos</span>
-                </div>
-              </div>
-              <div className={styles.navCardArrow}>
-                →
-              </div>
-            </Link>
-
-            <Link href="/candidato/documentos/recebidos" className={styles.navCard}>
-              <div className={styles.navCardIcon}>
-                <GrDownload size={32} />
-              </div>
-              <div className={styles.navCardContent}>
-                <h3>Documentos Recebidos</h3>
-                <p>Visualize os documentos enviados pelo administrador</p>
-                <div className={styles.navCardStats}>
-                  <span className={styles.navCardCount}>{documents.filter(d => d.uploadedBy === 'admin').length}</span>
-                  <span className={styles.navCardLabel}>documentos</span>
-                </div>
-              </div>
-              <div className={styles.navCardArrow}>
-                →
-              </div>
-            </Link>
-          </div>
-
           {/* Filters */}
           <div className={styles.filtersSection}>
             <div className={styles.searchBar}>
@@ -584,7 +548,21 @@ export default function CandidatoDocumentos() {
                   <GrDocument size={48} />
                 </div>
                 <h3>Nenhum documento encontrado</h3>
-                <p>Use os cards de navegação acima para acessar seus documentos enviados e recebidos.</p>
+                <p>
+                  {activeTab === 'enviados' 
+                    ? 'Você ainda não enviou nenhum documento. Comece enviando seu currículo ou certificados.'
+                    : 'Você ainda não recebeu nenhum documento do admin.'
+                  }
+                </p>
+                {activeTab === 'enviados' && (
+                  <button 
+                    className="btn btn-primary"
+                    onClick={() => setShowUploadModal(true)}
+                  >
+                    <GrUpload size={16} />
+                    Enviar Primeiro Documento
+                  </button>
+                )}
               </div>
             )}
 

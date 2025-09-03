@@ -480,10 +480,14 @@ export default function CandidatoPerfil() {
               ) : (
                 <button 
                   onClick={() => setEditMode(true)} 
-                  className="btn btn-primary"
+                  className={`${styles.editProfileBtn} ${styles.splitButton}`}
                 >
-                  <GrEdit size={16} />
-                  Editar Perfil
+                  <span className={styles.btnLeft}>
+                    <GrEdit size={16} />
+                  </span>
+                  <span className={styles.btnRight}>
+                    EDITAR PERFIL
+                  </span>
                 </button>
               )}
             </div>
@@ -525,7 +529,7 @@ export default function CandidatoPerfil() {
                 className={`${styles.tabButton} ${activeTab === 'idiomas' ? styles.active : ''}`}
                 onClick={() => setActiveTab('idiomas')}
               >
-                <GrLanguage size={16} />
+                <GrGlobe size={16} />
                 Idiomas
               </button>
               <button 
