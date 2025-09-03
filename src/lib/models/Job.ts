@@ -1,5 +1,4 @@
 import mongoose, { Document, Schema } from 'mongoose';
-
 export interface IJobSalary {
   min: number;
   max: number;
@@ -351,8 +350,7 @@ const JobSchema = new Schema<IJob>({
     ]
   },
   slug: {
-    type: String,
-    index: true
+    type: String
   },
   
   createdBy: {

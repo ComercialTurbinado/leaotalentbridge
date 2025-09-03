@@ -337,6 +337,11 @@ export default function AdminAprovacaoCandidaturasPage() {
                       </button>
                     </>
                   )}
+
+                  <button className={styles.actionBtn}>
+                    <GrDownload size={16} />
+                    Baixar CV
+                  </button>
                 </div>
               </div>
             ))}

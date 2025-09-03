@@ -7,6 +7,60 @@ import Interview from '@/lib/models/Interview';
 import Application from '@/lib/models/Application';
 import User from '@/lib/models/User';
 
+// Interface para usuário lean (sem métodos Mongoose)
+interface IUserLean {
+  _id: string;
+  email: string;
+  name: string;
+  type: 'candidato' | 'empresa' | 'admin';
+  status: 'pending' | 'approved' | 'rejected' | 'suspended';
+  phone?: string;
+  birthDate?: string;
+  nationality?: string;
+  address?: {
+    city: string;
+    state: string;
+    country?: string;
+  };
+  professionalInfo?: {
+    summary: string;
+    experience: Array<{
+      company: string;
+      position: string;
+      location: string;
+      startDate: string;
+      endDate: string;
+      description: string;
+    }>;
+  };
+  education?: Array<{
+    institution: string;
+    degree: string;
+    location: string;
+    startDate: string;
+    endDate: string;
+    gpa?: string;
+  }>;
+  skills?: string[];
+  languages?: Array<{
+    language: string;
+    level: string;
+  }>;
+  certifications?: Array<{
+    name: string;
+    issuer: string;
+    date: string;
+    url?: string;
+  }>;
+  socialMedia?: {
+    linkedin?: string;
+    github?: string;
+    website?: string;
+  };
+  updatedAt?: Date;
+  createdAt?: Date;
+}
+
 export interface DashboardAlert {
   id: string;
   type: 'document' | 'interview' | 'simulation' | 'application' | 'profile' | 'general';
@@ -29,6 +83,16 @@ export interface DashboardSummary {
     pendingApplications: number;
     completedSimulations: number;
     profileCompletion: number;
+    totalApplications: number;
+    totalDocuments: number;
+    verifiedDocuments: number;
+    rejectedDocuments: number;
+    totalInterviews: number;
+    completedInterviews: number;
+    shortlistedApplications: number;
+    rejectedApplications: number;
+    acceptedApplications: number;
+    availableSimulations: number;
   };
   recentActivity: Array<{
     type: string;
@@ -36,6 +100,8 @@ export interface DashboardSummary {
     description: string;
     date: Date;
     status: string;
+    message: string;
+    timestamp: string;
   }>;
 }
 
@@ -65,7 +131,17 @@ export class DashboardAlertService {
           upcomingInterviews: 0,
           pendingApplications: 0,
           completedSimulations: 0,
-          profileCompletion: 0
+          profileCompletion: 0,
+          totalApplications: 0,
+          totalDocuments: 0,
+          verifiedDocuments: 0,
+          rejectedDocuments: 0,
+          totalInterviews: 0,
+          completedInterviews: 0,
+          shortlistedApplications: 0,
+          rejectedApplications: 0,
+          acceptedApplications: 0,
+          availableSimulations: 0
         },
         recentActivity: []
       };
@@ -275,7 +351,13 @@ export class DashboardAlertService {
     const user = await User.findById(userId);
     if (!user) return alerts;
 
-    const profileCompletion = this.calculateProfileCompletion(user);
+    // Perfil - validar se o usuário tem os campos necessários
+    let profileCompletion = 0;
+    if (user && typeof user === 'object' && 'email' in user && 'name' in user) {
+      // Usar type assertion segura após validação
+      const userData = user as unknown as IUserLean;
+      profileCompletion = this.calculateProfileCompletion(userData);
+    }
     
     if (profileCompletion < 70) {
       alerts.push({
@@ -390,8 +472,13 @@ export class DashboardAlertService {
       const completedSimulations = 0; // await Simulation.countDocuments({ userId, status: 'completed' });
       const availableSimulations = 5; // Simular simulações disponíveis
 
-      // Perfil
-      const profileCompletion = user ? this.calculateProfileCompletion(user) : 0;
+      // Perfil - usar tipagem correta
+      let profileCompletion = 0;
+      if (user && typeof user === 'object' && 'email' in user && 'name' in user) {
+        // Usar type assertion segura após validação
+        const userData = user as unknown as IUserLean;
+        profileCompletion = this.calculateProfileCompletion(userData);
+      }
 
       return {
         pendingDocuments,
@@ -526,7 +613,7 @@ export class DashboardAlertService {
   /**
    * Calcula completude do perfil de forma mais precisa
    */
-  private static calculateProfileCompletion(user: IUser): number {
+  private static calculateProfileCompletion(user: IUserLean): number {
     try {
       const requiredFields = [
         { field: 'name', weight: 15 },
@@ -551,14 +638,14 @@ export class DashboardAlertService {
         if (field.includes('.')) {
           // Campo aninhado (ex: address.city)
           const [parent, child] = field.split('.');
-          const parentValue = user[parent as keyof IUser];
+          const parentValue = user[parent as keyof IUserLean];
           
           if (parentValue && typeof parentValue === 'object' && parentValue[child as keyof typeof parentValue]) {
             totalScore += weight;
           }
         } else {
           // Campo direto
-          const value = user[field as keyof IUser];
+          const value = user[field as keyof IUserLean];
           
           if (value) {
             if (Array.isArray(value)) {
