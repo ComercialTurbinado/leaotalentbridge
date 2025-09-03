@@ -855,6 +855,13 @@ export default function AdminCandidatoPage() {
                   <h2>Gestão de Documentos</h2>
                   <div className={styles.tabActions}>
                     <button 
+                      className="btn btn-secondary"
+                      onClick={() => window.open(`/candidato/documentos`, '_blank')}
+                    >
+                      <GrView size={16} />
+                      Ver Página do Candidato
+                    </button>
+                    <button 
                       className="btn btn-primary"
                       onClick={() => setShowDocumentModal(true)}
                     >
