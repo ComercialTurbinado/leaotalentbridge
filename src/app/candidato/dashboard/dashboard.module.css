@@ -1,7 +1,7 @@
-/* Dashboard Page Styles - Seguindo padrão UAE da imagem */
+/* Dashboard Page Styles - Visual Limpo e Profissional */
 .dashboardPage {
   min-height: 100vh;
-  background: #ffffff;
+  background: #f8fafc;
   color: #1f2937;
 }
 
@@ -13,126 +13,189 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
 /* Page Header */
 .pageHeader {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
   text-align: center;
+  padding: 2rem 0;
 }
 
 .pageHeader h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 3rem;
+  font-weight: 800;
   color: #1f2937;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
 }
 
 .pageHeader p {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   color: #6b7280;
   margin: 0;
+  font-weight: 500;
 }
 
 /* Stats Section */
 .statsSection {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
 }
 
 .statCard {
-  background: #f9fafb;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 1rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: all 0.2s;
+  gap: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #fbbf24;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .statCard:hover {
-  background: #f3f4f6;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: #d1d5db;
+}
+
+.statCard:hover::before {
+  opacity: 1;
 }
 
 .statIcon {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   background: #fbbf24;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1f2937;
+  color: #ffffff;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+  transition: all 0.3s ease;
+}
+
+.statCard:hover .statIcon {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
 }
 
 .statContent h3 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 800;
   color: #1f2937;
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.5rem 0;
+  line-height: 1;
 }
 
 .statContent p {
   color: #6b7280;
-  font-weight: 500;
+  font-weight: 600;
   margin: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 /* Quick Actions */
 .quickActions {
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 }
 
 .quickActions h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.875rem;
+  font-weight: 700;
   color: #1f2937;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .actionButtons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
 .actionButton {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.5rem;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
   background: #ffffff;
   border: 2px solid #e5e7eb;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   color: #1f2937;
   text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 1.125rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.actionButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(251, 191, 36, 0.1);
+  transition: left 0.5s ease;
 }
 
 .actionButton:hover {
   border-color: #fbbf24;
   background: #fef3c7;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(251, 191, 36, 0.2);
+  color: #92400e;
+}
+
+.actionButton:hover::before {
+  left: 100%;
+}
+
+.actionButton svg {
+  transition: transform 0.3s ease;
+}
+
+.actionButton:hover svg {
+  transform: scale(1.2);
 }
 
 /* Recent Activity */
 .recentActivity {
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 }
 
 .recentActivity h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.875rem;
+  font-weight: 700;
   color: #1f2937;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .activityList {
@@ -144,53 +207,107 @@
 .activityItem {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 1.25rem;
+  padding: 1.5rem;
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
-  transition: all 0.2s;
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .activityItem:hover {
   border-color: #fbbf24;
-  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(251, 191, 36, 0.1);
+  transform: translateX(4px);
 }
 
 .activityIcon {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   background: #fbbf24;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #1f2937;
+  color: #ffffff;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+  transition: all 0.3s ease;
+}
+
+.activityItem:hover .activityIcon {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(251, 191, 36, 0.4);
 }
 
 .activityContent p {
   color: #1f2937;
-  font-weight: 500;
-  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
 }
 
 .activityContent span {
   color: #6b7280;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .pageHeader h1 {
+    font-size: 2.25rem;
+  }
+  
+  .pageHeader p {
+    font-size: 1.125rem;
+  }
+  
   .statsSection {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
   .actionButtons {
     grid-template-columns: 1fr;
   }
   
+  .statCard {
+    padding: 1.5rem;
+  }
+  
+  .actionButton {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContent {
+    padding: 1rem 0;
+  }
+  
+  .pageHeader {
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+  }
+  
   .pageHeader h1 {
     font-size: 2rem;
+  }
+  
+  .statCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .statIcon {
+    width: 60px;
+    height: 60px;
   }
 }
