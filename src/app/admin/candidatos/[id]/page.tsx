@@ -117,6 +117,16 @@ export default function AdminCandidatoPage() {
   const [companies, setCompanies] = useState<any[]>([]);
   const [jobs, setJobs] = useState<any[]>([]);
 
+  // Estados para mensagens
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageForm, setMessageForm] = useState({
+    subject: '',
+    message: '',
+    priority: 'medium' as 'low' | 'medium' | 'high',
+    type: 'general' as 'general' | 'interview' | 'document' | 'status'
+  });
+  const [sendingMessage, setSendingMessage] = useState(false);
+
   useEffect(() => {
     const currentUser = AuthService.getUser();
     if (!currentUser || currentUser.type !== 'admin') {
@@ -522,6 +532,71 @@ export default function AdminCandidatoPage() {
     }
   };
 
+  const handleSendMessage = (candidato: Candidato) => {
+    setMessageForm({
+      subject: `Mensagem para ${candidato.name}`,
+      message: '',
+      priority: 'medium',
+      type: 'general'
+    });
+    setShowMessageModal(true);
+  };
+
+  const handleMessageSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!messageForm.subject || !messageForm.message) {
+      alert('Por favor, preencha todos os campos obrigatórios');
+      return;
+    }
+
+    try {
+      setSendingMessage(true);
+      
+      const messageData = {
+        targetUserId: candidatoId,
+        type: messageForm.type,
+        title: messageForm.subject,
+        message: messageForm.message,
+        priority: messageForm.priority,
+        data: {
+          fromAdmin: true,
+          adminName: user?.name,
+          candidateName: candidato?.name
+        }
+      };
+
+      const response = await fetch('/api/notifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${AuthService.getToken()}`
+        },
+        body: JSON.stringify(messageData)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert('Mensagem enviada com sucesso!');
+        setShowMessageModal(false);
+        setMessageForm({
+          subject: '',
+          message: '',
+          priority: 'medium',
+          type: 'general'
+        });
+      } else {
+        const errorData = await response.json();
+        alert(`Erro ao enviar mensagem: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error('Erro ao enviar mensagem:', error);
+      alert('Erro ao processar solicitação');
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
   const getInterviewStatusBadge = (status: string) => {
     const statusConfig = {
       scheduled: { label: 'Agendada', className: styles.statusPending, icon: <GrClock size={12} /> },
@@ -699,11 +774,10 @@ export default function AdminCandidatoPage() {
             </div>
 
             <div className={styles.candidatoActions}>
-              <button className="btn btn-secondary">
-                <GrEdit size={16} />
-                Editar
-              </button>
-              <button className="btn btn-primary">
+              <button 
+                className="btn btn-primary"
+                onClick={() => handleSendMessage(candidato)}
+              >
                 <GrMail size={16} />
                 Enviar Mensagem
               </button>
@@ -1427,6 +1501,101 @@ export default function AdminCandidatoPage() {
                   <GrCalendar size={16} />
                   Agendar Entrevista
                 </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para Enviar Mensagem */}
+      {showMessageModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h3>Enviar Mensagem para {candidato?.name}</h3>
+              <button 
+                className={styles.modalClose}
+                onClick={() => setShowMessageModal(false)}
+              >
+                <GrClose size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleMessageSubmit} className={styles.modalForm}>
+              <div className={styles.formGroup}>
+                <label>Assunto *</label>
+                <input
+                  type="text"
+                  value={messageForm.subject}
+                  onChange={(e) => setMessageForm({...messageForm, subject: e.target.value})}
+                  placeholder="Assunto da mensagem"
+                  required
+                />
+              </div>
+
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Tipo de Mensagem</label>
+                  <select
+                    value={messageForm.type}
+                    onChange={(e) => setMessageForm({...messageForm, type: e.target.value as any})}
+                  >
+                    <option value="general">Geral</option>
+                    <option value="interview">Entrevista</option>
+                    <option value="document">Documento</option>
+                    <option value="status">Status</option>
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label>Prioridade</label>
+                  <select
+                    value={messageForm.priority}
+                    onChange={(e) => setMessageForm({...messageForm, priority: e.target.value as any})}
+                  >
+                    <option value="low">Baixa</option>
+                    <option value="medium">Média</option>
+                    <option value="high">Alta</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Mensagem *</label>
+                <textarea
+                  value={messageForm.message}
+                  onChange={(e) => setMessageForm({...messageForm, message: e.target.value})}
+                  placeholder="Digite sua mensagem aqui..."
+                  rows={6}
+                  required
+                />
+              </div>
+
+              <div className={styles.modalActions}>
+                                  <button 
+                    type="button" 
+                    className="btn btn-secondary"
+                    onClick={() => setShowMessageModal(false)}
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                    disabled={sendingMessage}
+                  >
+                    {sendingMessage ? (
+                      <>
+                        <div className={styles.loadingSpinner}></div>
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <GrMail size={16} />
+                        Enviar Mensagem
+                      </>
+                    )}
+                  </button>
               </div>
             </form>
           </div>
