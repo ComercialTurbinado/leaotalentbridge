@@ -104,7 +104,32 @@ export default function GoogleTranslateWidget({
         
         // Função de inicialização
         (window as any).googleTranslateElementInit = () => {
-          setTimeout(initializeGoogleTranslate, 100);
+          try {
+            if (googleTranslateRef.current) {
+              new (window as any).google.translate.TranslateElement(
+                {
+                  pageLanguage: 'pt',
+                  includedLanguages: 'pt,en,ar',
+                  layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
+                  autoDisplay: false,
+                  multilanguagePage: true
+                },
+                'google_translate_element'
+              );
+              setIsLoaded(true);
+              
+              // Esconder o elemento do Google Translate
+              setTimeout(() => {
+                const googleElement = document.getElementById('google_translate_element');
+                if (googleElement) {
+                  googleElement.style.display = 'none';
+                }
+              }, 100);
+            }
+          } catch (error) {
+            console.error('Erro ao inicializar Google Translate:', error);
+            setIsLoaded(true); // Permitir uso mesmo com erro
+          }
         };
 
         // Adicionar listener para erro de carregamento
@@ -155,8 +180,10 @@ export default function GoogleTranslateWidget({
         if (selectElement) {
           selectElement.value = languageCode;
           selectElement.dispatchEvent(new Event('change'));
+          console.log('Google Translate: Idioma alterado para', languageCode);
         } else {
-          // Fallback: usar window.location para recarregar com parâmetro
+          console.warn('Elemento do Google Translate não encontrado, tentando recarregar...');
+          // Fallback: recarregar página com parâmetro de idioma
           const url = new URL(window.location.href);
           url.searchParams.set('hl', languageCode);
           window.location.href = url.toString();
@@ -168,7 +195,7 @@ export default function GoogleTranslateWidget({
       }
       
       setIsTranslating(false);
-    }, 500);
+    }, 1000);
   };
 
   const toggleDropdown = () => {
