@@ -4,10 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GrMenu, GrClose } from 'react-icons/gr';
-<<<<<<< HEAD
 import GoogleTranslateWidget from './GoogleTranslateWidget';
-=======
->>>>>>> 195207e2534ddf1cbb00a7f202a808cd5b696952
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -55,10 +52,7 @@ export default function Header({ transparent = false }: HeaderProps) {
 
           {/* CTA Buttons */}
           <div className={styles.ctaButtons}>
-<<<<<<< HEAD
             <GoogleTranslateWidget variant="header" />
-=======
->>>>>>> 195207e2534ddf1cbb00a7f202a808cd5b696952
             <Link href="/candidato/login" className="btn btn-secondary btn-small">
               Login
             </Link>
@@ -111,10 +105,7 @@ export default function Header({ transparent = false }: HeaderProps) {
               </Link>
               
               <div className={styles.mobileCta}>
-<<<<<<< HEAD
                 <GoogleTranslateWidget variant="header" />
-=======
->>>>>>> 195207e2534ddf1cbb00a7f202a808cd5b696952
                 <Link href="/candidato/login" className="btn btn-secondary">
                   Login
                 </Link>
