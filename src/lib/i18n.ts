@@ -295,7 +295,30 @@ const resources = {
       'dashboard.scheduled': 'Agendadas',
       'dashboard.currentProgress': 'Progresso atual',
       'dashboard.verifiedOf': 'verificados',
-      'dashboard.completed': 'Concluídas'
+      'dashboard.completed': 'Concluídas',
+      
+      // Header Navigation
+      'header.howItWorks': 'Como Funciona',
+      'header.benefits': 'Benefícios',
+      'header.about': 'Sobre',
+      'header.contact': 'Contato',
+      'header.login': 'Login',
+      'header.register': 'CADASTRAR',
+      'header.menu': 'Menu',
+      'header.close': 'Fechar',
+      
+      // Dashboard Navigation
+      'nav.interviews': 'Entrevistas',
+      'nav.simulations': 'Simulações',
+      'nav.documents': 'Documentos',
+      'nav.culture': 'Cultura',
+      'nav.jobs': 'Vagas',
+      'nav.candidates': 'Candidatos',
+      'nav.users': 'Usuários',
+      'nav.companies': 'Empresas',
+      'nav.reports': 'Relatórios',
+      'nav.notifications': 'Notificações',
+      'nav.logout': 'Sair'
     }
   },
   'en': {
@@ -590,7 +613,30 @@ const resources = {
       'dashboard.scheduled': 'Scheduled',
       'dashboard.currentProgress': 'Current progress',
       'dashboard.verifiedOf': 'verified',
-      'dashboard.completed': 'Completed'
+      'dashboard.completed': 'Completed',
+      
+      // Header Navigation
+      'header.howItWorks': 'How it Works',
+      'header.benefits': 'Benefits',
+      'header.about': 'About',
+      'header.contact': 'Contact',
+      'header.login': 'Login',
+      'header.register': 'REGISTER',
+      'header.menu': 'Menu',
+      'header.close': 'Close',
+      
+      // Dashboard Navigation
+      'nav.interviews': 'Interviews',
+      'nav.simulations': 'Simulations',
+      'nav.documents': 'Documents',
+      'nav.culture': 'Culture',
+      'nav.jobs': 'Jobs',
+      'nav.candidates': 'Candidates',
+      'nav.users': 'Users',
+      'nav.companies': 'Companies',
+      'nav.reports': 'Reports',
+      'nav.notifications': 'Notifications',
+      'nav.logout': 'Logout'
     }
   },
   'ar': {
@@ -789,6 +835,29 @@ const resources = {
       'nav.simulations': 'المحاكاة',
       'nav.settings': 'الإعدادات',
       'nav.profile': 'الملف الشخصي',
+      'nav.logout': 'تسجيل الخروج',
+      
+      // Header Navigation
+      'header.howItWorks': 'كيف يعمل',
+      'header.benefits': 'الفوائد',
+      'header.about': 'حول',
+      'header.contact': 'اتصل',
+      'header.login': 'تسجيل الدخول',
+      'header.register': 'تسجيل',
+      'header.menu': 'القائمة',
+      'header.close': 'إغلاق',
+      
+      // Dashboard Navigation
+      'nav.interviews': 'المقابلات',
+      'nav.simulations': 'المحاكاة',
+      'nav.documents': 'المستندات',
+      'nav.culture': 'الثقافة',
+      'nav.jobs': 'الوظائف',
+      'nav.candidates': 'المرشحون',
+      'nav.users': 'المستخدمون',
+      'nav.companies': 'الشركات',
+      'nav.reports': 'التقارير',
+      'nav.notifications': 'الإشعارات',
       'nav.logout': 'تسجيل الخروج'
     }
   }

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -16,6 +17,7 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ user, userType }: DashboardHeaderProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -29,29 +31,29 @@ export default function DashboardHeader({ user, userType }: DashboardHeaderProps
     switch (userType) {
       case 'candidato':
         return [
-          { href: '/candidato/dashboard', label: 'Dashboard' },
-          { href: '/candidato/entrevistas', label: 'Entrevistas' },
-          { href: '/candidato/simulacoes', label: 'Simulações' },
-          { href: '/candidato/documentos', label: 'Documentos' },
-          { href: '/candidato/cultura', label: 'Cultura' },
-          { href: '/candidato/perfil', label: 'Perfil' }
+          { href: '/candidato/dashboard', label: t('nav.dashboard') },
+          { href: '/candidato/entrevistas', label: t('nav.interviews') },
+          { href: '/candidato/simulacoes', label: t('nav.simulations') },
+          { href: '/candidato/documentos', label: t('nav.documents') },
+          { href: '/candidato/cultura', label: t('nav.culture') },
+          { href: '/candidato/perfil', label: t('nav.profile') }
         ];
       case 'empresa':
         return [
-          { href: '/empresa/dashboard', label: 'Dashboard' },
-          { href: '/empresa/vagas', label: 'Vagas' },
-          { href: '/empresa/candidatos', label: 'Candidatos' },
-          { href: '/empresa/entrevistas', label: 'Entrevistas' },
-          { href: '/empresa/perfil', label: 'Perfil' }
+          { href: '/empresa/dashboard', label: t('nav.dashboard') },
+          { href: '/empresa/vagas', label: t('nav.jobs') },
+          { href: '/empresa/candidatos', label: t('nav.candidates') },
+          { href: '/empresa/entrevistas', label: t('nav.interviews') },
+          { href: '/empresa/perfil', label: t('nav.profile') }
         ];
       case 'admin':
         return [
-          { href: '/admin/dashboard', label: 'Dashboard' },
-          { href: '/admin/usuarios', label: 'Usuários' },
-          { href: '/admin/candidatos', label: 'Candidatos' },
-          { href: '/admin/empresas', label: 'Empresas' },
-          { href: '/admin/vagas', label: 'Vagas' },
-          { href: '/admin/relatorios', label: 'Relatórios' }
+          { href: '/admin/dashboard', label: t('nav.dashboard') },
+          { href: '/admin/usuarios', label: t('nav.users') },
+          { href: '/admin/candidatos', label: t('nav.candidates') },
+          { href: '/admin/empresas', label: t('nav.companies') },
+          { href: '/admin/vagas', label: t('nav.jobs') },
+          { href: '/admin/relatorios', label: t('nav.reports') }
         ];
       default:
         return [];
@@ -121,12 +123,12 @@ export default function DashboardHeader({ user, userType }: DashboardHeaderProps
               {userType !== 'admin' && (
                 <Link href={`/${userType}/perfil`} className={styles.userAction}>
                   <GrUser size={16} />
-                  Perfil
+                  {t('nav.profile')}
                 </Link>
               )}
               <button onClick={handleLogout} className={styles.userAction}>
                 <GrLogout size={16} />
-                Sair
+                {t('nav.logout')}
               </button>
             </div>
           </div>
