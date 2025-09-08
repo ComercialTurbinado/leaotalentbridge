@@ -41,8 +41,6 @@ export default function GoogleTranslateWidget({
   const [currentLang, setCurrentLang] = useState('pt');
   const [isTranslating, setIsTranslating] = useState(false);
   const googleTranslateRef = useRef<HTMLDivElement>(null);
-  const retryCount = useRef(0);
-  const maxRetries = 3;
 
   const currentLanguage = languages.find(lang => lang.code === currentLang) || languages[0];
 
@@ -62,8 +60,9 @@ export default function GoogleTranslateWidget({
   }, []);
 
   useEffect(() => {
+    // Função para inicializar o Google Translate
     const initializeGoogleTranslate = () => {
-      // Verificar se o Google Translate já foi carregado
+      // Verificar se já foi carregado
       if ((window as any).google && (window as any).google.translate) {
         try {
           if (googleTranslateRef.current) {
@@ -89,64 +88,57 @@ export default function GoogleTranslateWidget({
           }
         } catch (error) {
           console.error('Erro ao inicializar Google Translate:', error);
-          setIsLoaded(true); // Permitir uso mesmo com erro
+          setIsLoaded(true);
         }
         return;
       }
 
-      // Se não estiver carregado, tentar carregar
-      if (retryCount.current < maxRetries) {
-        retryCount.current++;
-        
-        const script = document.createElement('script');
-        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        script.async = true;
-        
-        // Função de inicialização
-        (window as any).googleTranslateElementInit = () => {
-          try {
-            if (googleTranslateRef.current) {
-              new (window as any).google.translate.TranslateElement(
-                {
-                  pageLanguage: 'pt',
-                  includedLanguages: 'pt,en,ar',
-                  layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
-                  autoDisplay: false,
-                  multilanguagePage: true
-                },
-                'google_translate_element'
-              );
-              setIsLoaded(true);
-              
-              // Esconder o elemento do Google Translate
-              setTimeout(() => {
-                const googleElement = document.getElementById('google_translate_element');
-                if (googleElement) {
-                  googleElement.style.display = 'none';
-                }
-              }, 100);
-            }
-          } catch (error) {
-            console.error('Erro ao inicializar Google Translate:', error);
-            setIsLoaded(true); // Permitir uso mesmo com erro
+      // Carregar o script do Google Translate
+      const script = document.createElement('script');
+      script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      
+      // Função de inicialização
+      (window as any).googleTranslateElementInit = () => {
+        try {
+          if (googleTranslateRef.current) {
+            new (window as any).google.translate.TranslateElement(
+              {
+                pageLanguage: 'pt',
+                includedLanguages: 'pt,en,ar',
+                layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false,
+                multilanguagePage: true
+              },
+              'google_translate_element'
+            );
+            setIsLoaded(true);
+            
+            // Esconder o elemento do Google Translate
+            setTimeout(() => {
+              const googleElement = document.getElementById('google_translate_element');
+              if (googleElement) {
+                googleElement.style.display = 'none';
+              }
+            }, 100);
           }
-        };
+        } catch (error) {
+          console.error('Erro ao inicializar Google Translate:', error);
+          setIsLoaded(true);
+        }
+      };
 
-        // Adicionar listener para erro de carregamento
-        script.onerror = () => {
-          console.warn(`Tentativa ${retryCount.current} de carregar Google Translate falhou`);
-          setTimeout(initializeGoogleTranslate, 1000);
-        };
+      // Adicionar listener para erro de carregamento
+      script.onerror = () => {
+        console.warn('Erro ao carregar Google Translate');
+        setIsLoaded(true);
+      };
 
-        document.head.appendChild(script);
-      } else {
-        console.warn('Google Translate não pôde ser carregado após várias tentativas');
-        setIsLoaded(true); // Permitir uso mesmo sem Google Translate
-      }
+      document.head.appendChild(script);
     };
 
     // Aguardar um pouco antes de inicializar
-    const timer = setTimeout(initializeGoogleTranslate, 500);
+    const timer = setTimeout(initializeGoogleTranslate, 1000);
     
     return () => {
       clearTimeout(timer);
@@ -202,93 +194,48 @@ export default function GoogleTranslateWidget({
     setIsOpen(!isOpen);
   };
 
-  // Fechar dropdown ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest(`.${styles.languageSelector}`)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
   return (
-    <div className={`${styles.languageSelector} ${styles[variant]} ${className}`}>
+    <div className={`${styles.translateWidget} ${styles[variant]} ${className}`}>
       {/* Elemento oculto do Google Translate */}
-      <div 
-        ref={googleTranslateRef}
-        id="google_translate_element" 
-        style={{ display: 'none' }}
-      />
+      <div id="google_translate_element" ref={googleTranslateRef} style={{ display: 'none' }}></div>
       
-      <button 
-        className={`${styles.selectorButton} ${isTranslating ? styles.translating : ''}`}
-        onClick={toggleDropdown}
-        disabled={isTranslating}
-        aria-label="Selecionar idioma"
-        aria-expanded={isOpen}
-      >
-        <GrGlobe size={16} />
-        <span className={styles.currentLanguage}>
-          <span className={styles.flag}>{currentLanguage.flag}</span>
-          <span className={styles.languageName}>{currentLanguage.name}</span>
-          {showCountry && (
-            <span className={styles.countryName}>{currentLanguage.country}</span>
-          )}
-        </span>
-        <span className={`${styles.arrow} ${isOpen ? styles.arrowUp : ''}`}>
-          ▼
-        </span>
-        {isTranslating && (
-          <div className={styles.translatingSpinner}></div>
-        )}
-        {!isLoaded && (
-          <div className={styles.loadingSpinner}></div>
-        )}
-      </button>
+      {/* Widget customizado */}
+      <div className={styles.widgetContainer}>
+        <button 
+          className={styles.translateButton}
+          onClick={toggleDropdown}
+          disabled={isTranslating}
+          aria-label="Selecionar idioma"
+        >
+          <GrGlobe size={16} />
+          <span className={styles.languageText}>
+            {currentLanguage.flag} {currentLanguage.name}
+          </span>
+          {isTranslating && <div className={styles.loadingSpinner}></div>}
+        </button>
 
-      {isOpen && (
-        <div className={styles.dropdown}>
-          <div className={styles.dropdownHeader}>
-            <GrGlobe size={16} />
-            <span>Selecionar Idioma</span>
-          </div>
-          
-          {languages.map((language) => (
-            <button
-              key={language.code}
-              className={`${styles.languageOption} ${
-                currentLang === language.code ? styles.active : ''
-              }`}
-              onClick={() => handleLanguageChange(language.code)}
-              disabled={isTranslating}
-            >
-              <span className={styles.languageFlag}>{language.flag}</span>
-              <div className={styles.languageInfo}>
+        {isOpen && (
+          <div className={styles.dropdown}>
+            {languages.map((language) => (
+              <button
+                key={language.code}
+                className={`${styles.languageOption} ${currentLang === language.code ? styles.active : ''}`}
+                onClick={() => handleLanguageChange(language.code)}
+                disabled={isTranslating}
+              >
+                <span className={styles.flag}>{language.flag}</span>
                 <span className={styles.languageName}>{language.name}</span>
                 {showCountry && (
-                  <span className={styles.countryName}>{language.country}</span>
+                  <span className={styles.country}>{language.country}</span>
                 )}
-              </div>
-              {currentLang === language.code && (
-                <GrCheckmark size={14} className={styles.checkmark} />
-              )}
-            </button>
-          ))}
-          
-          <div className={styles.dropdownFooter}>
-            <small>🌐 Powered by Google Translate</small>
+                {currentLang === language.code && (
+                  <GrCheckmark size={14} className={styles.checkIcon} />
+                )}
+              </button>
+            ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

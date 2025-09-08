@@ -1,26 +1,30 @@
 /* Custom Google Translate Component Styles */
 
-.languageSelector {
+.translateWidget {
   position: relative;
   display: inline-block;
   z-index: 1000;
 }
 
 /* Variants */
-.languageSelector.header {
+.translateWidget.header {
   /* Header specific styles */
 }
 
-.languageSelector.footer {
+.translateWidget.footer {
   /* Footer specific styles */
 }
 
-.languageSelector.sidebar {
+.translateWidget.sidebar {
   /* Sidebar specific styles */
 }
 
-/* Selector Button */
-.selectorButton {
+.widgetContainer {
+  position: relative;
+}
+
+/* Translate Button */
+.translateButton {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -38,32 +42,29 @@
   overflow: hidden;
 }
 
-.selectorButton:hover {
+.translateButton:hover {
   background: #c19b2e;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
 }
 
-.selectorButton:active {
+.translateButton:active {
   transform: translateY(0);
 }
 
-.selectorButton:disabled {
+.translateButton:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
 }
 
-.selectorButton.translating {
-  background: #c19b2e;
-}
-
-/* Current Language Display */
-.currentLanguage {
+/* Language Text */
+.languageText {
   display: flex;
   align-items: center;
   gap: 6px;
   flex: 1;
+  white-space: nowrap;
 }
 
 .flag {
@@ -77,27 +78,14 @@
   white-space: nowrap;
 }
 
-.countryName {
+.country {
   font-size: 12px;
   opacity: 0.8;
   font-weight: 400;
 }
 
-/* Arrow */
-.arrow {
-  font-size: 10px;
-  transition: transform 0.2s ease;
-  margin-left: auto;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.arrowUp {
-  transform: rotate(180deg);
-}
-
-/* Loading and Translating Spinners */
-.loadingSpinner,
-.translatingSpinner {
+/* Loading Spinner */
+.loadingSpinner {
   width: 12px;
   height: 12px;
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -105,10 +93,6 @@
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-left: 8px;
-}
-
-.translatingSpinner {
-  border-top-color: #4ade80;
 }
 
 @keyframes spin {
@@ -142,19 +126,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* Dropdown Header */
-.dropdownHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
 }
 
 /* Language Options */
@@ -192,12 +163,11 @@
   background: none;
 }
 
-/* Language Info */
-.languageInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
+/* Language Info in Options */
+.languageOption .flag {
+  font-size: 20px;
+  min-width: 24px;
+  text-align: center;
 }
 
 .languageOption .languageName {
@@ -205,36 +175,16 @@
   color: inherit;
 }
 
-.languageOption .countryName {
+.languageOption .country {
   font-size: 12px;
   opacity: 0.7;
   color: inherit;
 }
 
-/* Language Flag in Options */
-.languageFlag {
-  font-size: 20px;
-  min-width: 24px;
-  text-align: center;
-}
-
 /* Checkmark */
-.checkmark {
+.checkIcon {
   color: var(--primary-gold, #d4af37);
   margin-left: auto;
-}
-
-/* Dropdown Footer */
-.dropdownFooter {
-  padding: 8px 16px;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
-  text-align: center;
-}
-
-.dropdownFooter small {
-  color: #6b7280;
-  font-size: 11px;
 }
 
 /* RTL Support */
@@ -242,29 +192,24 @@
   text-align: right;
 }
 
-[dir="rtl"] .checkmark {
+[dir="rtl"] .checkIcon {
   margin-left: 0;
   margin-right: auto;
 }
 
-[dir="rtl"] .arrow {
-  margin-left: 0;
-  margin-right: auto;
-}
-
-[dir="rtl"] .currentLanguage {
+[dir="rtl"] .languageText {
   flex-direction: row-reverse;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .selectorButton {
+  .translateButton {
     min-width: 120px;
     padding: 6px 10px;
     font-size: 13px;
   }
   
-  .selectorButton .languageName {
+  .translateButton .languageName {
     display: none;
   }
   
@@ -277,19 +222,15 @@
   .languageOption {
     padding: 10px 12px;
   }
-  
-  .languageInfo {
-    gap: 1px;
-  }
 }
 
 @media (max-width: 480px) {
-  .selectorButton {
+  .translateButton {
     min-width: 100px;
     padding: 6px 8px;
   }
   
-  .selectorButton .flag {
+  .translateButton .flag {
     font-size: 16px;
   }
   
@@ -305,12 +246,6 @@
     border-color: #374151;
   }
   
-  .dropdownHeader {
-    background: #111827;
-    border-color: #374151;
-    color: #f9fafb;
-  }
-  
   .languageOption {
     color: #f9fafb;
   }
@@ -322,15 +257,6 @@
   .languageOption.active {
     background-color: #4b5563;
     color: var(--primary-gold, #d4af37);
-  }
-  
-  .dropdownFooter {
-    background: #111827;
-    border-color: #374151;
-  }
-  
-  .dropdownFooter small {
-    color: #9ca3af;
   }
 }
 
