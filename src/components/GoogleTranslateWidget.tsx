@@ -60,10 +60,16 @@ export default function GoogleTranslateWidget({
   }, []);
 
   useEffect(() => {
+    console.log('=== INÍCIO useEffect Google Translate ===');
+    console.log('Hostname:', window.location.hostname);
+    console.log('URL:', window.location.href);
+    
     // Verificar se estamos em localhost
     const isLocalhost = window.location.hostname === 'localhost' || 
                        window.location.hostname === '127.0.0.1' ||
                        window.location.hostname.includes('192.168.');
+    
+    console.log('É localhost?', isLocalhost);
     
     if (isLocalhost) {
       console.log('Ambiente localhost detectado - Google Translate desabilitado para desenvolvimento');
@@ -174,7 +180,14 @@ export default function GoogleTranslateWidget({
   }, []);
 
   const handleLanguageChange = (languageCode: string) => {
+    console.log('=== INÍCIO handleLanguageChange ===');
+    console.log('Idioma solicitado:', languageCode);
+    console.log('Idioma atual:', currentLang);
+    console.log('Hostname:', window.location.hostname);
+    console.log('URL atual:', window.location.href);
+    
     if (languageCode === currentLang) {
+      console.log('Mesmo idioma, fechando dropdown');
       setIsOpen(false);
       return;
     }
@@ -188,9 +201,11 @@ export default function GoogleTranslateWidget({
     if (languageCode === 'ar') {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang = 'ar';
+      console.log('Aplicado RTL para árabe');
     } else {
       document.documentElement.dir = 'ltr';
       document.documentElement.lang = languageCode;
+      console.log('Aplicado LTR para', languageCode);
     }
     
     // Verificar se estamos em localhost
@@ -198,19 +213,25 @@ export default function GoogleTranslateWidget({
                        window.location.hostname === '127.0.0.1' ||
                        window.location.hostname.includes('192.168.');
     
+    console.log('É localhost?', isLocalhost);
+    
     if (isLocalhost) {
       console.log('Ambiente localhost detectado - usando fallback de recarregamento');
       // Em localhost, usar fallback de recarregamento
       const url = new URL(window.location.href);
       url.searchParams.set('hl', languageCode);
+      console.log('Nova URL:', url.toString());
+      console.log('Recarregando página...');
       window.location.href = url.toString();
       return;
     }
     
     // Tentar usar o Google Translate (apenas em produção)
+    console.log('Tentando usar Google Translate...');
     setTimeout(() => {
       try {
         const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+        console.log('Elemento Google Translate encontrado:', !!selectElement);
         if (selectElement) {
           selectElement.value = languageCode;
           selectElement.dispatchEvent(new Event('change'));
@@ -230,6 +251,8 @@ export default function GoogleTranslateWidget({
       
       setIsTranslating(false);
     }, 1000);
+    
+    console.log('=== FIM handleLanguageChange ===');
   };
 
   const toggleDropdown = () => {
