@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import Header from '@/components/Header';
 import AnimatedCard from '@/components/AnimatedCard';
 import AnimatedHeading from '@/components/AnimatedHeading';
@@ -9,6 +10,7 @@ import styles from './page.module.css';
 import Image from 'next/image';
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const [userType, setUserType] = useState<'candidato' | 'empresa' | ''>('');
   const [isLoading, setIsLoading] = useState(false);
   const gridPatternRef = useRef<HTMLDivElement>(null);
@@ -100,21 +102,19 @@ export default function HomePage() {
           <div className={styles.heroContent}>
             <div className={styles.heroText}>
               <AnimatedHeading 
-                title="Seu talento reconhecido no mundo." 
+                title={t('home.hero.title')} 
                 level={1}
                 className="leftAligned"
               />
               <p className={`${styles.heroDescription} slide-up`}>
-                Conectamos profissionais brasileiros às melhores oportunidades nos Emirados Árabes Unidos.
-                Somos a ponte entre profissionais qualificados e empresas que valorizam a excelência. 
-                Com base em Dubai, conectamos talentos brasileiros ao futuro que eles merecem.
+                {t('home.hero.description')}
               </p>
               
            
 
               <div className={styles.heroCta}>
                 <a href="#como-funciona" className="btn btn-secondary ">
-                  Saiba mais
+                  {t('home.hero.cta')}
                   <GrNext size={20} />
                 </a>
               </div>
@@ -124,7 +124,7 @@ export default function HomePage() {
             <div className={`${styles.accessForm} slide-up`}>
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title">Comece Sua Jornada</h3>
+                  <h3 className="card-title">{t('home.hero.startJourney')}</h3>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -136,7 +136,7 @@ export default function HomePage() {
                       onClick={() => setUserType('candidato')}
                     >
                       <GrGroup size={36} />
-                      <span>Sou Candidato</span>
+                      <span>{t('home.hero.candidate')}</span>
                       <GrStatusCritical className={styles.checkIcon} size={24} />
                     </button>
                     <button

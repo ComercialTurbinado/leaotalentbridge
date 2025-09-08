@@ -1,4 +1,4 @@
-import i18n from 'i18next';
+`import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
@@ -191,7 +191,107 @@ const resources = {
       'nav.simulations': 'Simulações',
       'nav.settings': 'Configurações',
       'nav.profile': 'Perfil',
-      'nav.logout': 'Sair'
+      'nav.logout': 'Sair',
+      
+      // Homepage
+      'home.hero.title': 'Seu talento reconhecido no mundo.',
+      'home.hero.description': 'Conectamos profissionais brasileiros às melhores oportunidades nos Emirados Árabes Unidos. Somos a ponte entre profissionais qualificados e empresas que valorizam a excelência. Com base em Dubai, conectamos talentos brasileiros ao futuro que eles merecem.',
+      'home.hero.cta': 'Saiba mais',
+      'home.hero.startJourney': 'Comece Sua Jornada',
+      'home.hero.candidate': 'Sou Candidato',
+      'home.hero.company': 'Sou Empresa',
+      'home.hero.stats': '500+ Profissionais Conectados',
+      'home.hero.fullName': 'Nome Completo',
+      'home.hero.email': 'E-mail',
+      'home.hero.phone': 'Telefone',
+      'home.hero.linkedin': 'LinkedIn',
+      'home.hero.website': 'Website',
+      'home.hero.companyLinkedin': 'LinkedIn da Empresa',
+      'home.hero.experience': 'Nível de Experiência',
+      'home.hero.companyName': 'Nome da Empresa',
+      'home.hero.experienceLevels.junior': 'Júnior (1-3 anos)',
+      'home.hero.experienceLevels.pleno': 'Pleno (3-7 anos)',
+      'home.hero.experienceLevels.senior': 'Sênior (7+ anos)',
+      'home.hero.experienceLevels.managerial': 'Gerencial/Executivo',
+      'home.hero.startRegistration': 'Iniciar Cadastro',
+      'home.hero.alreadyHaveAccount': 'Já tem uma conta?',
+      'home.hero.login': 'Fazer Login',
+      'home.hero.select': 'Selecione',
+      'home.hero.placeholders.fullName': 'Digite seu nome completo',
+      'home.hero.placeholders.email': 'seu@email.com',
+      'home.hero.placeholders.phone': '+55 (11) 99999-9999',
+      'home.hero.placeholders.linkedin': 'https://www.linkedin.com/in/seu-perfil',
+      'home.hero.placeholders.website': 'https://www.seuwebsite.com',
+      'home.hero.placeholders.companyLinkedin': 'https://www.linkedin.com/company/empresa',
+      'home.hero.placeholders.companyName': 'Nome da sua empresa',
+      
+      // How it works
+      'home.howItWorks.title': 'Comece Sua Jornada',
+      'home.howItWorks.subtitle': 'Um Processo Simples E Eficiente Para Conectar Talentos A Oportunidades Únicas',
+      'home.howItWorks.step1.title': 'Crie Seu Perfil',
+      'home.howItWorks.step1.description': 'Complete seu perfil com experiências, competências e objetivos.',
+      'home.howItWorks.step2.title': 'Conexão Inteligente',
+      'home.howItWorks.step2.description': 'Nossa plataforma cruza seus dados com vagas exclusivas que realmente combinam com seu talento.',
+      'home.howItWorks.step3.title': 'Seleção com Propósito',
+      'home.howItWorks.step3.description': 'Participe de processos seletivos com empresas que valorizam o profissional brasileiro.',
+      'home.howItWorks.step4.title': 'Transição Estruturada',
+      'home.howItWorks.step4.description': 'Receba orientação jurídica e profissional, com suporte cultural.',
+      
+      // Benefits
+      'home.benefits.title': 'Por que Escolher a UAE Careers?',
+      'home.benefits.subtitle': 'Oferecemos Muito Mais Que Simples Conexões - Somos Seu Parceiro De Sucesso',
+      'home.benefits.exclusive.title': 'Oportunidades Exclusivas',
+      'home.benefits.exclusive.description': 'Vagas que você não encontra no LinkedIn — Acesso direto a oportunidades confidenciais com empresas selecionadas nos Emirados.',
+      'home.benefits.secure.title': 'Processo Seguro',
+      'home.benefits.secure.description': 'Empresas verificadas e confiáveis — Você participa apenas de processos com empregadores sérios inclusive recomendado pela MOHRE.',
+      'home.benefits.support.title': 'Suporte Completo',
+      'home.benefits.support.description': 'Apoio antes, durante e depois da mudança — Não é só sobre conseguir a vaga. Nós garantimos que sua chegada seja tranquila.',
+      
+      // About
+      'home.about.title': 'Sobre a UAE Careers',
+      'home.about.subtitle': 'Conectando Talentos Ao Futuro',
+      'home.about.description1': 'A partir de uma escuta ativa das demandas do mercado dos Emirados Árabes Unidos — e com o respaldo de líderes empresariais e apoio institucional — nasceu a UAE Careers, com um propósito claro: criar oportunidades reais para brasileiros no cenário internacional, com foco em todos os Emirados.',
+      'home.about.description2': 'Aliamos o conhecimento das necessidades das empresas locais aos objetivos e competências dos profissionais que desejam atuar fora do Brasil.',
+      'home.about.highlight': 'Como uma vertente da Leão Group Global, a UAE Careers se destaca pela sólida experiência na mobilidade e recolocação de talentos, sendo amplamente reconhecida nos Emirados Árabes por sua atuação estratégica e comprometida.',
+      
+      // Contact
+      'home.contact.title': 'Entre em Contato',
+      'home.contact.subtitle': 'Pronto Para Dar O Próximo Passo? Nossa Equipe Está Aqui Para Ajudar',
+      'home.contact.email.title': 'E-mail',
+      'home.contact.email.address': 'contato@leaocareers.com',
+      'home.contact.email.cta': 'Fale Com Um Consultor',
+      'home.contact.phone.title': 'Telefone',
+      'home.contact.phone.number': '+971 50 371 6967',
+      'home.contact.phone.cta': 'Tirar Dúvidas Agora',
+      'home.contact.location.title': 'Unidades',
+      'home.contact.location.address': 'Rio de Janeiro, Brasil<br />Dubai, EAU',
+      'home.contact.location.cta': 'Ver Localização',
+      
+      // Footer
+      'home.footer.copyright': '© 2024 UAE Careers. Todos os direitos reservados.',
+      
+      // Dashboard
+      'dashboard.title': 'Dashboard',
+      'dashboard.description': 'Acompanhe suas candidaturas, documentos e oportunidades de carreira',
+      'dashboard.lastUpdate': 'Última atualização',
+      'dashboard.refresh': 'Atualizar',
+      'dashboard.refreshing': 'Atualizando...',
+      'dashboard.tryAgain': 'Tentar novamente',
+      'dashboard.totalApplications': 'Total de Candidaturas',
+      'dashboard.upcoming': 'Próximas',
+      'dashboard.profile': 'Perfil',
+      'dashboard.documents': 'Documentos',
+      'dashboard.completion': 'Completude',
+      'dashboard.verified': 'Verificados',
+      'dashboard.upcomingInterviews': 'Próximas Entrevistas',
+      'dashboard.profileComplete': 'Perfil Completo',
+      'dashboard.pendingDocuments': 'Documentos Pendentes',
+      'dashboard.completedSimulations': 'Simulações Concluídas',
+      'dashboard.activeAndHistorical': 'Ativas e históricas',
+      'dashboard.scheduled': 'Agendadas',
+      'dashboard.currentProgress': 'Progresso atual',
+      'dashboard.verifiedOf': 'verificados',
+      'dashboard.completed': 'Concluídas'
     }
   },
   'en': {
@@ -382,7 +482,107 @@ const resources = {
       'nav.simulations': 'Simulations',
       'nav.settings': 'Settings',
       'nav.profile': 'Profile',
-      'nav.logout': 'Logout'
+      'nav.logout': 'Logout',
+      
+      // Homepage
+      'home.hero.title': 'Your talent recognized worldwide.',
+      'home.hero.description': 'We connect Brazilian professionals to the best opportunities in the United Arab Emirates. We are the bridge between qualified professionals and companies that value excellence. Based in Dubai, we connect Brazilian talents to the future they deserve.',
+      'home.hero.cta': 'Learn more',
+      'home.hero.startJourney': 'Start Your Journey',
+      'home.hero.candidate': 'I am a Candidate',
+      'home.hero.company': 'I am a Company',
+      'home.hero.stats': '500+ Professionals Connected',
+      'home.hero.fullName': 'Full Name',
+      'home.hero.email': 'Email',
+      'home.hero.phone': 'Phone',
+      'home.hero.linkedin': 'LinkedIn',
+      'home.hero.website': 'Website',
+      'home.hero.companyLinkedin': 'Company LinkedIn',
+      'home.hero.experience': 'Experience Level',
+      'home.hero.companyName': 'Company Name',
+      'home.hero.experienceLevels.junior': 'Junior (1-3 years)',
+      'home.hero.experienceLevels.pleno': 'Mid-level (3-7 years)',
+      'home.hero.experienceLevels.senior': 'Senior (7+ years)',
+      'home.hero.experienceLevels.managerial': 'Managerial/Executive',
+      'home.hero.startRegistration': 'Start Registration',
+      'home.hero.alreadyHaveAccount': 'Already have an account?',
+      'home.hero.login': 'Login',
+      'home.hero.select': 'Select',
+      'home.hero.placeholders.fullName': 'Enter your full name',
+      'home.hero.placeholders.email': 'your@email.com',
+      'home.hero.placeholders.phone': '+55 (11) 99999-9999',
+      'home.hero.placeholders.linkedin': 'https://www.linkedin.com/in/your-profile',
+      'home.hero.placeholders.website': 'https://www.yourwebsite.com',
+      'home.hero.placeholders.companyLinkedin': 'https://www.linkedin.com/company/company',
+      'home.hero.placeholders.companyName': 'Your company name',
+      
+      // How it works
+      'home.howItWorks.title': 'Start Your Journey',
+      'home.howItWorks.subtitle': 'A Simple And Efficient Process To Connect Talents To Unique Opportunities',
+      'home.howItWorks.step1.title': 'Create Your Profile',
+      'home.howItWorks.step1.description': 'Complete your profile with experiences, skills and objectives.',
+      'home.howItWorks.step2.title': 'Smart Connection',
+      'home.howItWorks.step2.description': 'Our platform matches your data with exclusive positions that really match your talent.',
+      'home.howItWorks.step3.title': 'Purposeful Selection',
+      'home.howItWorks.step3.description': 'Participate in selection processes with companies that value Brazilian professionals.',
+      'home.howItWorks.step4.title': 'Structured Transition',
+      'home.howItWorks.step4.description': 'Receive legal and professional guidance, with cultural support.',
+      
+      // Benefits
+      'home.benefits.title': 'Why Choose UAE Careers?',
+      'home.benefits.subtitle': 'We Offer Much More Than Simple Connections - We Are Your Success Partner',
+      'home.benefits.exclusive.title': 'Exclusive Opportunities',
+      'home.benefits.exclusive.description': 'Positions you won\'t find on LinkedIn — Direct access to confidential opportunities with selected companies in the Emirates.',
+      'home.benefits.secure.title': 'Secure Process',
+      'home.benefits.secure.description': 'Verified and reliable companies — You only participate in processes with serious employers including those recommended by MOHRE.',
+      'home.benefits.support.title': 'Complete Support',
+      'home.benefits.support.description': 'Support before, during and after the move — It\'s not just about getting the job. We ensure your arrival is smooth.',
+      
+      // About
+      'home.about.title': 'About UAE Careers',
+      'home.about.subtitle': 'Connecting Talents To The Future',
+      'home.about.description1': 'From an active listening to the demands of the United Arab Emirates market — and with the support of business leaders and institutional support — UAE Careers was born, with a clear purpose: to create real opportunities for Brazilians in the international scenario, focusing on all Emirates.',
+      'home.about.description2': 'We combine knowledge of local companies\' needs with the objectives and skills of professionals who want to work outside Brazil.',
+      'home.about.highlight': 'As a branch of Leão Group Global, UAE Careers stands out for its solid experience in talent mobility and relocation, being widely recognized in the United Arab Emirates for its strategic and committed performance.',
+      
+      // Contact
+      'home.contact.title': 'Get in Touch',
+      'home.contact.subtitle': 'Ready to Take the Next Step? Our Team is Here to Help',
+      'home.contact.email.title': 'Email',
+      'home.contact.email.address': 'contato@leaocareers.com',
+      'home.contact.email.cta': 'Talk to a Consultant',
+      'home.contact.phone.title': 'Phone',
+      'home.contact.phone.number': '+971 50 371 6967',
+      'home.contact.phone.cta': 'Ask Questions Now',
+      'home.contact.location.title': 'Offices',
+      'home.contact.location.address': 'Rio de Janeiro, Brazil<br />Dubai, UAE',
+      'home.contact.location.cta': 'View Location',
+      
+      // Footer
+      'home.footer.copyright': '© 2024 UAE Careers. All rights reserved.',
+      
+      // Dashboard
+      'dashboard.title': 'Dashboard',
+      'dashboard.description': 'Track your applications, documents and career opportunities',
+      'dashboard.lastUpdate': 'Last update',
+      'dashboard.refresh': 'Refresh',
+      'dashboard.refreshing': 'Refreshing...',
+      'dashboard.tryAgain': 'Try again',
+      'dashboard.totalApplications': 'Total Applications',
+      'dashboard.upcoming': 'Upcoming',
+      'dashboard.profile': 'Profile',
+      'dashboard.documents': 'Documents',
+      'dashboard.completion': 'Completion',
+      'dashboard.verified': 'Verified',
+      'dashboard.upcomingInterviews': 'Upcoming Interviews',
+      'dashboard.profileComplete': 'Profile Complete',
+      'dashboard.pendingDocuments': 'Pending Documents',
+      'dashboard.completedSimulations': 'Completed Simulations',
+      'dashboard.activeAndHistorical': 'Active and historical',
+      'dashboard.scheduled': 'Scheduled',
+      'dashboard.currentProgress': 'Current progress',
+      'dashboard.verifiedOf': 'verified',
+      'dashboard.completed': 'Completed'
     }
   },
   'ar': {
