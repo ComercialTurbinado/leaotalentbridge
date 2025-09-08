@@ -309,16 +309,10 @@ const resources = {
       
       // Dashboard Navigation
       'nav.interviews': 'Entrevistas',
-      'nav.simulations': 'Simulações',
       'nav.documents': 'Documentos',
       'nav.culture': 'Cultura',
-      'nav.jobs': 'Vagas',
-      'nav.candidates': 'Candidatos',
-      'nav.users': 'Usuários',
-      'nav.companies': 'Empresas',
       'nav.reports': 'Relatórios',
       'nav.notifications': 'Notificações',
-      'nav.logout': 'Sair',
       
       // Candidate Registration
       'candidate.register.title': 'Cadastro de Candidato',
@@ -340,7 +334,6 @@ const resources = {
       'candidate.register.birthDate': 'Data de Nascimento',
       'candidate.register.nationality': 'Nacionalidade',
       'candidate.register.maritalStatus': 'Estado Civil',
-      'candidate.register.address': 'Endereço',
       'candidate.register.city': 'Cidade',
       'candidate.register.state': 'Estado',
       'candidate.register.zipCode': 'CEP',
@@ -350,7 +343,6 @@ const resources = {
       'candidate.register.workArea': 'Área de Atuação',
       'candidate.register.desiredSalary': 'Salário Desejado',
       'candidate.register.availability': 'Disponibilidade',
-      'candidate.register.education': 'Escolaridade',
       'candidate.register.course': 'Curso',
       'candidate.register.institution': 'Instituição',
       'candidate.register.graduationYear': 'Ano de Conclusão',
@@ -681,16 +673,10 @@ const resources = {
       
       // Dashboard Navigation
       'nav.interviews': 'Interviews',
-      'nav.simulations': 'Simulations',
       'nav.documents': 'Documents',
       'nav.culture': 'Culture',
-      'nav.jobs': 'Jobs',
-      'nav.candidates': 'Candidates',
-      'nav.users': 'Users',
-      'nav.companies': 'Companies',
       'nav.reports': 'Reports',
       'nav.notifications': 'Notifications',
-      'nav.logout': 'Logout',
       
       // Candidate Registration
       'candidate.register.title': 'Candidate Registration',
@@ -721,7 +707,6 @@ const resources = {
       'candidate.register.workArea': 'Work Area',
       'candidate.register.desiredSalary': 'Desired Salary',
       'candidate.register.availability': 'Availability',
-      'candidate.register.education': 'Education',
       'candidate.register.course': 'Course',
       'candidate.register.institution': 'Institution',
       'candidate.register.graduationYear': 'Graduation Year',
@@ -956,16 +941,87 @@ const resources = {
       
       // Dashboard Navigation
       'nav.interviews': 'المقابلات',
-      'nav.simulations': 'المحاكاة',
       'nav.documents': 'المستندات',
       'nav.culture': 'الثقافة',
-      'nav.jobs': 'الوظائف',
-      'nav.candidates': 'المرشحون',
-      'nav.users': 'المستخدمون',
-      'nav.companies': 'الشركات',
       'nav.reports': 'التقارير',
       'nav.notifications': 'الإشعارات',
-      'nav.logout': 'تسجيل الخروج',
+      
+      // Homepage
+      'home.hero.title': 'موهبتك معترف بها عالمياً.',
+      'home.hero.description': 'نربط المهنيين البرازيليين بأفضل الفرص في دولة الإمارات العربية المتحدة. نحن الجسر بين المهنيين المؤهلين والشركات التي تقدر التميز. مقرنا في دبي، نربط المواهب البرازيلية بالمستقبل الذي يستحقونه.',
+      'home.hero.cta': 'اعرف المزيد',
+      'home.hero.startJourney': 'ابدأ رحلتك',
+      'home.hero.candidate': 'أنا مرشح',
+      'home.hero.company': 'أنا شركة',
+      'home.hero.stats': '500+ محترف متصل',
+      'home.hero.fullName': 'الاسم الكامل',
+      'home.hero.email': 'البريد الإلكتروني',
+      'home.hero.phone': 'الهاتف',
+      'home.hero.linkedin': 'لينكد إن',
+      'home.hero.website': 'الموقع الإلكتروني',
+      'home.hero.companyLinkedin': 'لينكد إن الشركة',
+      'home.hero.experience': 'مستوى الخبرة',
+      'home.hero.companyName': 'اسم الشركة',
+      'home.hero.experienceLevels.junior': 'مبتدئ (1-3 سنوات)',
+      'home.hero.experienceLevels.pleno': 'متوسط (3-7 سنوات)',
+      'home.hero.experienceLevels.senior': 'خبير (7+ سنوات)',
+      'home.hero.experienceLevels.managerial': 'إداري/تنفيذي',
+      'home.hero.startRegistration': 'بدء التسجيل',
+      'home.hero.alreadyHaveAccount': 'لديك حساب بالفعل؟',
+      'home.hero.login': 'تسجيل الدخول',
+      'home.hero.select': 'اختر',
+      'home.hero.placeholders.fullName': 'أدخل اسمك الكامل',
+      'home.hero.placeholders.email': 'your@email.com',
+      'home.hero.placeholders.phone': '+55 (11) 99999-9999',
+      'home.hero.placeholders.linkedin': 'https://www.linkedin.com/in/your-profile',
+      'home.hero.placeholders.website': 'https://www.yourwebsite.com',
+      'home.hero.placeholders.companyLinkedin': 'https://www.linkedin.com/company/company',
+      'home.hero.placeholders.companyName': 'اسم شركتك',
+      
+      // How it works
+      'home.howItWorks.title': 'ابدأ رحلتك',
+      'home.howItWorks.subtitle': 'عملية بسيطة وفعالة لربط المواهب بالفرص الفريدة',
+      'home.howItWorks.step1.title': 'أنشئ ملفك الشخصي',
+      'home.howItWorks.step1.description': 'أكمل ملفك الشخصي بالخبرات والمهارات والأهداف.',
+      'home.howItWorks.step2.title': 'الربط الذكي',
+      'home.howItWorks.step2.description': 'منصتنا تطابق بياناتك مع الوظائف الحصرية التي تناسب موهبتك حقاً.',
+      'home.howItWorks.step3.title': 'اختيار هادف',
+      'home.howItWorks.step3.description': 'شارك في عمليات اختيار مع شركات تقدر المهنيين البرازيليين.',
+      'home.howItWorks.step4.title': 'انتقال منظم',
+      'home.howItWorks.step4.description': 'احصل على إرشاد قانوني ومهني، مع دعم ثقافي.',
+      
+      // Benefits
+      'home.benefits.title': 'لماذا تختار UAE Careers؟',
+      'home.benefits.subtitle': 'نقدم أكثر من مجرد روابط بسيطة - نحن شريك نجاحك',
+      'home.benefits.exclusive.title': 'فرص حصرية',
+      'home.benefits.exclusive.description': 'وظائف لن تجدها على لينكد إن — وصول مباشر للفرص السرية مع شركات مختارة في الإمارات.',
+      'home.benefits.secure.title': 'عملية آمنة',
+      'home.benefits.secure.description': 'شركات موثقة وموثوقة — تشارك فقط في عمليات مع أصحاب عمل جديين بما في ذلك المعتمدين من وزارة الموارد البشرية.',
+      'home.benefits.support.title': 'دعم كامل',
+      'home.benefits.support.description': 'دعم قبل وأثناء وبعد الانتقال — الأمر لا يتعلق فقط بالحصول على الوظيفة. نحن نضمن أن وصولك سيكون سهلاً.',
+      
+      // About
+      'home.about.title': 'حول UAE Careers',
+      'home.about.subtitle': 'ربط المواهب بالمستقبل',
+      'home.about.description1': 'من خلال الاستماع الفعال لمتطلبات سوق دولة الإمارات العربية المتحدة — ومع دعم قادة الأعمال والدعم المؤسسي — وُلدت UAE Careers، بهدف واضح: خلق فرص حقيقية للبرازيليين في الساحة الدولية، مع التركيز على جميع الإمارات.',
+      'home.about.description2': 'نجمع بين معرفة احتياجات الشركات المحلية وأهداف ومهارات المهنيين الذين يرغبون في العمل خارج البرازيل.',
+      'home.about.highlight': 'كفرع من Leão Group Global، تتميز UAE Careers بالخبرة الراسخة في تنقل المواهب وإعادة توظيفها، وهي معترف بها على نطاق واسع في الإمارات العربية لعملها الاستراتيجي والملتزم.',
+      
+      // Contact
+      'home.contact.title': 'اتصل بنا',
+      'home.contact.subtitle': 'مستعد لاتخاذ الخطوة التالية؟ فريقنا هنا للمساعدة',
+      'home.contact.email.title': 'البريد الإلكتروني',
+      'home.contact.email.address': 'contato@leaocareers.com',
+      'home.contact.email.cta': 'تحدث مع مستشار',
+      'home.contact.phone.title': 'الهاتف',
+      'home.contact.phone.number': '+971 50 371 6967',
+      'home.contact.phone.cta': 'احصل على إجابات الآن',
+      'home.contact.location.title': 'المكاتب',
+      'home.contact.location.address': 'ريو دي جانيرو، البرازيل<br />دبي، الإمارات',
+      'home.contact.location.cta': 'عرض الموقع',
+      
+      // Footer
+      'home.footer.copyright': '© 2024 UAE Careers. جميع الحقوق محفوظة.',
       
       // Candidate Registration
       'candidate.register.title': 'تسجيل المرشح',

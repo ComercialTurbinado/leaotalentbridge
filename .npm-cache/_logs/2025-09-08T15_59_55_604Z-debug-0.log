@@ -7,8 +7,8 @@
 6 silly config load:file:/opt/homebrew/etc/npmrc
 7 verbose title npm cache clean
 8 verbose argv "cache" "clean" "--force"
-9 verbose logfile logs-max:10 dir:/Users/claudiodamasco/Documents/www/leaotalentbridge-main/.npm-cache/_logs/2025-09-08T14_57_37_615Z-
-10 verbose logfile /Users/claudiodamasco/Documents/www/leaotalentbridge-main/.npm-cache/_logs/2025-09-08T14_57_37_615Z-debug-0.log
+9 verbose logfile logs-max:10 dir:/Users/claudiodamasco/Documents/www/leaotalentbridge-main/.npm-cache/_logs/2025-09-08T15_59_55_604Z-
+10 verbose logfile /Users/claudiodamasco/Documents/www/leaotalentbridge-main/.npm-cache/_logs/2025-09-08T15_59_55_604Z-debug-0.log
 11 warn using --force Recommended protections disabled.
 12 silly logfile start cleaning logs, removing 1 files
 13 silly logfile done cleaning log files
