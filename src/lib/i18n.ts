@@ -1,4 +1,4 @@
-`import i18n from 'i18next';
+import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
@@ -6,12 +6,8 @@ const resources = {
   'pt-BR': {
     translation: {
       // Dashboard
-      'dashboard.title': 'Dashboard',
       'dashboard.welcome': 'Bem-vindo ao UAE Careers',
       'dashboard.applications': 'Candidaturas',
-      'dashboard.documents': 'Documentos',
-      'dashboard.interviews': 'Entrevistas',
-      'dashboard.profile': 'Perfil',
       'dashboard.overview': 'Visão Geral',
       'dashboard.connections': 'Conexões',
       'dashboard.evaluations': 'Avaliações',
@@ -98,38 +94,46 @@ const resources = {
       'document.type.cv': 'Currículo',
       'document.type.certificate': 'Certificado',
       'document.type.contract': 'Contrato',
-      'document.type.form': 'Formulário',
       'document.type.other': 'Outro',
       
       // Tipos de entrevista
-      'interview.type.online': 'Online',
-      'interview.type.presential': 'Presencial',
       'interview.type.phone': 'Telefone',
+      'interview.type.video': 'Vídeo',
+      'interview.type.inPerson': 'Presencial',
+      'interview.type.online': 'Online',
       
-      // Permissões
-      'permission.accessJobs': 'Acessar Vagas',
-      'permission.applyToJobs': 'Candidatar-se',
-      'permission.viewCourses': 'Ver Cursos',
-      'permission.accessSimulations': 'Simulações',
-      'permission.contactCompanies': 'Contatar Empresas',
+      // Níveis de experiência
+      'experience.junior': 'Júnior',
+      'experience.mid': 'Pleno',
+      'experience.senior': 'Sênior',
+      'experience.lead': 'Líder',
+      'experience.manager': 'Gerente',
+      'experience.director': 'Diretor',
       
-      // Verificações
-      'verification.profile': 'Perfil Verificado',
-      'verification.documents': 'Documentos Verificados',
-      'verification.company': 'Empresa Verificada',
+      // Áreas de atuação
+      'area.technology': 'Tecnologia',
+      'area.marketing': 'Marketing',
+      'area.sales': 'Vendas',
+      'area.hr': 'Recursos Humanos',
+      'area.finance': 'Finanças',
+      'area.operations': 'Operações',
+      'area.legal': 'Jurídico',
+      'area.healthcare': 'Saúde',
+      'area.education': 'Educação',
+      'area.consulting': 'Consultoria',
       
-      // Tempo
-      'time.minutes': 'minutos',
-      'time.hours': 'horas',
-      'time.days': 'dias',
-      'time.weeks': 'semanas',
-      'time.months': 'meses',
-      'time.years': 'anos',
+      // Estados
+      'state.active': 'Ativo',
+      'state.inactive': 'Inativo',
+      'state.pending': 'Pendente',
+      'state.approved': 'Aprovado',
+      'state.rejected': 'Rejeitado',
       
       // Prioridades
       'priority.low': 'Baixa',
       'priority.medium': 'Média',
       'priority.high': 'Alta',
+      'priority.urgent': 'Urgente',
       
       // Mensagens específicas
       'message.interviewScheduled': 'Entrevista agendada com sucesso!',
@@ -150,7 +154,7 @@ const resources = {
       // Placeholders
       'placeholder.search': 'Buscar...',
       'placeholder.selectOption': 'Selecione uma opção',
-      'placeholder.enterText': 'Digite aqui...',
+      'placeholder.enterText': 'Digite o texto aqui...',
       'placeholder.enterEmail': 'Digite seu e-mail',
       'placeholder.enterPhone': 'Digite seu telefone',
       'placeholder.enterName': 'Digite seu nome',
@@ -169,7 +173,7 @@ const resources = {
       'label.uploadedBy': 'Enviado por',
       'label.uploadDate': 'Data de envio',
       'label.interviewer': 'Entrevistador',
-      'label.meetingUrl': 'Link da reunião',
+      'label.meetingUrl': 'URL da reunião',
       'label.adminComments': 'Comentários do admin',
       
       // Títulos de seção
@@ -297,12 +301,8 @@ const resources = {
   'en': {
     translation: {
       // Dashboard
-      'dashboard.title': 'Dashboard',
       'dashboard.welcome': 'Welcome to UAE Careers',
       'dashboard.applications': 'Applications',
-      'dashboard.documents': 'Documents',
-      'dashboard.interviews': 'Interviews',
-      'dashboard.profile': 'Profile',
       'dashboard.overview': 'Overview',
       'dashboard.connections': 'Connections',
       'dashboard.evaluations': 'Evaluations',
@@ -389,38 +389,46 @@ const resources = {
       'document.type.cv': 'Resume',
       'document.type.certificate': 'Certificate',
       'document.type.contract': 'Contract',
-      'document.type.form': 'Form',
       'document.type.other': 'Other',
       
       // Interview types
-      'interview.type.online': 'Online',
-      'interview.type.presential': 'In-person',
       'interview.type.phone': 'Phone',
+      'interview.type.video': 'Video',
+      'interview.type.inPerson': 'In Person',
+      'interview.type.online': 'Online',
       
-      // Permissions
-      'permission.accessJobs': 'Access Jobs',
-      'permission.applyToJobs': 'Apply to Jobs',
-      'permission.viewCourses': 'View Courses',
-      'permission.accessSimulations': 'Simulations',
-      'permission.contactCompanies': 'Contact Companies',
+      // Experience levels
+      'experience.junior': 'Junior',
+      'experience.mid': 'Mid-level',
+      'experience.senior': 'Senior',
+      'experience.lead': 'Lead',
+      'experience.manager': 'Manager',
+      'experience.director': 'Director',
       
-      // Verifications
-      'verification.profile': 'Profile Verified',
-      'verification.documents': 'Documents Verified',
-      'verification.company': 'Company Verified',
+      // Areas
+      'area.technology': 'Technology',
+      'area.marketing': 'Marketing',
+      'area.sales': 'Sales',
+      'area.hr': 'Human Resources',
+      'area.finance': 'Finance',
+      'area.operations': 'Operations',
+      'area.legal': 'Legal',
+      'area.healthcare': 'Healthcare',
+      'area.education': 'Education',
+      'area.consulting': 'Consulting',
       
-      // Time
-      'time.minutes': 'minutes',
-      'time.hours': 'hours',
-      'time.days': 'days',
-      'time.weeks': 'weeks',
-      'time.months': 'months',
-      'time.years': 'years',
+      // States
+      'state.active': 'Active',
+      'state.inactive': 'Inactive',
+      'state.pending': 'Pending',
+      'state.approved': 'Approved',
+      'state.rejected': 'Rejected',
       
       // Priorities
       'priority.low': 'Low',
       'priority.medium': 'Medium',
       'priority.high': 'High',
+      'priority.urgent': 'Urgent',
       
       // Specific messages
       'message.interviewScheduled': 'Interview scheduled successfully!',
@@ -638,7 +646,7 @@ const resources = {
       'form.required': 'حقل مطلوب',
       
       // Status
-      'status.pending': 'قيد الانتظار',
+      'status.pending': 'معلق',
       'status.approved': 'موافق عليه',
       'status.rejected': 'مرفوض',
       'status.suspended': 'معلق',
@@ -650,10 +658,10 @@ const resources = {
       'status.noShow': 'لم يحضر',
       
       // Messages
-      'message.success': 'تم إنجاز العملية بنجاح!',
+      'message.success': 'تمت العملية بنجاح!',
       'message.error': 'خطأ في تنفيذ العملية',
-      'message.confirmDelete': 'هل أنت متأكد من أنك تريد الحذف؟',
-      'message.confirmAction': 'هل أنت متأكد من أنك تريد تنفيذ هذا الإجراء؟',
+      'message.confirmDelete': 'هل أنت متأكد من الحذف؟',
+      'message.confirmAction': 'هل أنت متأكد من تنفيذ هذا الإجراء؟',
       'message.loading': 'جاري التحميل...',
       'message.saving': 'جاري الحفظ...',
       'message.sending': 'جاري الإرسال...',
@@ -680,38 +688,46 @@ const resources = {
       'document.type.cv': 'السيرة الذاتية',
       'document.type.certificate': 'شهادة',
       'document.type.contract': 'عقد',
-      'document.type.form': 'نموذج',
       'document.type.other': 'أخرى',
       
       // Interview types
+      'interview.type.phone': 'هاتف',
+      'interview.type.video': 'فيديو',
+      'interview.type.inPerson': 'شخصياً',
       'interview.type.online': 'عبر الإنترنت',
-      'interview.type.presential': 'شخصياً',
-      'interview.type.phone': 'هاتفياً',
       
-      // Permissions
-      'permission.accessJobs': 'الوصول إلى الوظائف',
-      'permission.applyToJobs': 'التقديم للوظائف',
-      'permission.viewCourses': 'عرض الدورات',
-      'permission.accessSimulations': 'المحاكاة',
-      'permission.contactCompanies': 'التواصل مع الشركات',
+      // Experience levels
+      'experience.junior': 'مبتدئ',
+      'experience.mid': 'متوسط',
+      'experience.senior': 'خبير',
+      'experience.lead': 'قائد',
+      'experience.manager': 'مدير',
+      'experience.director': 'مدير تنفيذي',
       
-      // Verifications
-      'verification.profile': 'الملف الشخصي متحقق منه',
-      'verification.documents': 'المستندات متحقق منها',
-      'verification.company': 'الشركة متحقق منها',
+      // Areas
+      'area.technology': 'التكنولوجيا',
+      'area.marketing': 'التسويق',
+      'area.sales': 'المبيعات',
+      'area.hr': 'الموارد البشرية',
+      'area.finance': 'المالية',
+      'area.operations': 'العمليات',
+      'area.legal': 'القانونية',
+      'area.healthcare': 'الرعاية الصحية',
+      'area.education': 'التعليم',
+      'area.consulting': 'الاستشارات',
       
-      // Time
-      'time.minutes': 'دقائق',
-      'time.hours': 'ساعات',
-      'time.days': 'أيام',
-      'time.weeks': 'أسابيع',
-      'time.months': 'أشهر',
-      'time.years': 'سنوات',
+      // States
+      'state.active': 'نشط',
+      'state.inactive': 'غير نشط',
+      'state.pending': 'معلق',
+      'state.approved': 'موافق عليه',
+      'state.rejected': 'مرفوض',
       
       // Priorities
       'priority.low': 'منخفضة',
       'priority.medium': 'متوسطة',
       'priority.high': 'عالية',
+      'priority.urgent': 'عاجلة',
       
       // Specific messages
       'message.interviewScheduled': 'تم جدولة المقابلة بنجاح!',
