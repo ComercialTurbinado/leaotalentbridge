@@ -7,6 +7,7 @@ import { GrMenu, GrClose } from 'react-icons/gr';
 import GoogleTranslateWidget from './GoogleTranslateWidget';
 import styles from './Header.module.css';
 
+// Header component for the main landing page
 interface HeaderProps {
   transparent?: boolean;
 }
