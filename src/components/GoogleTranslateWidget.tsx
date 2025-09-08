@@ -256,6 +256,8 @@ export default function GoogleTranslateWidget({
   };
 
   const toggleDropdown = () => {
+    console.log('=== TOGGLE DROPDOWN ===');
+    console.log('Estado atual isOpen:', isOpen);
     setIsOpen(!isOpen);
   };
 
