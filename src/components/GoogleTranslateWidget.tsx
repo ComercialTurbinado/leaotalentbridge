@@ -60,7 +60,18 @@ export default function GoogleTranslateWidget({
   }, []);
 
   useEffect(() => {
-    // Função para inicializar o Google Translate
+    // Verificar se estamos em localhost
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.includes('192.168.');
+    
+    if (isLocalhost) {
+      console.log('Ambiente localhost detectado - Google Translate desabilitado para desenvolvimento');
+      setIsLoaded(true); // Marcar como carregado para permitir uso do widget
+      return;
+    }
+    
+    // Função para inicializar o Google Translate (apenas em produção)
     const initializeGoogleTranslate = () => {
       console.log('Inicializando Google Translate...');
       
@@ -182,7 +193,21 @@ export default function GoogleTranslateWidget({
       document.documentElement.lang = languageCode;
     }
     
-    // Tentar usar o Google Translate
+    // Verificar se estamos em localhost
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname.includes('192.168.');
+    
+    if (isLocalhost) {
+      console.log('Ambiente localhost detectado - usando fallback de recarregamento');
+      // Em localhost, usar fallback de recarregamento
+      const url = new URL(window.location.href);
+      url.searchParams.set('hl', languageCode);
+      window.location.href = url.toString();
+      return;
+    }
+    
+    // Tentar usar o Google Translate (apenas em produção)
     setTimeout(() => {
       try {
         const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
