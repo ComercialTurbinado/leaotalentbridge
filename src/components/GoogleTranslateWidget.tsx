@@ -287,7 +287,11 @@ export default function GoogleTranslateWidget({
               <button
                 key={language.code}
                 className={`${styles.languageOption} ${currentLang === language.code ? styles.active : ''}`}
-                onClick={() => handleLanguageChange(language.code)}
+                onClick={() => {
+                  console.log('=== BOTÃO CLICADO ===');
+                  console.log('Idioma clicado:', language.code);
+                  handleLanguageChange(language.code);
+                }}
                 disabled={isTranslating}
               >
                 <span className={styles.flag}>{language.flag}</span>
