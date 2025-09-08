@@ -1,0 +1,192 @@
+{
+  "brand": "UAE Careers",
+  "common": {
+    "email": "E-mail",
+    "industry": "Indústria",
+    "size": "Porte",
+    "allSizes": "Todos os Portes",
+    "saveChanges": "SALVAR ALTERAÇÕES",
+    "updateUser": "ATUALIZAR USUÁRIO",
+    "newCompany": "NOVA EMPRESA",
+    "newJob": "NOVA VAGA",
+    "scheduleInterview": "AGENDAR ENTREVISTA",
+    "sendMessage": "ENVIAR MENSAGEM",
+    "cancel": "CANCELAR",
+    "confirm": "CONFIRMAR",
+    "edit": "EDITAR",
+    "delete": "EXCLUIR",
+    "view": "VISUALIZAR",
+    "back": "VOLTAR",
+    "next": "PRÓXIMO",
+    "previous": "ANTERIOR",
+    "search": "BUSCAR",
+    "filter": "FILTRAR",
+    "clear": "LIMPAR",
+    "loading": "Carregando...",
+    "noData": "Nenhum dado encontrado",
+    "error": "Erro",
+    "success": "Sucesso",
+    "warning": "Aviso",
+    "info": "Informação"
+  },
+  "status": {
+    "userCandidate": {
+      "pending": "Pendente",
+      "approved": "Aprovado",
+      "rejected": "Reprovado",
+      "suspended": "Suspenso"
+    },
+    "company": {
+      "active": "Ativa",
+      "inactive": "Inativa",
+      "pending": "Pendente",
+      "suspended": "Suspensa",
+      "rejected": "Rejeitada"
+    },
+    "application": {
+      "pending": "Pendente",
+      "reviewed": "Analisada",
+      "shortlisted": "Pré-selecionada",
+      "rejected": "Reprovada",
+      "accepted": "Aceita"
+    },
+    "interview": {
+      "pending_approval": "Aguardando Aprovação",
+      "scheduled": "Agendada",
+      "confirmed": "Confirmada",
+      "completed": "Concluída",
+      "cancelled": "Cancelada",
+      "no_show": "Não Compareceu",
+      "rejected": "Reprovada"
+    },
+    "document": {
+      "pending": "Pendente",
+      "approved": "Aprovado",
+      "rejected": "Reprovado"
+    }
+  },
+  "sections": {
+    "users": "Gestão de Usuários.",
+    "candidates": "Gestão de Candidatos.",
+    "interviews": "Gestão de Entrevistas.",
+    "companies": "Gestão de Empresas.",
+    "jobs": "Gestão de Vagas.",
+    "applications": "Gestão de Candidaturas.",
+    "documents": "Gestão de Documentos.",
+    "notifications": "Gestão de Notificações.",
+    "analytics": "Analytics e Relatórios.",
+    "settings": "Configurações do Sistema."
+  },
+  "menu": {
+    "publication": "PUBLICAÇÃO",
+    "dashboard": "DASHBOARD",
+    "users": "USUÁRIOS",
+    "candidates": "CANDIDATOS",
+    "companies": "EMPRESAS",
+    "jobs": "VAGAS",
+    "interviews": "ENTREVISTAS",
+    "applications": "CANDIDATURAS",
+    "analytics": "ANALYTICS",
+    "settings": "CONFIGURAÇÕES"
+  },
+  "forms": {
+    "labels": {
+      "name": "Nome",
+      "email": "E-mail",
+      "phone": "Telefone",
+      "company": "Empresa",
+      "position": "Cargo",
+      "industry": "Indústria",
+      "size": "Porte",
+      "location": "Localização",
+      "salary": "Salário",
+      "description": "Descrição",
+      "requirements": "Requisitos",
+      "benefits": "Benefícios",
+      "status": "Status",
+      "type": "Tipo",
+      "date": "Data",
+      "time": "Horário",
+      "duration": "Duração",
+      "notes": "Observações",
+      "comments": "Comentários"
+    },
+    "placeholders": {
+      "searchJobs": "Buscar vagas...",
+      "searchCandidates": "Buscar candidatos...",
+      "searchCompanies": "Buscar empresas...",
+      "enterEmail": "Digite seu e-mail",
+      "enterName": "Digite o nome",
+      "enterPhone": "Digite o telefone",
+      "selectIndustry": "Selecione a indústria",
+      "selectSize": "Selecione o porte",
+      "selectStatus": "Selecione o status",
+      "enterDescription": "Digite a descrição"
+    },
+    "validation": {
+      "required": "Campo obrigatório",
+      "invalidEmail": "E-mail inválido",
+      "invalidPhone": "Telefone inválido",
+      "minLength": "Mínimo de {min} caracteres",
+      "maxLength": "Máximo de {max} caracteres"
+    }
+  },
+  "industries": {
+    "technology": "Tecnologia",
+    "finance": "Financeiro",
+    "healthcare": "Saúde",
+    "education": "Educação",
+    "retail": "Varejo",
+    "manufacturing": "Manufatura",
+    "consulting": "Consultoria",
+    "media": "Mídia",
+    "real_estate": "Imobiliário",
+    "transportation": "Transporte",
+    "energy": "Energia",
+    "food": "Alimentação",
+    "fashion": "Moda",
+    "automotive": "Automotivo",
+    "pharmaceutical": "Farmacêutico",
+    "telecommunications": "Telecomunicações",
+    "tourism": "Turismo",
+    "construction": "Construção",
+    "agriculture": "Agricultura",
+    "other": "Outros"
+  },
+  "companySizes": {
+    "startup": "Startup (1-10)",
+    "small": "Pequena (11-50)",
+    "medium": "Média (51-200)",
+    "large": "Grande (201-1000)",
+    "enterprise": "Empresa (1000+)"
+  },
+  "notifications": {
+    "welcome": "Bem-vindo ao UAE Careers!",
+    "welcomeMessage": "Sistema de notificações ativado. Você receberá atualizações sobre suas candidaturas, entrevistas e oportunidades.",
+    "newJob": "Nova vaga disponível",
+    "applicationUpdate": "Atualização na candidatura",
+    "interviewScheduled": "Entrevista agendada",
+    "interviewReminder": "Lembrete de entrevista",
+    "feedbackAvailable": "Feedback disponível",
+    "documentRequest": "Solicitação de documento",
+    "systemAlert": "Alerta do sistema"
+  },
+  "errors": {
+    "notFound": "Página não encontrada",
+    "unauthorized": "Não autorizado",
+    "forbidden": "Acesso negado",
+    "serverError": "Erro interno do servidor",
+    "networkError": "Erro de conexão",
+    "validationError": "Erro de validação",
+    "timeout": "Tempo limite excedido"
+  },
+  "success": {
+    "saved": "Salvo com sucesso",
+    "updated": "Atualizado com sucesso",
+    "deleted": "Excluído com sucesso",
+    "created": "Criado com sucesso",
+    "sent": "Enviado com sucesso",
+    "approved": "Aprovado com sucesso",
+    "rejected": "Reprovado com sucesso"
+  }
+}

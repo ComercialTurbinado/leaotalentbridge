@@ -1,0 +1,418 @@
+.pendingMessage {
+  background: linear-gradient(135deg, var(--uae-white) 0%, var(--uae-white-soft) 100%);
+  border: 2px solid var(--uae-green);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--uae-green-200);
+  position: relative;
+}
+
+.pendingMessage.banner {
+  margin: 1rem 0;
+}
+
+.pendingMessage.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.pendingMessage.inline {
+  margin: 0;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.messageContent {
+  padding: 2rem;
+}
+
+.messageHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.iconSection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.statusIcon {
+  width: 48px;
+  height: 48px;
+  background: var(--uae-gradient-secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--uae-white);
+  box-shadow: 0 2px 8px var(--uae-green-200);
+}
+
+.userIcon {
+  width: 32px;
+  height: 32px;
+  background: var(--uae-red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--uae-white);
+  margin-left: -12px;
+}
+
+.titleSection {
+  flex: 1;
+}
+
+.titleSection h2 {
+  color: var(--uae-black);
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.titleSection p {
+  color: var(--uae-black-light);
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.closeButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  color: #a16207;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background: rgba(161, 98, 7, 0.1);
+  color: #92400e;
+}
+
+.messageBody {
+  margin-bottom: 2rem;
+}
+
+.statusInfo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.infoCard {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.infoCard svg {
+  color: #d97706;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.infoCard h4 {
+  margin: 0 0 0.5rem 0;
+  color: #92400e;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.infoCard p {
+  margin: 0 0 0.25rem 0;
+  color: #a16207;
+  font-weight: 500;
+}
+
+.infoCard small {
+  color: #b45309;
+  font-size: 0.875rem;
+}
+
+.processSteps {
+  margin-bottom: 2rem;
+}
+
+.processSteps h4 {
+  color: #92400e;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.stepsList {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.stepNumber {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.step span {
+  color: #a16207;
+  font-weight: 500;
+}
+
+.estimateInfo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.estimateCard {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  text-align: center;
+  max-width: 300px;
+}
+
+.estimateCard h4 {
+  margin: 0 0 0.5rem 0;
+  color: #92400e;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.estimateCard p {
+  margin: 0 0 0.25rem 0;
+  color: #d97706;
+  font-size: 1.2rem;
+}
+
+.estimateCard small {
+  color: #b45309;
+  font-size: 0.875rem;
+}
+
+.messageFooter {
+  border-top: 1px solid rgba(245, 158, 11, 0.2);
+  padding-top: 2rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.helpSection {
+  text-align: center;
+}
+
+.helpSection h4 {
+  color: #92400e;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.helpSection p {
+  color: #a16207;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.helpSection a {
+  color: #d97706;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.helpSection a:hover {
+  color: #92400e;
+  text-decoration: underline;
+}
+
+.nextSteps h4 {
+  color: #92400e;
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.nextSteps ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.nextSteps li {
+  color: #a16207;
+  padding: 0.5rem 0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .messageContent {
+    padding: 1.5rem;
+  }
+  
+  .messageHeader {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .iconSection {
+    flex-direction: row;
+  }
+  
+  .userIcon {
+    margin-left: 0;
+    margin-top: -12px;
+  }
+  
+  .closeButton {
+    position: static;
+    align-self: flex-end;
+  }
+  
+  .statusInfo {
+    grid-template-columns: 1fr;
+  }
+  
+  .step {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .pendingMessage.modal {
+    width: 95%;
+    max-width: none;
+  }
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pendingMessage {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.statusIcon {
+  animation: pulse 2s infinite;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .pendingMessage {
+    background: linear-gradient(135deg, #451a03 0%, #78350f 100%);
+    border-color: #d97706;
+  }
+  
+  .infoCard,
+  .step,
+  .estimateCard {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(217, 119, 6, 0.3);
+  }
+  
+  .titleSection h2,
+  .infoCard h4,
+  .processSteps h4,
+  .estimateCard h4,
+  .helpSection h4,
+  .nextSteps h4 {
+    color: #fbbf24;
+  }
+  
+  .titleSection p,
+  .infoCard p,
+  .step span,
+  .helpSection p,
+  .nextSteps li {
+    color: #fcd34d;
+  }
+  
+  .infoCard small,
+  .estimateCard small {
+    color: #f59e0b;
+  }
+  
+  .closeButton {
+    color: #fcd34d;
+  }
+  
+  .closeButton:hover {
+    background: rgba(252, 211, 77, 0.1);
+    color: #fbbf24;
+  }
+}

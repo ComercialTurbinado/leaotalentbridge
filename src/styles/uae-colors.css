@@ -1,0 +1,164 @@
+/* Cores da Bandeira dos Emirados Árabes Unidos */
+:root {
+  /* Cores primárias da bandeira dos EAU */
+  --uae-red: #FF0000;         /* Coragem, bravura e força */
+  --uae-green: #00732F;       /* Esperança, prosperidade e fertilidade */
+  --uae-white: #FFFFFF;       /* Paz e honestidade */
+  --uae-black: #000000;       /* Força da mente e rejeição da injustiça */
+  
+  /* Variações e tons para UI */
+  --uae-red-light: #FF3333;
+  --uae-red-dark: #CC0000;
+  --uae-red-hover: #E60000;
+  --uae-red-50: rgba(255, 0, 0, 0.05);
+  --uae-red-100: rgba(255, 0, 0, 0.1);
+  --uae-red-200: rgba(255, 0, 0, 0.2);
+  --uae-red-300: rgba(255, 0, 0, 0.3);
+  
+  --uae-green-light: #339954;
+  --uae-green-dark: #005025;
+  --uae-green-hover: #006629;
+  --uae-green-50: rgba(0, 115, 47, 0.05);
+  --uae-green-100: rgba(0, 115, 47, 0.1);
+  --uae-green-200: rgba(0, 115, 47, 0.2);
+  --uae-green-300: rgba(0, 115, 47, 0.3);
+  
+  --uae-white-soft: #FAFAFA;
+  --uae-white-gray: #F5F5F5;
+  --uae-white-hover: #F0F0F0;
+  
+  --uae-black-light: #333333;
+  --uae-black-soft: #666666;
+  --uae-black-gray: #999999;
+  --uae-black-50: rgba(0, 0, 0, 0.05);
+  --uae-black-100: rgba(0, 0, 0, 0.1);
+  --uae-black-200: rgba(0, 0, 0, 0.2);
+  --uae-black-300: rgba(0, 0, 0, 0.3);
+  
+  /* Gradientes temáticos */
+  --uae-gradient-primary: linear-gradient(135deg, var(--uae-red) 0%, var(--uae-green) 100%);
+  --uae-gradient-secondary: linear-gradient(135deg, var(--uae-green) 0%, var(--uae-black-light) 100%);
+  --uae-gradient-success: linear-gradient(135deg, var(--uae-green-light) 0%, var(--uae-green) 100%);
+  --uae-gradient-danger: linear-gradient(135deg, var(--uae-red-light) 0%, var(--uae-red) 100%);
+  --uae-gradient-background: linear-gradient(135deg, var(--uae-white) 0%, var(--uae-white-gray) 100%);
+  
+  /* Paleta de status com cores UAE */
+  --status-success: var(--uae-green);
+  --status-success-light: var(--uae-green-light);
+  --status-success-bg: var(--uae-green-50);
+  
+  --status-error: var(--uae-red);
+  --status-error-light: var(--uae-red-light);
+  --status-error-bg: var(--uae-red-50);
+  
+  --status-warning: #FFA500;
+  --status-warning-light: #FFB733;
+  --status-warning-bg: rgba(255, 165, 0, 0.1);
+  
+  --status-info: #0078D4;
+  --status-info-light: #339FE0;
+  --status-info-bg: rgba(0, 120, 212, 0.1);
+  
+  /* Componentes de UI */
+  --primary-color: var(--uae-red);
+  --primary-hover: var(--uae-red-hover);
+  --primary-light: var(--uae-red-light);
+  --primary-bg: var(--uae-red-50);
+  
+  --secondary-color: var(--uae-green);
+  --secondary-hover: var(--uae-green-hover);
+  --secondary-light: var(--uae-green-light);
+  --secondary-bg: var(--uae-green-50);
+  
+  --accent-color: var(--uae-black-light);
+  --accent-hover: var(--uae-black);
+  --accent-light: var(--uae-black-soft);
+  --accent-bg: var(--uae-black-50);
+  
+  --background-primary: var(--uae-white);
+  --background-secondary: var(--uae-white-soft);
+  --background-tertiary: var(--uae-white-gray);
+  
+  --text-primary: var(--uae-black);
+  --text-secondary: var(--uae-black-light);
+  --text-tertiary: var(--uae-black-soft);
+  --text-quaternary: var(--uae-black-gray);
+  
+  /* Bordas e sombras */
+  --border-light: var(--uae-black-100);
+  --border-medium: var(--uae-black-200);
+  --border-strong: var(--uae-black-300);
+  
+  --shadow-light: 0 1px 3px var(--uae-black-100);
+  --shadow-medium: 0 4px 12px var(--uae-black-200);
+  --shadow-strong: 0 8px 24px var(--uae-black-300);
+  
+  /* Efeitos especiais para tema EAU */
+  --uae-flag-stripe: linear-gradient(
+    to right,
+    var(--uae-red) 0% 25%,
+    var(--uae-white) 25% 50%,
+    var(--uae-black) 50% 75%,
+    var(--uae-green) 75% 100%
+  );
+  
+  --uae-pride-gradient: linear-gradient(
+    45deg,
+    var(--uae-red) 0%,
+    var(--uae-green) 25%,
+    var(--uae-white) 50%,
+    var(--uae-black) 75%,
+    var(--uae-red) 100%
+  );
+}
+
+/* Classes utilitárias para cores UAE */
+.uae-bg-red { background-color: var(--uae-red) !important; }
+.uae-bg-green { background-color: var(--uae-green) !important; }
+.uae-bg-white { background-color: var(--uae-white) !important; }
+.uae-bg-black { background-color: var(--uae-black) !important; }
+
+.uae-text-red { color: var(--uae-red) !important; }
+.uae-text-green { color: var(--uae-green) !important; }
+.uae-text-white { color: var(--uae-white) !important; }
+.uae-text-black { color: var(--uae-black) !important; }
+
+.uae-border-red { border-color: var(--uae-red) !important; }
+.uae-border-green { border-color: var(--uae-green) !important; }
+.uae-border-white { border-color: var(--uae-white) !important; }
+.uae-border-black { border-color: var(--uae-black) !important; }
+
+.uae-gradient-primary { background: var(--uae-gradient-primary) !important; }
+.uae-gradient-secondary { background: var(--uae-gradient-secondary) !important; }
+.uae-gradient-success { background: var(--uae-gradient-success) !important; }
+.uae-gradient-danger { background: var(--uae-gradient-danger) !important; }
+
+/* Animação da bandeira */
+@keyframes uae-flag-wave {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.uae-flag-animation {
+  background: var(--uae-flag-stripe);
+  background-size: 200% 200%;
+  animation: uae-flag-wave 4s ease-in-out infinite;
+}
+
+/* Tema dark com cores UAE */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-primary: var(--uae-black);
+    --background-secondary: var(--uae-black-light);
+    --background-tertiary: var(--uae-black-soft);
+    
+    --text-primary: var(--uae-white);
+    --text-secondary: var(--uae-white-soft);
+    --text-tertiary: var(--uae-white-gray);
+    --text-quaternary: var(--uae-black-gray);
+    
+    --border-light: var(--uae-white-soft);
+    --border-medium: var(--uae-white-gray);
+    --border-strong: var(--uae-black-gray);
+  }
+}

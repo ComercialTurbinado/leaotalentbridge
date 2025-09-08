@@ -1,0 +1,162 @@
+.languageSelector {
+  position: relative;
+  display: inline-block;
+}
+
+.selectorButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--primary-gold);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.selectorButton:hover {
+  background: #c19b2e;
+  transform: translateY(-1px);
+}
+
+.selectorButton:active {
+  transform: translateY(0);
+}
+
+.currentLanguage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.arrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  margin-left: auto;
+}
+
+.arrowUp {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  margin-top: 4px;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.languageOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.languageOption:hover {
+  background-color: #f9fafb;
+}
+
+.languageOption.active {
+  background-color: #f3f4f6;
+  color: var(--primary-gold);
+  font-weight: 500;
+}
+
+.languageFlag {
+  font-size: 18px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.languageName {
+  flex: 1;
+  text-align: left;
+}
+
+.checkmark {
+  color: var(--primary-gold);
+  margin-left: auto;
+}
+
+/* Suporte para RTL (árabe) */
+[dir="rtl"] .languageSelector .languageOption {
+  text-align: right;
+}
+
+[dir="rtl"] .languageSelector .checkmark {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .selectorButton {
+    min-width: 120px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+  
+  .currentLanguage span:last-child {
+    display: none;
+  }
+  
+  .dropdown {
+    min-width: 160px;
+    left: auto;
+    right: 0;
+  }
+}
+
+/* Tema escuro (opcional) */
+@media (prefers-color-scheme: dark) {
+  .dropdown {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .languageOption {
+    color: #d1d5db;
+  }
+  
+  .languageOption:hover {
+    background-color: #374151;
+  }
+  
+  .languageOption.active {
+    background-color: #4b5563;
+  }
+}

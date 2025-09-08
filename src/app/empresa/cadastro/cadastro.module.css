@@ -1,0 +1,215 @@
+/* Cadastro Page */
+.cadastroPage {
+  min-height: 100vh;
+  background: var(--primary-black);
+  padding: var(--spacing-xl) 0;
+}
+
+.cadastroContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+/* Header */
+.cadastroHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--gray-700);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-medium);
+}
+
+.backButton:hover {
+  color: var(--primary-gold);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.logo svg {
+  color: var(--primary-gold);
+}
+
+/* Form Container */
+.formContainer {
+  background: var(--secondary-black);
+  border: 1px solid var(--gray-400);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-3xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.formHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.formHeader h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-md);
+}
+
+.formHeader p {
+  color: var(--gray-700);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+/* Form Sections */
+.formSection {
+  margin-bottom: var(--spacing-3xl);
+}
+
+.formSection h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-gold);
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-400);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.formGrid .form-group-full {
+  grid-column: 1 / -1;
+}
+
+/* Input with Icon */
+.inputWithIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputWithIcon svg {
+  position: absolute;
+  left: var(--spacing-md);
+  color: var(--primary-gold);
+  z-index: 10;
+}
+
+.inputWithIcon input {
+  padding-left: calc(var(--spacing-md) + 20px + var(--spacing-sm));
+}
+
+/* Password Input */
+.passwordInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: var(--spacing-md);
+  background: none;
+  border: none;
+  color: var(--gray-700);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-medium);
+}
+
+.passwordToggle:hover {
+  color: var(--primary-gold);
+  background: rgba(212, 175, 55, 0.1);
+}
+
+/* Form Actions */
+.formActions {
+  margin-top: var(--spacing-3xl);
+}
+
+/* Login Link */
+.loginLink {
+  text-align: center;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--gray-400);
+  color: var(--gray-700);
+}
+
+.loginLink a {
+  color: var(--primary-gold);
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: var(--spacing-sm);
+  transition: color var(--transition-medium);
+}
+
+.loginLink a:hover {
+  color: var(--gold-light);
+}
+
+/* Textarea Styling */
+textarea.form-input {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cadastroPage {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .cadastroContainer {
+    padding: 0 var(--spacing-md);
+  }
+
+  .cadastroHeader {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .formContainer {
+    padding: var(--spacing-xl);
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formHeader h1 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .formContainer {
+    padding: var(--spacing-lg);
+  }
+
+  .formSection h3 {
+    font-size: 1.125rem;
+  }
+} 

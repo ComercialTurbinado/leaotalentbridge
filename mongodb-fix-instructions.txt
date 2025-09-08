@@ -1,0 +1,67 @@
+INSTRUÇÕES PARA CORRIGIR OS PROBLEMAS DE ÍNDICES DUPLICADOS NO MONGODB
+
+Identifiquei o problema que está causando os avisos de índices duplicados. Há dois problemas principais:
+
+1. Índices duplicados nos schemas:
+   - No arquivo Job.ts, há um índice duplicado para "slug" e "expiresAt"
+   - No arquivo User.ts, há um índice duplicado para "email"
+
+2. Configuração do MongoDB:
+   - A conexão com o MongoDB está configurada para usar um servidor local (mongodb://localhost:27017/leao-careers)
+   - Mas você quer usar o MongoDB Atlas: mongodb+srv://comercialturbinado:Pikopiko2212@cluster0.vryeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+PASSOS PARA CORRIGIR:
+
+1. Edite o arquivo .env.local para usar o MongoDB Atlas:
+```
+# Configurações do Banco de Dados
+MONGODB_URI=mongodb+srv://comercialturbinado:Pikopiko2212@cluster0.vryeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+# Configurações JWT
+JWT_SECRET=chave-secreta-local-desenvolvimento
+JWT_EXPIRES_IN=7d
+
+# Configurações da Aplicação
+NODE_ENV=development
+PORT=3000
+NEXTAUTH_URL=http://localhost:3001
+NEXTAUTH_SECRET=chave-nextauth-local-desenvolvimento
+
+# URL da API (para frontend)
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+```
+
+2. Corrija os índices duplicados nos arquivos de modelo:
+
+   a) Em src/lib/models/Job.ts (linha ~390):
+   Remova ou comente uma das definições de índice para "slug":
+   ```
+   // Remova esta linha, pois há outra definição de índice para slug abaixo
+   // JobSchema.index({ slug: 1 });
+   ```
+   
+   E também remova uma das definições para "expiresAt":
+   ```
+   // Remova esta linha, pois há outra definição de índice para expiresAt abaixo
+   // JobSchema.index({ expiresAt: 1 });
+   ```
+
+   b) Em src/lib/models/User.ts (linha ~80):
+   Modifique o índice para incluir apenas o tipo, já que o email já está marcado como único:
+   ```
+   // Modifique esta linha
+   // UserSchema.index({ email: 1, type: 1 });
+   // Para:
+   UserSchema.index({ type: 1 });
+   ```
+
+3. Reinicie o servidor Next.js após fazer essas alterações:
+   ```
+   npx next dev -p 3001
+   ```
+   ou para produção:
+   ```
+   npx next start -p 3001
+   ```
+
+Após essas alterações, os avisos de índices duplicados devem desaparecer e o sistema estará configurado para usar o MongoDB Atlas em vez do MongoDB local. 

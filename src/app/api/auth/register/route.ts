@@ -1,0 +1,121 @@
+import { NextRequest, NextResponse } from 'next/server';
+import connectMongoDB from '@/lib/mongodb';
+import User from '@/lib/models/User';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+export async function POST(request: NextRequest) {
+  try {
+    const { email, password, name, type, profile } = await request.json();
+
+    // Validar dados obrigatórios
+    if (!email || !password || !name || !type) {
+      return NextResponse.json(
+        { success: false, message: 'E-mail, senha, nome e tipo são obrigatórios' },
+        { status: 400 }
+      );
+    }
+
+    // Validar tipo de usuário
+    if (!['candidato', 'empresa', 'admin'].includes(type)) {
+      return NextResponse.json(
+        { success: false, message: 'Tipo de usuário inválido' },
+        { status: 400 }
+      );
+    }
+
+    // Conectar ao MongoDB
+    await connectMongoDB();
+
+    // Verificar se email já existe
+    const existingUser = await User.findOne({ 
+      email: email.toLowerCase() 
+    });
+
+    if (existingUser) {
+      return NextResponse.json(
+        { success: false, message: 'Este email já está cadastrado' },
+        { status: 409 }
+      );
+    }
+
+    // Criptografar senha
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Criar novo usuário com status pending e sem permissões iniciais
+    const newUser = new User({
+      email: email.toLowerCase(),
+      password: hashedPassword,
+      name: name.trim(),
+      type,
+      status: 'pending', // Usuário fica pendente até aprovação do admin
+      profile: {
+        completed: false,
+        ...profile
+      },
+      permissions: {
+        canAccessJobs: false,
+        canApplyToJobs: false,
+        canViewCourses: true, // Cursos são públicos
+        canAccessSimulations: false,
+        canContactCompanies: false,
+        releasedJobs: []
+      },
+      profileVerified: false,
+      documentsVerified: false,
+      ...(type === 'empresa' && { companyVerified: false })
+    });
+
+    await newUser.save();
+
+    // Gerar JWT token
+    const token = jwt.sign(
+      { 
+        userId: newUser._id, 
+        email: newUser.email, 
+        type: newUser.type 
+      },
+      process.env.JWT_SECRET!,
+      { expiresIn: '7d' }
+    );
+
+    // Retornar dados do usuário (sem a senha)
+    const userData = {
+      _id: newUser._id.toString(),
+      email: newUser.email,
+      name: newUser.name,
+      type: newUser.type,
+      status: newUser.status,
+      permissions: newUser.permissions,
+      profile: newUser.profile,
+      profileVerified: newUser.profileVerified,
+      documentsVerified: newUser.documentsVerified,
+      ...(newUser.type === 'empresa' && { companyVerified: newUser.companyVerified })
+    };
+
+    return NextResponse.json({
+      success: true,
+      user: userData,
+      token,
+      message: 'Cadastro realizado com sucesso! Sua conta está pendente de aprovação pelo administrador. Você será notificado quando for aprovado.',
+      statusCode: 'REGISTRATION_SUCCESS_PENDING'
+    }, { status: 201 });
+
+  } catch (error) {
+    console.error('Erro no registro:', error);
+    
+    // Verificar se é erro de duplicata
+    if ((error as any).code === 11000) {
+      return NextResponse.json(
+        { success: false, message: 'Este email já está cadastrado' },
+        { status: 409 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: false, message: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+} 
