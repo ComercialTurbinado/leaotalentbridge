@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { GrGlobe, GrCheckmark } from 'react-icons/gr';
+import { useTranslation } from 'react-i18next';
 import styles from './GoogleTranslateWidget.module.css';
 
 const languages = [
@@ -36,6 +37,7 @@ export default function GoogleTranslateWidget({
   showCountry = false,
   className = '' 
 }: GoogleTranslateWidgetProps) {
+  const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentLang, setCurrentLang] = useState('pt');
@@ -45,19 +47,20 @@ export default function GoogleTranslateWidget({
   const currentLanguage = languages.find(lang => lang.code === currentLang) || languages[0];
 
   useEffect(() => {
-    // Carregar idioma salvo
-    const savedLang = localStorage.getItem('preferred-language') || 'pt';
-    setCurrentLang(savedLang);
+    // Sincronizar com o idioma atual do i18n
+    const currentI18nLang = i18n.language || 'pt-BR';
+    const normalizedLang = currentI18nLang === 'pt-BR' ? 'pt' : currentI18nLang;
+    setCurrentLang(normalizedLang);
     
-    // Aplicar direção RTL para árabe
-    if (savedLang === 'ar') {
+    // Aplicar direção RTL para árabe se necessário
+    if (normalizedLang === 'ar') {
       document.documentElement.dir = 'rtl';
       document.documentElement.lang = 'ar';
     } else {
       document.documentElement.dir = 'ltr';
-      document.documentElement.lang = savedLang;
+      document.documentElement.lang = normalizedLang;
     }
-  }, []);
+  }, [i18n.language]);
 
   useEffect(() => {
     console.log('=== INÍCIO useEffect Google Translate ===');
@@ -197,6 +200,11 @@ export default function GoogleTranslateWidget({
     localStorage.setItem('preferred-language', languageCode);
     setIsOpen(false);
     
+    // Usar o sistema i18n para mudar o idioma
+    const i18nLanguageCode = languageCode === 'pt' ? 'pt-BR' : languageCode;
+    console.log('Mudando idioma via i18n para:', i18nLanguageCode);
+    i18n.changeLanguage(i18nLanguageCode);
+    
     // Aplicar direção RTL para árabe
     if (languageCode === 'ar') {
       document.documentElement.dir = 'rtl';
@@ -208,50 +216,7 @@ export default function GoogleTranslateWidget({
       console.log('Aplicado LTR para', languageCode);
     }
     
-    // Verificar se estamos em localhost
-    const isLocalhost = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1' ||
-                       window.location.hostname.includes('192.168.');
-    
-    console.log('É localhost?', isLocalhost);
-    
-    if (isLocalhost) {
-      console.log('Ambiente localhost detectado - usando fallback de recarregamento');
-      // Em localhost, usar fallback de recarregamento
-      const url = new URL(window.location.href);
-      url.searchParams.set('hl', languageCode);
-      console.log('Nova URL:', url.toString());
-      console.log('Recarregando página...');
-      window.location.href = url.toString();
-      return;
-    }
-    
-    // Tentar usar o Google Translate (apenas em produção)
-    console.log('Tentando usar Google Translate...');
-    setTimeout(() => {
-      try {
-        const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-        console.log('Elemento Google Translate encontrado:', !!selectElement);
-        if (selectElement) {
-          selectElement.value = languageCode;
-          selectElement.dispatchEvent(new Event('change'));
-          console.log('Google Translate: Idioma alterado para', languageCode);
-        } else {
-          console.warn('Elemento do Google Translate não encontrado, tentando recarregar...');
-          // Fallback: recarregar página com parâmetro de idioma
-          const url = new URL(window.location.href);
-          url.searchParams.set('hl', languageCode);
-          window.location.href = url.toString();
-        }
-      } catch (error) {
-        console.error('Erro ao usar Google Translate:', error);
-        // Fallback: recarregar página
-        window.location.reload();
-      }
-      
-      setIsTranslating(false);
-    }, 1000);
-    
+    setIsTranslating(false);
     console.log('=== FIM handleLanguageChange ===');
   };
 

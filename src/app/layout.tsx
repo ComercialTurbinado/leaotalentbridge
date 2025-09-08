@@ -1,6 +1,7 @@
 import './globals.css'
 import './styles/internal-components.css'
 import { Inter, Montserrat } from 'next/font/google';
+import I18nProvider from '../components/I18nProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 const montserrat = Montserrat({ 
@@ -26,7 +27,9 @@ export default function RootLayout({
         <meta name="description" content="A UAE Careers conecta profissionais brasileiros às melhores oportunidades de trabalho nos Emirados Árabes Unidos." />
       </head>
       <body suppressHydrationWarning className={`${inter.className} ${montserrat.variable}`}>
-        {children}
+        <I18nProvider>
+          {children}
+        </I18nProvider>
       </body>
     </html>
   )
