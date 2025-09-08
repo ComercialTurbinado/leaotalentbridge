@@ -62,8 +62,11 @@ export default function GoogleTranslateWidget({
   useEffect(() => {
     // Função para inicializar o Google Translate
     const initializeGoogleTranslate = () => {
+      console.log('Inicializando Google Translate...');
+      
       // Verificar se já foi carregado
       if ((window as any).google && (window as any).google.translate) {
+        console.log('Google Translate já carregado, inicializando...');
         try {
           if (googleTranslateRef.current) {
             new (window as any).google.translate.TranslateElement(
@@ -77,6 +80,7 @@ export default function GoogleTranslateWidget({
               'google_translate_element'
             );
             setIsLoaded(true);
+            console.log('Google Translate inicializado com sucesso!');
             
             // Esconder o elemento do Google Translate
             setTimeout(() => {
@@ -93,6 +97,12 @@ export default function GoogleTranslateWidget({
         return;
       }
 
+      console.log('Carregando script do Google Translate...');
+      
+      // Remover scripts existentes primeiro
+      const existingScripts = document.querySelectorAll('script[src*="translate.google.com"]');
+      existingScripts.forEach(script => script.remove());
+      
       // Carregar o script do Google Translate
       const script = document.createElement('script');
       script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
@@ -100,6 +110,7 @@ export default function GoogleTranslateWidget({
       
       // Função de inicialização
       (window as any).googleTranslateElementInit = () => {
+        console.log('Callback do Google Translate chamado');
         try {
           if (googleTranslateRef.current) {
             new (window as any).google.translate.TranslateElement(
@@ -113,6 +124,7 @@ export default function GoogleTranslateWidget({
               'google_translate_element'
             );
             setIsLoaded(true);
+            console.log('Google Translate inicializado via callback!');
             
             // Esconder o elemento do Google Translate
             setTimeout(() => {
@@ -123,7 +135,7 @@ export default function GoogleTranslateWidget({
             }, 100);
           }
         } catch (error) {
-          console.error('Erro ao inicializar Google Translate:', error);
+          console.error('Erro ao inicializar Google Translate via callback:', error);
           setIsLoaded(true);
         }
       };
@@ -134,11 +146,16 @@ export default function GoogleTranslateWidget({
         setIsLoaded(true);
       };
 
+      // Adicionar listener para sucesso
+      script.onload = () => {
+        console.log('Script do Google Translate carregado com sucesso');
+      };
+
       document.head.appendChild(script);
     };
 
     // Aguardar um pouco antes de inicializar
-    const timer = setTimeout(initializeGoogleTranslate, 1000);
+    const timer = setTimeout(initializeGoogleTranslate, 500);
     
     return () => {
       clearTimeout(timer);
