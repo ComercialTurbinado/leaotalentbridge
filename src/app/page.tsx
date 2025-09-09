@@ -443,7 +443,7 @@ export default function HomePage() {
               <GrMail size={40} />
               <h4>{t('home.contact.email.title')}</h4>
               <p>{t('home.contact.email.address')}</p>
-              <a href="mailto:contato@leaocareers.com" className="btn btn-secondary">
+              <a href="mailto:contact@uaecareers.com" className="btn btn-secondary">
                 {t('home.contact.email.cta')}
               </a>
             </div>

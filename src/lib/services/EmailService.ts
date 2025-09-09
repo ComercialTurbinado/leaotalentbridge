@@ -278,7 +278,7 @@ export class EmailService {
           
           <div style="text-align: center; padding: 20px;">
             <p style="color: #999; font-size: 12px;">
-              Leão Talent Bridge - Conectando talentos e oportunidades
+              UAE Careers - Conectando talentos e oportunidades
             </p>
           </div>
         </div>
@@ -334,7 +334,7 @@ export class EmailService {
           
           <div style="text-align: center; padding: 20px;">
             <p style="color: #999; font-size: 12px;">
-              Leão Talent Bridge - Conectando talentos e oportunidades
+              UAE Careers - Conectando talentos e oportunidades
             </p>
           </div>
         </div>
@@ -381,7 +381,7 @@ export class EmailService {
           
           <div style="text-align: center; padding: 20px;">
             <p style="color: #999; font-size: 12px;">
-              Leão Talent Bridge - Conectando talentos e oportunidades
+              UAE Careers - Conectando talentos e oportunidades
             </p>
           </div>
         </div>
@@ -428,7 +428,7 @@ export class EmailService {
           
           <div style="text-align: center; padding: 20px;">
             <p style="color: #999; font-size: 12px;">
-              Leão Talent Bridge - Conectando talentos e oportunidades
+              UAE Careers - Conectando talentos e oportunidades
             </p>
           </div>
         </div>
@@ -474,7 +474,7 @@ export class EmailService {
           
           <div style="text-align: center; padding: 20px;">
             <p style="color: #999; font-size: 12px;">
-              Leão Talent Bridge - Conectando talentos e oportunidades
+              UAE Careers - Conectando talentos e oportunidades
             </p>
           </div>
         </div>
@@ -520,7 +520,7 @@ export class EmailService {
             
             <div style="background: #d1ecf1; padding: 15px; border-radius: 6px; border-left: 4px solid #17a2b8; margin-top: 20px;">
               <p style="color: #0c5460; margin: 0; font-size: 14px;">
-                <strong>ℹ️ Informação:</strong> Este é um alerta automático da plataforma Leão Talent Bridge.
+                <strong>ℹ️ Informação:</strong> Este é um alerta automático da plataforma UAE Careers.
               </p>
             </div>
             
@@ -531,7 +531,7 @@ export class EmailService {
           
           <div style="text-align: center; padding: 20px;">
             <p style="color: #999; font-size: 12px;">
-              Leão Talent Bridge - Conectando talentos e oportunidades
+              UAE Careers - Conectando talentos e oportunidades
             </p>
           </div>
         </div>
