@@ -14,11 +14,33 @@ O erro "UNAUTHORIZED" acontece porque você está usando o **Secret Key** ao inv
 - Se não tiver, crie uma nova aplicação
 - Escolha "Pagamentos online"
 
-### 3. Obtenha o ACCESS TOKEN (NÃO o Secret Key!)
+### 3. ONDE ESTÁ O ACCESS TOKEN?
+
+**IMPORTANTE:** O painel pode mostrar "API key" e "Secret key", mas o que precisamos é do **"Access Token"**.
+
+#### Opções para encontrar o Access Token:
+
+**Opção A: Verificar se há um botão "Ver" ou "Mostrar"**
+- Procure por um botão ao lado de "API key" ou "Secret key"
+- Pode haver um ícone de olho 👁️ ou um link "Ver Access Token"
+
+**Opção B: Verificar outras seções**
+- Procure por uma seção chamada "Tokens" ou "Access Tokens"
+- Pode estar em uma aba separada
+- Pode estar em "Configurações" ou "Integração"
+
+**Opção C: Gerar novo Access Token**
+- Procure por um botão "+ Generate" ou "Gerar novo token"
+- Se houver, gere um novo Access Token
+
+**Opção D: Verificar se API key é o Access Token**
+- A "API key" mostrada pode ser o Access Token
+- Mas ela DEVE começar com `APP_USR-` (produção) ou `TEST-` (teste)
+- Se não começar assim, não é o Access Token correto
 
 #### Para PRODUÇÃO (Live):
 1. Clique na aba **"Live"** (não "Test")
-2. Procure por **"Access Token"** (não "Secret Key")
+2. Procure por **"Access Token"** (pode estar com outro nome)
 3. O Access Token começa com `APP_USR-`
 4. Copie esse token
 
