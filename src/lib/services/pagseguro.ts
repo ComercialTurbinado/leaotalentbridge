@@ -15,10 +15,15 @@ interface CreateCheckoutData {
 }
 
 // Configuração do PagSeguro - API Moderna (Checkout Transparente)
-// IMPORTANTE: A API de Orders pode precisar de EMAIL e TOKEN ao invés de API KEY/SECRET KEY
-// Se API KEY/SECRET KEY não funcionarem, use PAGSEGURO_EMAIL e PAGSEGURO_TOKEN
-const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY || process.env.PAGSEGURO_EMAIL || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
-const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY || process.env.PAGSEGURO_TOKEN || '88b173f9a3e5414fbd805901cc86528a';
+// IMPORTANTE: A API de Orders precisa de EMAIL e TOKEN (não API KEY/SECRET KEY)
+// API KEY/SECRET KEY são para outras APIs do PagSeguro
+// Para Orders, use PAGSEGURO_EMAIL e PAGSEGURO_TOKEN
+const PAGSEGURO_EMAIL = process.env.PAGSEGURO_EMAIL || process.env.PAGSEGURO_API_KEY || '';
+const PAGSEGURO_TOKEN = process.env.PAGSEGURO_TOKEN || process.env.PAGSEGURO_SECRET_KEY || '';
+
+// Fallback temporário (remover em produção)
+const PAGSEGURO_API_KEY = PAGSEGURO_EMAIL;
+const PAGSEGURO_SECRET_KEY = PAGSEGURO_TOKEN;
 
 const PAGSEGURO_ENV = process.env.PAGSEGURO_ENV || 'production'; // 'sandbox' ou 'production'
 
@@ -35,16 +40,19 @@ const getAuthHeader = () => {
 };
 
 // Validar configuração
-if (!PAGSEGURO_API_KEY || !PAGSEGURO_SECRET_KEY) {
+if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
   console.warn('⚠️ AVISO: Credenciais do PagSeguro não configuradas!');
+  console.warn('Para API de Orders, você precisa de EMAIL e TOKEN (não API KEY/SECRET KEY)');
   console.warn('Configure no AWS Amplify:');
-  console.warn('  - PAGSEGURO_API_KEY: sua API key');
-  console.warn('  - PAGSEGURO_SECRET_KEY: sua Secret key');
+  console.warn('  - PAGSEGURO_EMAIL: email da sua conta PagSeguro');
+  console.warn('  - PAGSEGURO_TOKEN: Token de Segurança (gerado em "Vendas Online" > "Integrações")');
+  console.warn('');
+  console.warn('⚠️ API KEY/SECRET KEY não funcionam com a API de Orders!');
 } else {
   console.log('✅ PagSeguro configurado (API Moderna - Checkout Transparente):', {
     env: PAGSEGURO_ENV,
-    apiKeyLength: PAGSEGURO_API_KEY.length,
-    secretKeyLength: PAGSEGURO_SECRET_KEY.length
+    email: PAGSEGURO_EMAIL.substring(0, 3) + '***@***',
+    tokenLength: PAGSEGURO_TOKEN.length
   });
 }
 
@@ -62,8 +70,10 @@ export async function createCheckout(
   qrCodeText?: string;
   orderId?: string;
 }> {
-  if (!PAGSEGURO_API_KEY || !PAGSEGURO_SECRET_KEY) {
-    throw new Error('PagSeguro não configurado. Configure PAGSEGURO_API_KEY e PAGSEGURO_SECRET_KEY no AWS Amplify.');
+  if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
+    throw new Error('PagSeguro não configurado. Configure PAGSEGURO_EMAIL e PAGSEGURO_TOKEN no AWS Amplify.\n' +
+      'IMPORTANTE: Para API de Orders, você precisa de EMAIL e TOKEN (não API KEY/SECRET KEY).\n' +
+      'Obtenha em: PagSeguro > Vendas Online > Integrações > Gerar Token');
   }
 
   try {
