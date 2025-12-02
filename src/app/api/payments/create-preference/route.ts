@@ -159,26 +159,44 @@ export async function POST(request: NextRequest) {
         sandboxInitPoint: preference.sandbox_init_point,
       },
     });
-  } catch (error) {
-    console.error('Erro ao criar preferência de pagamento:', error);
+  } catch (error: any) {
+    console.error('=== ERRO AO CRIAR PREFERÊNCIA DE PAGAMENTO ===');
+    console.error('Error type:', error?.constructor?.name);
+    console.error('Error message:', error?.message);
+    console.error('Error stack:', error?.stack);
+    
+    // Log detalhado se for erro do Mercado Pago
+    if (error?.response) {
+      console.error('Mercado Pago response status:', error.response.status);
+      console.error('Mercado Pago response data:', JSON.stringify(error.response.data, null, 2));
+    }
     
     // Verificar se é erro de credenciais
-    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+    const errorMessage = error instanceof Error ? error.message : String(error);
     let userMessage = 'Erro ao processar pagamento';
+    let statusCode = 500;
     
-    if (errorMessage.includes('access_token') || errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
-      userMessage = 'Erro de configuração: Credenciais do Mercado Pago não configuradas. Verifique as variáveis de ambiente.';
-    } else if (errorMessage.includes('network') || errorMessage.includes('timeout')) {
+    if (errorMessage.includes('access_token') || errorMessage.includes('401') || errorMessage.includes('Unauthorized') || errorMessage.includes('Credenciais')) {
+      userMessage = 'Erro de configuração: Credenciais do Mercado Pago não configuradas ou inválidas. Verifique as variáveis de ambiente MERCADOPAGO_ACCESS_TOKEN ou MERCADOPAGO_TEST_ACCESS_TOKEN.';
+      statusCode = 500;
+    } else if (errorMessage.includes('network') || errorMessage.includes('timeout') || errorMessage.includes('ECONNREFUSED')) {
       userMessage = 'Erro de conexão com o Mercado Pago. Tente novamente em alguns instantes.';
+      statusCode = 503;
+    } else if (errorMessage.includes('Dados inválidos') || errorMessage.includes('400')) {
+      userMessage = 'Dados inválidos para processar pagamento. Verifique os dados enviados.';
+      statusCode = 400;
+    } else if (errorMessage.includes('MongoDB') || errorMessage.includes('database') || errorMessage.includes('connection')) {
+      userMessage = 'Erro de conexão com o banco de dados. Tente novamente em alguns instantes.';
+      statusCode = 503;
     }
     
     return NextResponse.json(
       {
         success: false,
         error: userMessage,
-        details: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined, // Só mostrar detalhes em desenvolvimento
       },
-      { status: 500 }
+      { status: statusCode }
     );
   }
 }

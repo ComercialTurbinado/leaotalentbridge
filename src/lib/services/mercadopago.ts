@@ -6,6 +6,12 @@ const accessToken = process.env.NODE_ENV === 'production'
   ? (process.env.MERCADOPAGO_ACCESS_TOKEN || '')
   : (process.env.MERCADOPAGO_TEST_ACCESS_TOKEN || process.env.MERCADOPAGO_ACCESS_TOKEN || '');
 
+// Validar se accessToken está configurado
+if (!accessToken) {
+  console.error('⚠️ ATENÇÃO: MERCADOPAGO_ACCESS_TOKEN ou MERCADOPAGO_TEST_ACCESS_TOKEN não configurado!');
+  console.error('Configure a variável de ambiente apropriada no servidor.');
+}
+
 const client = new MercadoPagoConfig({
   accessToken,
   options: {
@@ -103,9 +109,31 @@ export async function createPaymentPreference(
       init_point: preference.init_point || '',
       sandbox_init_point: preference.sandbox_init_point || '',
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Erro ao criar preferência no Mercado Pago:', error);
-    throw new Error('Falha ao criar preferência de pagamento');
+    
+    // Log detalhado do erro
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response data:', JSON.stringify(error.response.data, null, 2));
+    }
+    if (error.message) {
+      console.error('Error message:', error.message);
+    }
+    
+    // Verificar se é erro de credenciais
+    const errorMessage = error?.response?.data?.message || error?.message || 'Erro desconhecido';
+    const statusCode = error?.response?.status || 500;
+    
+    if (statusCode === 401 || errorMessage.includes('access_token') || errorMessage.includes('Unauthorized')) {
+      throw new Error('Credenciais do Mercado Pago inválidas ou não configuradas. Verifique MERCADOPAGO_ACCESS_TOKEN ou MERCADOPAGO_TEST_ACCESS_TOKEN.');
+    }
+    
+    if (statusCode === 400) {
+      throw new Error(`Dados inválidos para criar preferência: ${errorMessage}`);
+    }
+    
+    throw new Error(`Falha ao criar preferência de pagamento: ${errorMessage}`);
   }
 }
 
