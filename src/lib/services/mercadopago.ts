@@ -115,22 +115,29 @@ export async function createPaymentPreference(
       sandbox_init_point: preference.sandbox_init_point || '',
     };
   } catch (error: any) {
-    console.error('Erro ao criar preferência no Mercado Pago:', error);
+    console.error('=== ERRO AO CRIAR PREFERÊNCIA NO MERCADO PAGO ===');
+    console.error('Error type:', error?.constructor?.name);
+    console.error('Error message:', error?.message);
+    console.error('Error stack:', error?.stack);
     
     // Log detalhado do erro
-    if (error.response) {
+    if (error?.response) {
       console.error('Response status:', error.response.status);
       console.error('Response data:', JSON.stringify(error.response.data, null, 2));
+      console.error('Response headers:', JSON.stringify(error.response.headers, null, 2));
     }
-    if (error.message) {
+    if (error?.request) {
+      console.error('Request config:', JSON.stringify(error.request, null, 2));
+    }
+    if (error?.message) {
       console.error('Error message:', error.message);
     }
     
     // Verificar se é erro de credenciais
-    const errorMessage = error?.response?.data?.message || error?.message || 'Erro desconhecido';
+    const errorMessage = error?.response?.data?.message || error?.response?.data?.error || error?.message || 'Erro desconhecido';
     const statusCode = error?.response?.status || 500;
     
-    if (statusCode === 401 || errorMessage.includes('access_token') || errorMessage.includes('Unauthorized')) {
+    if (statusCode === 401 || errorMessage.includes('access_token') || errorMessage.includes('Unauthorized') || errorMessage.includes('authentication')) {
       throw new Error('Credenciais do Mercado Pago inválidas ou não configuradas. Verifique MERCADOPAGO_ACCESS_TOKEN ou MERCADOPAGO_TEST_ACCESS_TOKEN.');
     }
     
@@ -138,7 +145,10 @@ export async function createPaymentPreference(
       throw new Error(`Dados inválidos para criar preferência: ${errorMessage}`);
     }
     
-    throw new Error(`Falha ao criar preferência de pagamento: ${errorMessage}`);
+    // Incluir mais detalhes no erro
+    const detailedError = `Falha ao criar preferência de pagamento (Status: ${statusCode}): ${errorMessage}`;
+    console.error('Erro detalhado:', detailedError);
+    throw new Error(detailedError);
   }
 }
 

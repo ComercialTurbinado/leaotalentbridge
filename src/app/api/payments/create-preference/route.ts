@@ -93,7 +93,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Conectar ao banco
-    await dbConnect();
+    console.log('Conectando ao MongoDB...');
+    try {
+      await dbConnect();
+      console.log('MongoDB conectado com sucesso');
+    } catch (dbError: any) {
+      console.error('Erro ao conectar ao MongoDB:', dbError);
+      throw new Error(`Erro de conexão com o banco de dados: ${dbError.message || 'Erro desconhecido'}`);
+    }
 
     // Configurar métodos de pagamento permitidos
     const paymentMethodsConfig: any = {
@@ -232,13 +239,19 @@ export async function POST(request: NextRequest) {
       statusCode = 503;
     }
     
+    // Em produção, sempre mostrar detalhes do erro para facilitar debug
+    // (mas não mostrar informações sensíveis como tokens)
+    const safeErrorMessage = errorMessage
+      .replace(/token[=:]\s*[\w-]+/gi, 'token=***')
+      .replace(/password[=:]\s*[\w-]+/gi, 'password=***')
+      .replace(/secret[=:]\s*[\w-]+/gi, 'secret=***');
+    
     return NextResponse.json(
       {
         success: false,
         error: userMessage,
-        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined, // Só mostrar detalhes em desenvolvimento
-        // Em produção, mostrar detalhes se for erro conhecido
-        ...(process.env.NODE_ENV === 'production' && (errorMessage.includes('MongoDB') || errorMessage.includes('database') || errorMessage.includes('connection') || errorMessage.includes('Credenciais')) ? { details: errorMessage } : {}),
+        details: safeErrorMessage, // Sempre mostrar detalhes para debug
+        errorType: error?.constructor?.name || 'Unknown',
       },
       { status: statusCode }
     );
