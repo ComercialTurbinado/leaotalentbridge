@@ -95,11 +95,8 @@ export async function POST(request: NextRequest) {
 
     // Criar registro de pagamento no banco de dados ANTES de criar preferência
     // Isso permite usar o paymentId como external_reference
-    // Criar um ObjectId temporário se não houver userId (para candidatos não autenticados)
-    const tempCompanyId = userId ? new mongoose.Types.ObjectId(userId) : new mongoose.Types.ObjectId();
-    
     const payment = await Payment.create({
-      companyId: tempCompanyId, // Sempre precisa de um ID, mesmo que temporário
+      companyId: userId ? new mongoose.Types.ObjectId(userId) : new mongoose.Types.ObjectId(), // Criar ObjectId temporário se não houver userId
       userId: userId || undefined, // undefined se não autenticado
       // Armazenar email para vincular depois
       guestEmail: !userId ? email : undefined,
