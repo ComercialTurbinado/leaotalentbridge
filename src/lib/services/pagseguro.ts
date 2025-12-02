@@ -53,20 +53,8 @@ if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
 export async function createCheckout(
   data: CreateCheckoutData
 ): Promise<{ checkoutCode: string; checkoutUrl: string }> {
-  if (!USE_API_KEY_METHOD && !USE_EMAIL_METHOD) {
-    const errorMsg = 'PagSeguro não configurado. Configure as variáveis de ambiente no AWS Amplify:\n' +
-      '1. Acesse: https://console.aws.amazon.com/amplify\n' +
-      '2. Vá em "App settings" > "Environment variables"\n' +
-      '3. Adicione UMA das opções:\n' +
-      '   OPÇÃO 1 (Recomendado):\n' +
-      '     - PAGSEGURO_API_KEY: sua API key\n' +
-      '     - PAGSEGURO_SECRET_KEY: sua Secret key\n' +
-      '   OPÇÃO 2 (Tradicional):\n' +
-      '     - PAGSEGURO_EMAIL: seu email do PagSeguro\n' +
-      '     - PAGSEGURO_TOKEN: token de segurança\n' +
-      '4. Salve e aguarde o deploy\n' +
-      'Veja CONFIGURAR_PAGSEGURO.md para instruções detalhadas.';
-    throw new Error(errorMsg);
+  if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
+    throw new Error('PagSeguro não configurado. Configure PAGSEGURO_API_KEY e PAGSEGURO_SECRET_KEY no AWS Amplify.');
   }
 
   try {
