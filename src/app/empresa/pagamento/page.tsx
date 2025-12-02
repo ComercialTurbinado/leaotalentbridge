@@ -170,7 +170,8 @@ export default function EmpresaPagamentoPage() {
       const data = await response.json();
 
       if (!data.success) {
-        throw new Error(data.error || 'Erro ao criar preferência de pagamento');
+        console.error('Erro da API:', data);
+        throw new Error(data.error || data.details || 'Erro ao criar preferência de pagamento');
       }
 
       // Redirecionar para o checkout do Mercado Pago
@@ -180,11 +181,18 @@ export default function EmpresaPagamentoPage() {
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
-        throw new Error('URL de checkout não fornecida');
+        throw new Error('URL de checkout não fornecida pelo Mercado Pago');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro no pagamento:', error);
-      alert(error instanceof Error ? error.message : 'Erro ao processar pagamento. Tente novamente.');
+      const errorMessage = error?.message || 'Erro ao processar pagamento. Tente novamente.';
+      
+      // Mostrar mensagem mais detalhada se disponível
+      if (error?.response?.data?.error) {
+        alert(error.response.data.error);
+      } else {
+        alert(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
