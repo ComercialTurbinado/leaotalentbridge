@@ -1,28 +1,31 @@
 import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 
 // Configuração do cliente Mercado Pago
-// IMPORTANTE: Use o ACCESS TOKEN, não o Secret Key!
+// ⚠️ IMPORTANTE: Use o ACCESS TOKEN, não o Secret Key!
 // O Access Token começa com APP_USR- (produção) ou TEST- (teste)
-// O Secret Key NÃO funciona para criar preferências!
+// O Secret Key (que começa com números/letras) NÃO funciona para criar preferências!
 
-// Usa variável de ambiente (obrigatório)
+// Usa variável de ambiente (obrigatório - NÃO usar fallback hardcoded)
 const accessToken = process.env.NODE_ENV === 'production'
   ? process.env.MERCADOPAGO_ACCESS_TOKEN
   : (process.env.MERCADOPAGO_TEST_ACCESS_TOKEN || process.env.MERCADOPAGO_ACCESS_TOKEN);
 
 // Validar se accessToken está configurado
 if (!accessToken) {
-  console.error('⚠️ ERRO CRÍTICO: MERCADOPAGO_ACCESS_TOKEN não configurado!');
-  console.error('Configure a variável de ambiente MERCADOPAGO_ACCESS_TOKEN no servidor.');
+  const errorMsg = '⚠️ ERRO CRÍTICO: MERCADOPAGO_ACCESS_TOKEN não configurado! Configure a variável de ambiente no servidor.';
+  console.error(errorMsg);
   console.error('O token deve começar com APP_USR- (produção) ou TEST- (teste)');
-  console.error('NÃO use o Secret Key - use o Access Token!');
+  console.error('NÃO use o Secret Key - use o Access Token da aba "Credenciais" do Mercado Pago!');
 } else {
   // Validar formato do token
   const isValidFormat = accessToken.startsWith('APP_USR-') || accessToken.startsWith('TEST-');
   if (!isValidFormat) {
-    console.error('⚠️ AVISO: O token não está no formato correto!');
+    console.error('⚠️ ERRO: O token não está no formato correto!');
     console.error('Access Token deve começar com APP_USR- (produção) ou TEST- (teste)');
-    console.error('Token atual começa com:', accessToken.substring(0, 10));
+    console.error('Token atual começa com:', accessToken.substring(0, 20));
+    console.error('Você provavelmente está usando o Secret Key ao invés do Access Token!');
+    console.error('Acesse: https://www.mercadopago.com.br/developers/panel/credentials');
+    console.error('Na aba "Live" ou "Test", copie o ACCESS TOKEN (não o Secret Key)');
   } else {
     console.log('✅ Mercado Pago Access Token configurado:', accessToken.substring(0, 15) + '...');
   }
@@ -30,7 +33,12 @@ if (!accessToken) {
 
 // Validar token antes de criar cliente
 if (!accessToken) {
-  throw new Error('MERCADOPAGO_ACCESS_TOKEN não configurado. Configure a variável de ambiente no servidor.');
+  throw new Error('MERCADOPAGO_ACCESS_TOKEN não configurado. Configure a variável de ambiente MERCADOPAGO_ACCESS_TOKEN no servidor (AWS Amplify). O token deve começar com APP_USR- (produção) ou TEST- (teste).');
+}
+
+// Validar formato do token
+if (!accessToken.startsWith('APP_USR-') && !accessToken.startsWith('TEST-')) {
+  throw new Error('Token do Mercado Pago inválido! Use o ACCESS TOKEN (começa com APP_USR- ou TEST-), não o Secret Key. Configure MERCADOPAGO_ACCESS_TOKEN no servidor.');
 }
 
 const client = new MercadoPagoConfig({
