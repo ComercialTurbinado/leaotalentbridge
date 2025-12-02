@@ -1,16 +1,20 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GrMenu, GrClose } from 'react-icons/gr';
+import GoogleTranslateWidget from './GoogleTranslateWidget';
 import styles from './Header.module.css';
 
+// Header component for the main landing page
 interface HeaderProps {
   transparent?: boolean;
 }
 
 export default function Header({ transparent = false }: HeaderProps) {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -36,26 +40,27 @@ export default function Header({ transparent = false }: HeaderProps) {
           {/* Desktop Navigation */}
           <nav className={styles.desktopNav}>
             <Link href="#como-funciona" className={styles.navLink}>
-              Como Funciona
+              {t('header.howItWorks')}
             </Link>
             <Link href="#beneficios" className={styles.navLink}>
-              Benefícios
+              {t('header.benefits')}
             </Link>
             <Link href="#sobre" className={styles.navLink}>
-              Sobre
+              {t('header.about')}
             </Link>
             <Link href="#contato" className={styles.navLink}>
-              Contato
+              {t('header.contact')}
             </Link>
           </nav>
 
           {/* CTA Buttons */}
           <div className={styles.ctaButtons}>
+            <GoogleTranslateWidget variant="header" />
             <Link href="/candidato/login" className="btn btn-secondary btn-small">
-              Login
+              {t('header.login')}
             </Link>
             <Link href="#cadastro" className="btn btn-primary btn-small">
-              Cadastrar
+              {t('header.register')}
             </Link>
           </div>
 
@@ -63,7 +68,7 @@ export default function Header({ transparent = false }: HeaderProps) {
           <button 
             className={styles.mobileMenuButton}
             onClick={toggleMenu}
-            aria-label={isMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-label={isMenuOpen ? t('header.close') : t('header.menu')}
           >
             {isMenuOpen ? <GrClose size={24} /> : <GrMenu size={24} />}
           </button>
@@ -78,36 +83,37 @@ export default function Header({ transparent = false }: HeaderProps) {
                 className={styles.mobileNavLink}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Como Funciona
+                {t('header.howItWorks')}
               </Link>
               <Link 
                 href="#beneficios" 
                 className={styles.mobileNavLink}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Benefícios
+                {t('header.benefits')}
               </Link>
               <Link 
                 href="#sobre" 
                 className={styles.mobileNavLink}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Sobre
+                {t('header.about')}
               </Link>
               <Link 
                 href="#contato" 
                 className={styles.mobileNavLink}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Contato
+                {t('header.contact')}
               </Link>
               
               <div className={styles.mobileCta}>
+                <GoogleTranslateWidget variant="header" />
                 <Link href="/candidato/login" className="btn btn-secondary">
-                  Login
+                  {t('header.login')}
                 </Link>
                 <Link href="#cadastro" className="btn btn-primary">
-                  Cadastrar
+                  {t('header.register')}
                 </Link>
               </div>
             </div>

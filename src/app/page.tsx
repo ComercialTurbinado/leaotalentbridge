@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import Header from '@/components/Header';
 import AnimatedCard from '@/components/AnimatedCard';
 import AnimatedHeading from '@/components/AnimatedHeading';
@@ -9,6 +10,7 @@ import styles from './page.module.css';
 import Image from 'next/image';
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const [userType, setUserType] = useState<'candidato' | 'empresa' | ''>('');
   const [isLoading, setIsLoading] = useState(false);
   const gridPatternRef = useRef<HTMLDivElement>(null);
@@ -100,21 +102,19 @@ export default function HomePage() {
           <div className={styles.heroContent}>
             <div className={styles.heroText}>
               <AnimatedHeading 
-                title="Seu talento reconhecido no mundo." 
+                title={t('home.hero.title')} 
                 level={1}
                 className="leftAligned"
               />
               <p className={`${styles.heroDescription} slide-up`}>
-                Conectamos profissionais brasileiros às melhores oportunidades nos Emirados Árabes Unidos.
-                Somos a ponte entre profissionais qualificados e empresas que valorizam a excelência. 
-                Com base em Dubai, conectamos talentos brasileiros ao futuro que eles merecem.
+                {t('home.hero.description')}
               </p>
               
            
 
               <div className={styles.heroCta}>
                 <a href="#como-funciona" className="btn btn-secondary ">
-                  Saiba mais
+                  {t('home.hero.cta')}
                   <GrNext size={20} />
                 </a>
               </div>
@@ -124,7 +124,7 @@ export default function HomePage() {
             <div className={`${styles.accessForm} slide-up`}>
               <div className="card">
                 <div className="card-header">
-                  <h3 className="card-title">Comece Sua Jornada</h3>
+                  <h3 className="card-title">{t('home.hero.startJourney')}</h3>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -136,7 +136,7 @@ export default function HomePage() {
                       onClick={() => setUserType('candidato')}
                     >
                       <GrGroup size={36} />
-                      <span>Sou Candidato</span>
+                      <span>{t('home.hero.candidate')}</span>
                       <GrStatusCritical className={styles.checkIcon} size={24} />
                     </button>
                     <button
@@ -145,7 +145,7 @@ export default function HomePage() {
                       onClick={() => setUserType('empresa')}
                     >
                       <GrOrganization size={36} />
-                      <span>Sou Empresa</span>
+                      <span>{t('home.hero.company')}</span>
                       <GrStatusCritical className={styles.checkIcon} size={24} />
                     </button>
                   </div>
@@ -154,12 +154,12 @@ export default function HomePage() {
                   {userType && (
                     <div className={styles.formFields}>
                       <div className="form-group">
-                        <label className="form-label">Nome Completo</label>
+                        <label className="form-label">{t('home.hero.fullName')}</label>
                         <input
                           type="text"
                           name="name"
                           className="form-input"
-                          placeholder="Digite seu nome completo"
+                          placeholder={t('home.hero.placeholders.fullName')}
                           value={formData.name}
                           onChange={handleInputChange}
                           required
@@ -167,12 +167,12 @@ export default function HomePage() {
                       </div>
 
                       <div className="form-group">
-                        <label className="form-label">E-mail</label>
+                        <label className="form-label">{t('home.hero.email')}</label>
                         <input
                           type="email"
                           name="email"
                           className="form-input"
-                          placeholder="seu@email.com"
+                          placeholder={t('home.hero.placeholders.email')}
                           value={formData.email}
                           onChange={handleInputChange}
                           required
@@ -180,12 +180,12 @@ export default function HomePage() {
                       </div>
 
                       <div className="form-group">
-                        <label className="form-label">Telefone</label>
+                        <label className="form-label">{t('home.hero.phone')}</label>
                         <input
                           type="tel"
                           name="phone"
                           className="form-input"
-                          placeholder="+55 (11) 99999-9999"
+                          placeholder={t('home.hero.placeholders.phone')}
                           value={formData.phone}
                           onChange={handleInputChange}
                           required
@@ -194,12 +194,12 @@ export default function HomePage() {
 
                       {userType === 'candidato' && (
                         <div className="form-group">
-                          <label className="form-label">LinkedIn</label>
+                          <label className="form-label">{t('home.hero.linkedin')}</label>
                           <input
                             type="text"
                             name="linkedin"
                             className="form-input"
-                            placeholder="https://www.linkedin.com/in/seu-perfil"
+                            placeholder={t('home.hero.placeholders.linkedin')}
                             value={formData.linkedin}
                             onChange={handleInputChange}
                             required
@@ -209,12 +209,12 @@ export default function HomePage() {
 
                       {userType === 'empresa' && (
                         <div className="form-group">
-                          <label className="form-label">Website</label>
+                          <label className="form-label">{t('home.hero.website')}</label>
                           <input
                             type="text"
                             name="website"
                             className="form-input"
-                            placeholder="https://www.seuwebsite.com"
+                            placeholder={t('home.hero.placeholders.website')}
                             value={formData.website}
                             onChange={handleInputChange}
                             required
@@ -224,12 +224,12 @@ export default function HomePage() {
 
                       {userType === 'empresa' && (
                         <div className="form-group">
-                          <label className="form-label">LinkedIn da Empresa</label>
+                          <label className="form-label">{t('home.hero.companyLinkedin')}</label>
                           <input
                             type="text"
                             name="linkedin"
                             className="form-input"
-                            placeholder="https://www.linkedin.com/company/empresa"
+                            placeholder={t('home.hero.placeholders.companyLinkedin')}
                             value={formData.linkedin}
                             onChange={handleInputChange}
                             required
@@ -239,7 +239,7 @@ export default function HomePage() {
 
                       {userType === 'candidato' && (
                         <div className="form-group">
-                          <label className="form-label">Nível de Experiência</label>
+                          <label className="form-label">{t('home.hero.experience')}</label>
                           <select
                             name="experience"
                             className="form-select"
@@ -247,23 +247,23 @@ export default function HomePage() {
                             onChange={handleInputChange}
                             required
                           >
-                            <option value="">Selecione</option>
-                            <option value="junior">Júnior (1-3 anos)</option>
-                            <option value="pleno">Pleno (3-7 anos)</option>
-                            <option value="senior">Sênior (7+ anos)</option>
-                            <option value="gerencial">Gerencial/Executivo</option>
+                            <option value="">{t('home.hero.select')}</option>
+                            <option value="junior">{t('home.hero.experienceLevels.junior')}</option>
+                            <option value="pleno">{t('home.hero.experienceLevels.pleno')}</option>
+                            <option value="senior">{t('home.hero.experienceLevels.senior')}</option>
+                            <option value="gerencial">{t('home.hero.experienceLevels.managerial')}</option>
                           </select>
                         </div>
                       )}
 
                       {userType === 'empresa' && (
                         <div className="form-group">
-                          <label className="form-label">Nome da Empresa</label>
+                          <label className="form-label">{t('home.hero.companyName')}</label>
                           <input
                             type="text"
                             name="company"
                             className="form-input"
-                            placeholder="Nome da sua empresa"
+                            placeholder={t('home.hero.placeholders.companyName')}
                             value={formData.company}
                             onChange={handleInputChange}
                             required
@@ -276,16 +276,16 @@ export default function HomePage() {
                           <div className={styles.loadingSpinner}></div>
                         ) : (
                           <>
-                            Iniciar Cadastro
+                            {t('home.hero.startRegistration')}
                             <GrNext size={20} />
                           </>
                         )}
                       </button>
 
                       <div className={styles.loginLink}>
-                        <p>Já tem uma conta?</p>
+                        <p>{t('home.hero.alreadyHaveAccount')}</p>
                         <a href={`/${userType}/login`} className="text-gold">
-                          Fazer Login
+                          {t('home.hero.login')}
                         </a>
                       </div>
                     </div>
@@ -296,7 +296,7 @@ export default function HomePage() {
               <div className={`${styles.heroStats} scale-in`}>
                 <div className={styles.statItem}>
                   <div className={styles.statNumber}>500+</div>
-                  <div className={styles.statLabel}>Profissionais Conectados</div>
+                  <div className={styles.statLabel}>{t('home.hero.stats')}</div>
                 </div>
               </div>
 
@@ -309,40 +309,40 @@ export default function HomePage() {
       <section id="como-funciona" className={`section ${styles.howItWorksSection}`}>
         <div className="container">
           <AnimatedHeading 
-            title="Comece Sua Jornada"
-                          subtitle="Um Processo Simples E Eficiente Para Conectar Talentos A Oportunidades Únicas"
+            title={t('home.howItWorks.title')}
+            subtitle={t('home.howItWorks.subtitle')}
           />
 
           <div className={styles.stepsGrid}>
             <AnimatedCard
               number="01"
               icon={<GrDocument size={40} />}
-              title="Crie Seu Perfil"
-              description="Complete seu perfil com experiências, competências e objetivos."
+              title={t('home.howItWorks.step1.title')}
+              description={t('home.howItWorks.step1.description')}
               delay={0}
             />
 
             <AnimatedCard
               number="02"
               icon={<GrTarget size={40} />}
-              title="Conexão Inteligente"
-              description="Nossa plataforma cruza seus dados com vagas exclusivas que realmente combinam com seu talento."
+              title={t('home.howItWorks.step2.title')}
+              description={t('home.howItWorks.step2.description')}
               delay={200}
             />
 
             <AnimatedCard
               number="03"
               icon={<GrGroup size={40} />}
-              title="Seleção com Propósito"
-              description="Participe de processos seletivos com empresas que valorizam o profissional brasileiro."
+              title={t('home.howItWorks.step3.title')}
+              description={t('home.howItWorks.step3.description')}
               delay={400}
             />
 
             <AnimatedCard
               number="04"
               icon={<GrPlan size={40} />}
-              title="Transição Estruturada"
-                              description="Receba orientação jurídica e profissional, com suporte cultural."
+              title={t('home.howItWorks.step4.title')}
+              description={t('home.howItWorks.step4.description')}
               delay={600}
             />
           </div>
@@ -353,8 +353,8 @@ export default function HomePage() {
       <section id="beneficios" className={`section ${styles.benefitsSection}`}>
         <div className="container">
           <AnimatedHeading
-            title="Por que Escolher a UAE Careers?"
-            subtitle="Oferecemos Muito Mais Que Simples Conexões - Somos Seu Parceiro De Sucesso"
+            title={t('home.benefits.title')}
+            subtitle={t('home.benefits.subtitle')}
           />
 
           <div className="grid grid-3">
@@ -362,9 +362,9 @@ export default function HomePage() {
               <div className={styles.benefitIcon}>
                 <GrLineChart size={50} />
               </div>
-              <h3>Oportunidades Exclusivas</h3>
+              <h3>{t('home.benefits.exclusive.title')}</h3>
               <p>
-                Vagas que você não encontra no LinkedIn — Acesso direto a oportunidades confidenciais com empresas selecionadas nos Emirados.
+                {t('home.benefits.exclusive.description')}
               </p>
             </div>
 
@@ -372,9 +372,9 @@ export default function HomePage() {
               <div className={styles.benefitIcon}>
                 <GrShield size={50} />
               </div>
-              <h3>Processo Seguro</h3>
+              <h3>{t('home.benefits.secure.title')}</h3>
               <p>
-                Empresas verificadas e confiáveis — Você participa apenas de processos com empregadores sérios inclusive recomendado pela MOHRE.
+                {t('home.benefits.secure.description')}
               </p>
             </div>
 
@@ -382,9 +382,9 @@ export default function HomePage() {
               <div className={styles.benefitIcon}>
                 <GrGlobe size={50} />
               </div>
-              <h3>Suporte Completo</h3>
+              <h3>{t('home.benefits.support.title')}</h3>
               <p>
-                Apoio antes, durante e depois da mudança — Não é só sobre conseguir a vaga. Nós garantimos que sua chegada seja tranquila.
+                {t('home.benefits.support.description')}
               </p>
             </div>
           </div>
@@ -397,19 +397,19 @@ export default function HomePage() {
           <div className="grid grid-2">
             <div className={styles.aboutContent}>
               <AnimatedHeading
-                title="Sobre a UAE Careers"
+                title={t('home.about.title')}
                 level={2}
                 className={styles.leftAligned}
               />
-              <h3 className="heading-3 mb-md">Conectando Talentos Ao Futuro</h3>
+              <h3 className="heading-3 mb-md">{t('home.about.subtitle')}</h3>
               <p>
-                A partir de uma escuta ativa das demandas do mercado dos Emirados Árabes Unidos — e com o respaldo de líderes empresariais e apoio institucional — nasceu a UAE Careers, com um propósito claro: criar oportunidades reais para brasileiros no cenário internacional, com foco em todos os Emirados.
+                {t('home.about.description1')}
               </p>
               <p>
-                Aliamos o conhecimento das necessidades das empresas locais aos objetivos e competências dos profissionais que desejam atuar fora do Brasil.
+                {t('home.about.description2')}
               </p>
               <p className={styles.highlightText}>
-                Como uma vertente da Leão Group Global, a UAE Careers se destaca pela sólida experiência na mobilidade e recolocação de talentos, sendo amplamente reconhecida nos Emirados Árabes por sua atuação estratégica e comprometida.
+                {t('home.about.highlight')}
               </p>
             </div>
             
@@ -434,35 +434,35 @@ export default function HomePage() {
       <section id="contato" className={`section ${styles.contactSection}`}>
         <div className="container">
           <AnimatedHeading
-            title="Entre em Contato"
-            subtitle="Pronto Para Dar O Próximo Passo? Nossa Equipe Está Aqui Para Ajudar"
+            title={t('home.contact.title')}
+            subtitle={t('home.contact.subtitle')}
           />
 
           <div className="grid grid-3">
             <div className={styles.contactCard}>
               <GrMail size={40} />
-              <h4>E-mail</h4>
-              <p>contato@leaocareers.com</p>
-              <a href="mailto:contato@leaocareers.com" className="btn btn-secondary">
-                Fale Com Um Consultor
+              <h4>{t('home.contact.email.title')}</h4>
+              <p>{t('home.contact.email.address')}</p>
+              <a href="mailto:contact@uaecareers.com" className="btn btn-secondary">
+                {t('home.contact.email.cta')}
               </a>
             </div>
 
             <div className={styles.contactCard}>
               <GrPhone size={40} />
-              <h4>Telefone</h4>
-              <p>+971 50 371 6967</p>
+              <h4>{t('home.contact.phone.title')}</h4>
+              <p>{t('home.contact.phone.number')}</p>
               <a href="tel:+971503716967" className="btn btn-secondary">
-                Tirar Dúvidas Agora
+                {t('home.contact.phone.cta')}
               </a>
             </div>
 
             <div className={styles.contactCard}>
               <GrLocation size={40} />
-              <h4>Unidades</h4>
-              <p>Rio de Janeiro, Brasil<br />Dubai, EAU</p>
+              <h4>{t('home.contact.location.title')}</h4>
+              <p dangerouslySetInnerHTML={{ __html: t('home.contact.location.address') }}></p>
               <button className="btn btn-secondary">
-                Ver Localização
+                {t('home.contact.location.cta')}
               </button>
             </div>
           </div>
@@ -484,14 +484,14 @@ export default function HomePage() {
             </div>
             
             <div className={styles.footerLinks}>
-              <a href="#como-funciona">Como Funciona</a>
-              <a href="#beneficios">Benefícios</a>
-              <a href="#sobre">Sobre</a>
-              <a href="#contato">Contato</a>
+              <a href="#como-funciona">{t('header.howItWorks')}</a>
+              <a href="#beneficios">{t('header.benefits')}</a>
+              <a href="#sobre">{t('header.about')}</a>
+              <a href="#contato">{t('header.contact')}</a>
             </div>
             
             <div className={styles.footerCopyright}>
-              <p>&copy; 2024 UAE Careers. Todos os direitos reservados.</p>
+              <p>{t('home.footer.copyright')}</p>
             </div>
           </div>
         </div>

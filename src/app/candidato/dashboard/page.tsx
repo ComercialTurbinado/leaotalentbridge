@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { 
   GrNotification, 
@@ -56,6 +57,7 @@ interface DashboardSummary {
 }
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -206,11 +208,11 @@ export default function Dashboard() {
           <div className={styles.pageHeader}>
             <div className={styles.headerContent}>
               <div>
-                <h1>Dashboard</h1>
-                <p>Acompanhe suas candidaturas, documentos e oportunidades de carreira</p>
+                <h1>{t('dashboard.title')}</h1>
+                <p>{t('dashboard.description')}</p>
                 {lastUpdate && (
                   <small className={styles.lastUpdate}>
-                    Última atualização: {lastUpdate.toLocaleTimeString('pt-BR')}
+                    {t('dashboard.lastUpdate')}: {lastUpdate.toLocaleTimeString('pt-BR')}
                   </small>
                 )}
               </div>
@@ -220,7 +222,7 @@ export default function Dashboard() {
                 disabled={refreshing}
               >
                 <GrRefresh size={20} />
-                {refreshing ? 'Atualizando...' : 'Atualizar'}
+                {refreshing ? t('dashboard.refreshing') : t('dashboard.refresh')}
               </button>
             </div>
           </div>
@@ -229,7 +231,7 @@ export default function Dashboard() {
           {error && (
             <div className={styles.errorMessage}>
               <p>⚠️ {error}</p>
-              <button onClick={() => loadDashboardData(true)}>Tentar novamente</button>
+              <button onClick={() => loadDashboardData(true)}>{t('dashboard.tryAgain')}</button>
             </div>
           )}
 
@@ -241,8 +243,8 @@ export default function Dashboard() {
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.totalApplications}</h3>
-                <p>Total de Candidaturas</p>
-                <small>Ativas e históricas</small>
+                <p>{t('dashboard.totalApplications')}</p>
+                <small>{t('dashboard.activeAndHistorical')}</small>
               </div>
             </div>
 
@@ -252,8 +254,8 @@ export default function Dashboard() {
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.upcomingInterviews}</h3>
-                <p>Próximas Entrevistas</p>
-                <small>Agendadas</small>
+                <p>{t('dashboard.upcomingInterviews')}</p>
+                <small>{t('dashboard.scheduled')}</small>
               </div>
             </div>
 
@@ -263,8 +265,8 @@ export default function Dashboard() {
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.profileCompletion}%</h3>
-                <p>Perfil Completo</p>
-                <small>Progresso atual</small>
+                <p>{t('dashboard.profileComplete')}</p>
+                <small>{t('dashboard.currentProgress')}</small>
               </div>
             </div>
 
@@ -274,8 +276,8 @@ export default function Dashboard() {
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.pendingDocuments}</h3>
-                <p>Documentos Pendentes</p>
-                <small>{stats.verifiedDocuments}/{stats.totalDocuments} verificados</small>
+                <p>{t('dashboard.pendingDocuments')}</p>
+                <small>{stats.verifiedDocuments}/{stats.totalDocuments} {t('dashboard.verifiedOf')}</small>
               </div>
             </div>
 
@@ -285,7 +287,7 @@ export default function Dashboard() {
               </div>
               <div className={styles.statContent}>
                 <h3>{stats.completedSimulations}</h3>
-                <p>Simulações Concluídas</p>
+                <p>{t('dashboard.completedSimulations')}</p>
                 <small>Performance avaliada</small>
               </div>
             </div>

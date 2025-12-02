@@ -1,6 +1,15 @@
 /* Import das cores da bandeira dos EAU */
 @import '../styles/uae-colors.css';
 
+/* Google Translate Global Styles */
+body {
+  top: 0 !important;
+}
+
+.goog-te-banner-frame {
+  display: none !important;
+}
+
 /* Reset e Estilo Global */
 * {
   box-sizing: border-box;
