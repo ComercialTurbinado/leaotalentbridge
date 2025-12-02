@@ -54,7 +54,15 @@ Após configurar, teste novamente o fluxo de pagamento.
 
 ## 🔑 Credenciais Necessárias
 
-### Obrigatórias:
+### OPÇÃO 1: API KEY e SECRET KEY (Recomendado - Método Moderno)
+
+Configure **UMA** das opções abaixo:
+
+**Opção 1 (Recomendado):**
+- `PAGSEGURO_API_KEY` - API Key do PagSeguro (do painel "Config & Keys")
+- `PAGSEGURO_SECRET_KEY` - Secret Key do PagSeguro (do painel "Config & Keys")
+
+**Opção 2 (Tradicional):**
 - `PAGSEGURO_EMAIL` - Email da sua conta PagSeguro
 - `PAGSEGURO_TOKEN` - Token de Segurança gerado no painel
 
