@@ -231,13 +231,25 @@ function EmpresaPagamentoContent() {
         throw new Error(data.error || data.details || 'Erro ao criar preferência de pagamento');
       }
 
-      // Redirecionar para o checkout do PagSeguro
-      const checkoutUrl = data.data.checkoutUrl;
-
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
+      // Processar resposta do PagSeguro (Checkout Transparente)
+      if (data.data.qrCode || data.data.qrCodeText) {
+        // PIX - mostrar QR Code
+        // TODO: Implementar modal/página para exibir QR Code do PIX
+        const qrCodeText = data.data.qrCodeText || data.data.qrCode;
+        alert(`QR Code PIX gerado! Código: ${qrCodeText}\n\nEm breve será implementada a exibição do QR Code.`);
+        // Por enquanto, redireciona para página de sucesso
+        router.push(`/empresa/pagamento/pendente?payment_id=${data.data.paymentId}`);
+      } else if (data.data.orderId || data.data.checkoutCode) {
+        // Cartão - Checkout Transparente
+        // O cartão será processado no frontend em etapa separada
+        // Por enquanto, redireciona para página de processamento
+        const orderId = data.data.orderId || data.data.checkoutCode;
+        router.push(`/empresa/pagamento/processar?orderId=${orderId}&paymentId=${data.data.paymentId}`);
+      } else if (data.data.checkoutUrl) {
+        // Fallback: se houver URL, redireciona
+        window.location.href = data.data.checkoutUrl;
       } else {
-        throw new Error('URL de checkout não fornecida pelo PagSeguro');
+        throw new Error('Dados de pagamento não fornecidos pelo PagSeguro');
       }
     } catch (error: any) {
       console.error('Erro no pagamento:', error);

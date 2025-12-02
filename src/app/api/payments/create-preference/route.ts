@@ -210,6 +210,9 @@ export async function POST(request: NextRequest) {
         paymentId: payment.paymentId,
         checkoutCode: checkout.checkoutCode,
         checkoutUrl: checkout.checkoutUrl,
+        orderId: checkout.orderId,
+        qrCode: checkout.qrCode,
+        qrCodeText: checkout.qrCodeText,
       },
     });
   } catch (error: any) {

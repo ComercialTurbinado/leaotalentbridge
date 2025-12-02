@@ -1,5 +1,6 @@
-// Serviço de integração com PagSeguro
-// Documentação: https://dev.pagseguro.uol.com.br/
+// Serviço de integração com PagSeguro - API Moderna (Checkout Transparente)
+// Documentação: https://developer.pagbank.com.br/
+// Usa API KEY e SECRET KEY com Basic Authentication
 
 interface CreateCheckoutData {
   userId?: string;
@@ -13,100 +14,105 @@ interface CreateCheckoutData {
   metadata?: Record<string, any>;
 }
 
-interface PagSeguroCheckoutResponse {
-  code: string;
-  date: string;
-  checkoutUrl?: string;
-}
-
-// Configuração do PagSeguro - SIMPLIFICADO
-// A API v2 do PagSeguro usa email e token no body, mesmo com API KEY/SECRET KEY
-// API KEY vai no lugar do email, SECRET KEY vai no lugar do token
-const PAGSEGURO_EMAIL = process.env.PAGSEGURO_EMAIL || process.env.PAGSEGURO_API_KEY || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
-const PAGSEGURO_TOKEN = process.env.PAGSEGURO_TOKEN || process.env.PAGSEGURO_SECRET_KEY || '88b173f9a3e5414fbd805901cc86528a';
+// Configuração do PagSeguro - API Moderna (Checkout Transparente)
+// Usa API KEY e SECRET KEY com Basic Authentication
+const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
+const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY || '88b173f9a3e5414fbd805901cc86528a';
 
 const PAGSEGURO_ENV = process.env.PAGSEGURO_ENV || 'production'; // 'sandbox' ou 'production'
 
-// URLs da API
+// URLs da API Moderna do PagSeguro
+// A API moderna usa endpoints diferentes
 const PAGSEGURO_API_URL = PAGSEGURO_ENV === 'sandbox'
-  ? 'https://sandbox.pagseguro.uol.com.br'
-  : 'https://ws.pagseguro.uol.com.br';
+  ? 'https://sandbox.api.pagseguro.com'
+  : 'https://api.pagseguro.com';
 
-// Validar configuração (apenas logar, não lançar erro no build)
-if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
+// Criar Basic Auth header
+const getAuthHeader = () => {
+  const credentials = `${PAGSEGURO_API_KEY}:${PAGSEGURO_SECRET_KEY}`;
+  return `Basic ${Buffer.from(credentials).toString('base64')}`;
+};
+
+// Validar configuração
+if (!PAGSEGURO_API_KEY || !PAGSEGURO_SECRET_KEY) {
   console.warn('⚠️ AVISO: Credenciais do PagSeguro não configuradas!');
   console.warn('Configure no AWS Amplify:');
-  console.warn('  - PAGSEGURO_API_KEY ou PAGSEGURO_EMAIL');
-  console.warn('  - PAGSEGURO_SECRET_KEY ou PAGSEGURO_TOKEN');
+  console.warn('  - PAGSEGURO_API_KEY: sua API key');
+  console.warn('  - PAGSEGURO_SECRET_KEY: sua Secret key');
 } else {
-  console.log('✅ PagSeguro configurado:', {
+  console.log('✅ PagSeguro configurado (API Moderna - Checkout Transparente):', {
     env: PAGSEGURO_ENV,
-    emailLength: PAGSEGURO_EMAIL.length,
-    tokenLength: PAGSEGURO_TOKEN.length
+    apiKeyLength: PAGSEGURO_API_KEY.length,
+    secretKeyLength: PAGSEGURO_SECRET_KEY.length
   });
 }
 
 /**
- * Cria um checkout no PagSeguro
- * Retorna a URL de checkout para redirecionar o usuário
+ * Cria um pedido (order) no PagSeguro - API Moderna
+ * Para PIX: retorna QR Code
+ * Para Cartão: retorna dados para processar no frontend
  */
 export async function createCheckout(
   data: CreateCheckoutData
-): Promise<{ checkoutCode: string; checkoutUrl: string }> {
-  if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
+): Promise<{ 
+  checkoutCode: string; 
+  checkoutUrl?: string; 
+  qrCode?: string; 
+  qrCodeText?: string;
+  orderId?: string;
+}> {
+  if (!PAGSEGURO_API_KEY || !PAGSEGURO_SECRET_KEY) {
     throw new Error('PagSeguro não configurado. Configure PAGSEGURO_API_KEY e PAGSEGURO_SECRET_KEY no AWS Amplify.');
   }
 
   try {
-    console.log('=== CRIANDO CHECKOUT NO PAGSEGURO ===');
+    console.log('=== CRIANDO PEDIDO NO PAGSEGURO (API MODERNA) ===');
     console.log('Dados:', JSON.stringify(data, null, 2));
 
-    // Preparar dados do checkout
-    const checkoutData = new URLSearchParams();
-    
-    // Credenciais (API KEY vai como email, SECRET KEY vai como token)
-    checkoutData.append('email', PAGSEGURO_EMAIL);
-    checkoutData.append('token', PAGSEGURO_TOKEN);
-    
-    // Dados do pagamento
-    checkoutData.append('currency', 'BRL');
-    checkoutData.append('reference', data.metadata?.paymentId || `PAY-${Date.now()}`);
-    
-    // Item (plano)
-    checkoutData.append('itemId1', data.planId);
-    checkoutData.append('itemDescription1', data.planName);
-    checkoutData.append('itemAmount1', data.amount.toFixed(2));
-    checkoutData.append('itemQuantity1', '1');
-    
-    // Dados do comprador
-    checkoutData.append('senderName', data.userName);
-    checkoutData.append('senderEmail', data.userEmail);
-    
-    // URLs de retorno
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://uaecareers.com';
-    const userType = data.metadata?.userType || 'candidato';
-    
-    checkoutData.append('redirectURL', `${baseUrl}/${userType}/pagamento/sucesso`);
-    checkoutData.append('notificationURL', `${process.env.NEXT_PUBLIC_API_URL || 'https://uaecareers.com/api'}/payments/webhook`);
-    
-    // Método de pagamento
+    // Preparar dados do pedido
+    const orderData: any = {
+      reference_id: data.metadata?.paymentId || `PAY-${Date.now()}`,
+      customer: {
+        name: data.userName,
+        email: data.userEmail,
+      },
+      items: [
+        {
+          reference_id: data.planId,
+          name: data.planName,
+          quantity: 1,
+          unit_amount: Math.round(data.amount * 100), // Converter para centavos
+        },
+      ],
+    };
+
+    // Adicionar método de pagamento
     if (data.paymentMethod === 'pix') {
-      checkoutData.append('paymentMethod', 'PIX');
+      // Pagamento via PIX - criar cobrança PIX
+      orderData.qr_codes = [
+        {
+          amount: {
+            value: Math.round(data.amount * 100),
+          },
+        },
+      ];
     } else {
-      checkoutData.append('paymentMethod', 'CREDIT_CARD');
-      if (data.installments && data.installments > 1) {
-        checkoutData.append('installmentQuantity', data.installments.toString());
-        checkoutData.append('installmentValue', (data.amount / data.installments).toFixed(2));
-      }
+      // Pagamento via cartão de crédito
+      // Para checkout transparente, criamos o pedido primeiro
+      // O cartão será capturado em uma etapa separada via API de charges
+      // Por enquanto, criamos o pedido sem charge para retornar orderId
+      // O frontend precisará criar a charge depois com os dados do cartão
     }
 
-    // Fazer requisição para criar checkout
-    const response = await fetch(`${PAGSEGURO_API_URL}/v2/checkout`, {
+    // Fazer requisição para criar pedido
+    const response = await fetch(`${PAGSEGURO_API_URL}/orders`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
+        'Authorization': getAuthHeader(),
+        'x-api-version': '4.0',
       },
-      body: checkoutData.toString(),
+      body: JSON.stringify(orderData),
     });
 
     console.log('Response status:', response.status);
@@ -114,34 +120,58 @@ export async function createCheckout(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Erro ao criar checkout:', errorText);
-      throw new Error(`Falha ao criar checkout no PagSeguro (Status: ${response.status}): ${errorText}`);
+      console.error('Erro ao criar pedido:', errorText);
+      let errorMessage = `Falha ao criar pedido no PagSeguro (Status: ${response.status})`;
+      try {
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.message) {
+          errorMessage += `: ${errorJson.message}`;
+        }
+        if (errorJson.errors) {
+          errorMessage += ` - ${JSON.stringify(errorJson.errors)}`;
+        }
+      } catch (e) {
+        errorMessage += `: ${errorText}`;
+      }
+      throw new Error(errorMessage);
     }
 
-    // Parse XML response (PagSeguro retorna XML)
-    const xmlText = await response.text();
-    console.log('Response XML:', xmlText);
+    const responseData = await response.json();
+    console.log('Response data:', JSON.stringify(responseData, null, 2));
+
+    // Extrair informações do pedido
+    const orderId = responseData.id || responseData.reference_id;
     
-    // Extrair código do checkout do XML
-    const codeMatch = xmlText.match(/<code>(.*?)<\/code>/);
-    if (!codeMatch || !codeMatch[1]) {
-      throw new Error('Resposta do PagSeguro inválida: código do checkout não encontrado');
+    // Se for PIX, extrair QR Code
+    let qrCode: string | undefined;
+    let qrCodeText: string | undefined;
+    
+    if (data.paymentMethod === 'pix' && responseData.qr_codes && responseData.qr_codes.length > 0) {
+      qrCode = responseData.qr_codes[0].links?.[0]?.href || responseData.qr_codes[0].text;
+      qrCodeText = responseData.qr_codes[0].text;
     }
 
-    const checkoutCode = codeMatch[1];
-    const checkoutUrl = `${PAGSEGURO_API_URL}/v2/checkout/payment.html?code=${checkoutCode}`;
+    // Para checkout transparente, não há URL de redirecionamento tradicional
+    // O pagamento é processado no próprio site
+    const checkoutUrl = data.paymentMethod === 'pix' 
+      ? undefined 
+      : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://uaecareers.com'}/${data.metadata?.userType || 'candidato'}/pagamento/processar?orderId=${orderId}`;
 
-    console.log('✅ Checkout criado com sucesso:', {
-      code: checkoutCode,
-      url: checkoutUrl
+    console.log('✅ Pedido criado com sucesso:', {
+      orderId,
+      qrCode: qrCode ? 'Gerado' : 'N/A',
+      checkoutUrl: checkoutUrl || 'N/A'
     });
 
     return {
-      checkoutCode,
-      checkoutUrl,
+      checkoutCode: orderId,
+      checkoutUrl: checkoutUrl || '',
+      qrCode,
+      qrCodeText,
+      orderId,
     };
   } catch (error: any) {
-    console.error('=== ERRO AO CRIAR CHECKOUT NO PAGSEGURO ===');
+    console.error('=== ERRO AO CRIAR PEDIDO NO PAGSEGURO ===');
     console.error('Error type:', error?.constructor?.name);
     console.error('Error message:', error?.message);
     console.error('Error stack:', error?.stack);
@@ -157,34 +187,38 @@ export async function getPaymentStatus(transactionCode: string): Promise<{
   status: string;
   reference: string;
   amount: number;
+  orderData?: any;
 }> {
-  if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
+  if (!PAGSEGURO_API_KEY || !PAGSEGURO_SECRET_KEY) {
     throw new Error('PagSeguro não configurado');
   }
 
   try {
-    const params = new URLSearchParams({
-      email: PAGSEGURO_EMAIL,
-      token: PAGSEGURO_TOKEN,
+    const response = await fetch(`${PAGSEGURO_API_URL}/orders/${transactionCode}`, {
+      headers: {
+        'Authorization': getAuthHeader(),
+        'x-api-version': '4.0',
+      },
     });
-
-    const response = await fetch(`${PAGSEGURO_API_URL}/v3/transactions/${transactionCode}?${params.toString()}`);
     
     if (!response.ok) {
-      throw new Error(`Erro ao consultar transação: ${response.status}`);
+      throw new Error(`Erro ao consultar pedido: ${response.status}`);
     }
 
-    const xmlText = await response.text();
+    const data = await response.json();
     
-    // Parse XML
-    const statusMatch = xmlText.match(/<status>(.*?)<\/status>/);
-    const referenceMatch = xmlText.match(/<reference>(.*?)<\/reference>/);
-    const amountMatch = xmlText.match(/<grossAmount>(.*?)<\/grossAmount>/);
+    // Extrair status e valores
+    const status = data.status || 'unknown';
+    const reference = data.reference_id || '';
+    const amount = data.charges?.[0]?.amount?.value 
+      ? data.charges[0].amount.value / 100 
+      : (data.items?.[0]?.unit_amount ? data.items[0].unit_amount / 100 : 0);
 
     return {
-      status: statusMatch ? statusMatch[1] : 'unknown',
-      reference: referenceMatch ? referenceMatch[1] : '',
-      amount: amountMatch ? parseFloat(amountMatch[1]) : 0,
+      status,
+      reference,
+      amount,
+      orderData: data,
     };
   } catch (error: any) {
     console.error('Erro ao consultar status:', error);
@@ -192,4 +226,21 @@ export async function getPaymentStatus(transactionCode: string): Promise<{
   }
 }
 
+/**
+ * Mapeia status do PagSeguro para status interno
+ */
+export function mapPagSeguroStatus(pagSeguroStatus: string): 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled' | 'refunded' {
+  const statusMap: Record<string, 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled' | 'refunded'> = {
+    'IN_ANALYSIS': 'processing',
+    'PAID': 'completed',
+    'CANCELED': 'cancelled',
+    'DECLINED': 'failed',
+    'REFUNDED': 'refunded',
+    'PARTIAL_REFUNDED': 'refunded',
+    'PENDING': 'pending',
+    'IN_USE': 'processing',
+    'AVAILABLE': 'completed',
+  };
 
+  return statusMap[pagSeguroStatus] || 'pending';
+}

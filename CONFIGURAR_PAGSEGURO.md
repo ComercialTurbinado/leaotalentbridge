@@ -1,83 +1,64 @@
-# 🔧 Configurar PagSeguro
+# 🔧 Configuração do PagSeguro - Checkout Transparente (API Moderna)
 
-## ⚠️ IMPORTANTE
+## ✅ Credenciais Necessárias
 
-O sistema agora usa **PagSeguro** ao invés de Mercado Pago!
+Para usar o **Checkout Transparente** com **API moderna**, você precisa de:
 
-## 📋 Passo a Passo
+1. **PAGSEGURO_API_KEY** - Sua API Key (obtida em "Config & Keys" no painel PagSeguro)
+2. **PAGSEGURO_SECRET_KEY** - Sua Secret Key (obtida em "Config & Keys" no painel PagSeguro)
 
-### 1. Obter Credenciais do PagSeguro
+## 📍 Onde Encontrar
 
 1. Acesse: https://pagseguro.uol.com.br/
-2. Faça login na sua conta PagSeguro
-3. Vá em **"Vendas Online"** > **"Integrações"**
-4. Na seção **"Utilização de APIs"**, clique em **"Gerar Token"**
-5. Copie o **Token de Segurança** gerado
-6. Anote também o **Email** da sua conta PagSeguro
+2. Faça login
+3. No menu lateral, clique em **"Config & keys"**
+4. Na aba **"Test"** ou **"Live"**, você verá:
+   - **API key**: Copie este valor
+   - **Secret key**: Clique em "Reveal secret key" e copie
 
-### 2. Configurar no AWS Amplify
+## ⚙️ Configuração no AWS Amplify
 
-1. Acesse: https://console.aws.amazon.com/amplify
-2. Selecione seu app
-3. Vá em **"App settings"** > **"Environment variables"**
-4. Clique em **"Manage variables"**
-5. Adicione as seguintes variáveis:
+1. Acesse o painel do AWS Amplify
+2. Vá em **App settings** > **Environment variables**
+3. Adicione as seguintes variáveis:
 
-   **Variável 1:**
-   - **Key:** `PAGSEGURO_EMAIL`
-   - **Value:** Seu email da conta PagSeguro (ex: `seu-email@exemplo.com`)
-
-   **Variável 2:**
-   - **Key:** `PAGSEGURO_TOKEN`
-   - **Value:** O Token de Segurança que você copiou
-
-   **Variável 3 (Opcional - para testes):**
-   - **Key:** `PAGSEGURO_ENV`
-   - **Value:** `sandbox` (para testes) ou `production` (para produção)
-   - Se não configurar, usa `production` por padrão
-
-6. Clique em **"Save"**
-7. O Amplify fará um novo deploy automaticamente
-
-### 3. Verificar Configuração
-
-Após configurar e fazer deploy, acesse:
 ```
-https://uaecareers.com/api/payments/check-config
+PAGSEGURO_API_KEY=sua-api-key-aqui
+PAGSEGURO_SECRET_KEY=sua-secret-key-aqui
+PAGSEGURO_ENV=production  # ou 'sandbox' para testes
 ```
 
-Deve retornar que as credenciais estão configuradas.
+## 🎯 Como Funciona
 
-### 4. Testar Pagamento
+### PIX
+- Cria um pedido (order) no PagSeguro
+- Retorna um **QR Code** para o usuário escanear
+- O pagamento é confirmado via webhook
 
-Após configurar, teste novamente o fluxo de pagamento.
+### Cartão de Crédito
+- Cria um pedido (order) no PagSeguro
+- Retorna um **orderId** para processar o cartão no frontend
+- O cartão será capturado em uma etapa separada (a implementar)
 
-## 🔑 Credenciais Necessárias
+## 🔐 Autenticação
 
-### OPÇÃO 1: API KEY e SECRET KEY (Recomendado - Método Moderno)
+A API usa **Basic Authentication** com:
+- Username: `PAGSEGURO_API_KEY`
+- Password: `PAGSEGURO_SECRET_KEY`
 
-Configure **UMA** das opções abaixo:
+## 📝 Notas Importantes
 
-**Opção 1 (Recomendado):**
-- `PAGSEGURO_API_KEY` - API Key do PagSeguro (do painel "Config & Keys")
-- `PAGSEGURO_SECRET_KEY` - Secret Key do PagSeguro (do painel "Config & Keys")
+- ✅ Usa API moderna do PagSeguro (`api.pagseguro.com`)
+- ✅ Suporta PIX e Cartão de Crédito
+- ✅ Checkout Transparente (cliente não sai do site)
+- ⚠️ Para PIX, ainda precisa implementar a exibição do QR Code
+- ⚠️ Para Cartão, ainda precisa implementar a captura do cartão no frontend
 
-**Opção 2 (Tradicional):**
-- `PAGSEGURO_EMAIL` - Email da sua conta PagSeguro
-- `PAGSEGURO_TOKEN` - Token de Segurança gerado no painel
+## 🧪 Ambiente de Testes
 
-### Opcionais:
-- `PAGSEGURO_ENV` - Ambiente: `sandbox` (teste) ou `production` (padrão)
+Para testar, configure:
+```
+PAGSEGURO_ENV=sandbox
+```
 
-## ⚠️ Importante
-
-- **NUNCA** compartilhe suas credenciais
-- **NUNCA** commite credenciais no Git
-- Use sempre variáveis de ambiente
-- O Token de Segurança é sensível - guarde com cuidado
-- Se gerar um novo token, o anterior será invalidado
-
-## 📝 Nota
-
-O sistema foi migrado de Mercado Pago para PagSeguro. Todas as referências ao Mercado Pago foram substituídas por PagSeguro.
-
+E use as credenciais da aba **"Test"** no painel PagSeguro.
