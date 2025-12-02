@@ -704,7 +704,7 @@
 }
 
 .featuresHeader p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 1.125rem;
   font-weight: 500;
   max-width: 600px;
@@ -765,7 +765,7 @@
 }
 
 .featureDescription {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.95rem;
   font-weight: 500;
   line-height: 1.5;

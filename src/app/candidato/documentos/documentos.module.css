@@ -1166,7 +1166,7 @@
 
 .navCardArrow {
   font-size: 1.5rem;
-  color: var(--gray-400);
+  color: var(--gray-600);
   transition: all var(--transition-medium);
 }
 

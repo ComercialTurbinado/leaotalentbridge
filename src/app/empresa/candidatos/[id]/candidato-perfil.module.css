@@ -325,7 +325,7 @@
 }
 
 .experienceDescription {
-  color: var(--gray-400);
+  color: var(--gray-600);
   line-height: 1.6;
 }
 
@@ -375,7 +375,7 @@
 }
 
 .educationDescription {
-  color: var(--gray-400);
+  color: var(--gray-600);
   line-height: 1.6;
 }
 
@@ -423,7 +423,7 @@
 }
 
 .certificationId {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.8rem;
 }
 
@@ -490,7 +490,7 @@
 }
 
 .skillCategory {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.9rem;
 }
 
@@ -539,7 +539,7 @@
 }
 
 .documentInfo p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.9rem;
   margin: 0;
 }

@@ -37,7 +37,7 @@
 .errorPage p {
   font-size: 1.125rem;
   margin-bottom: var(--spacing-xl);
-  color: var(--gray-400);
+  color: var(--gray-600);
 }
 
 .spinner {
@@ -139,7 +139,7 @@
 }
 
 .headerContent p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 1.25rem;
   line-height: 1.5;
   max-width: 600px;
@@ -184,7 +184,7 @@
 }
 
 .statContent p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -502,7 +502,7 @@
 }
 
 .emptyState p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   line-height: 1.6;
   max-width: 500px;
   margin: 0 auto;

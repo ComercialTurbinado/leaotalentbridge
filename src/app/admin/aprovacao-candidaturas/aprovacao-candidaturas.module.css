@@ -83,7 +83,7 @@
 }
 
 .headerContent p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 1.25rem;
   line-height: 1.5;
   max-width: 600px;
@@ -135,7 +135,7 @@
 }
 
 .statContent p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 1rem;
   font-weight: 500;
 }
@@ -159,7 +159,7 @@
 .searchIcon {
   position: absolute;
   left: var(--spacing-lg);
-  color: var(--gray-400);
+  color: var(--gray-600);
   z-index: 2;
 }
 
@@ -181,7 +181,7 @@
 }
 
 .searchInput::placeholder {
-  color: var(--gray-400);
+  color: var(--gray-600);
 }
 
 .filterDropdown {
@@ -247,7 +247,7 @@
 }
 
 .candidateInfo p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   margin-bottom: var(--spacing-sm);
 }
 
@@ -307,7 +307,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.9rem;
 }
 
@@ -363,7 +363,7 @@
 }
 
 .emptyState p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   line-height: 1.6;
   max-width: 500px;
   margin: 0 auto;

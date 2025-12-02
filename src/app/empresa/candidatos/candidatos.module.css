@@ -51,7 +51,7 @@
 }
 
 .titleSection p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 1.25rem;
   line-height: 1.5;
   max-width: 600px;
@@ -85,7 +85,7 @@
 .searchBox svg {
   position: absolute;
   left: var(--spacing-lg);
-  color: var(--gray-400);
+  color: var(--gray-600);
   z-index: 2;
   width: 20px;
   height: 20px;
@@ -474,7 +474,7 @@
 }
 
 .emptyState p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   line-height: 1.6;
   max-width: 500px;
   margin: 0 auto;

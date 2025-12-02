@@ -91,7 +91,7 @@
 }
 
 .statContent p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -273,7 +273,7 @@
 }
 
 .notificationMessage {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.9rem;
   margin: 0;
   line-height: 1.4;
@@ -353,7 +353,7 @@
 }
 
 .dateLabel {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.9rem;
 }
 
@@ -412,7 +412,7 @@
 }
 
 .emptyState h3 {
-  color: var(--gray-400);
+  color: var(--gray-600);
   margin-bottom: var(--spacing-sm);
 }
 
@@ -425,7 +425,7 @@
 .loading {
   text-align: center;
   padding: var(--spacing-xxl);
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 1.1rem;
 }
 

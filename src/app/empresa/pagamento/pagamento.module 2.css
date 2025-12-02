@@ -70,7 +70,7 @@
 }
 
 .pageHeader p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 1.125rem;
   font-weight: 500;
 }
@@ -126,7 +126,7 @@
 }
 
 .featuresHeader p {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 1.125rem;
   font-weight: 500;
   max-width: 600px;
@@ -187,7 +187,7 @@
 }
 
 .featureDescription {
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-size: 0.95rem;
   font-weight: 500;
   line-height: 1.5;
@@ -277,14 +277,14 @@
 
 .period {
   font-size: 1rem;
-  color: var(--gray-400);
+  color: var(--gray-600);
   margin-left: var(--spacing-xs);
   font-weight: 500;
 }
 
 .totalPrice {
   font-size: 0.875rem;
-  color: var(--gray-400);
+  color: var(--gray-600);
   margin-top: var(--spacing-xs);
   font-weight: 600;
 }

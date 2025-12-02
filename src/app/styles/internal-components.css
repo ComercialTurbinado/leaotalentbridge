@@ -201,7 +201,7 @@
 
 .internalBtnSecondary:hover {
   background: var(--gray-300);
-  border-color: var(--gray-400);
+  border-color: var(--gray-600);
 }
 
 .internalBtnOutline {

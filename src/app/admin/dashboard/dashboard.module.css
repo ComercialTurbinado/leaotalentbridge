@@ -149,7 +149,7 @@
   background: var(--black-light);
   border: 1px solid var(--gray-300);
   border-radius: var(--radius-md);
-  color: var(--gray-400);
+  color: var(--gray-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -216,7 +216,7 @@
 
 .candidateDetails p {
   font-size: 0.875rem;
-  color: var(--gray-400);
+  color: var(--gray-600);
   margin-bottom: var(--spacing-xs);
 }
 
@@ -277,7 +277,7 @@
   background: var(--black-light);
   border: 1px solid var(--gray-300);
   border-radius: var(--radius-md);
-  color: var(--gray-400);
+  color: var(--gray-600);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -386,7 +386,7 @@
 
 .companyInfo p {
   font-size: 0.75rem;
-  color: var(--gray-400);
+  color: var(--gray-600);
 }
 
 /* Logs List */
@@ -438,7 +438,7 @@
 
 .logTime {
   font-size: 0.75rem;
-  color: var(--gray-400);
+  color: var(--gray-600);
 }
 
 /* Quick Actions */
@@ -540,7 +540,7 @@
 
 .metricLabel {
   font-size: 0.875rem;
-  color: var(--gray-400);
+  color: var(--gray-600);
   font-weight: 500;
 }
 
@@ -592,7 +592,7 @@
 
 .actionCard p {
   font-size: 0.875rem;
-  color: var(--gray-400);
+  color: var(--gray-600);
   margin: 0;
 }
 
