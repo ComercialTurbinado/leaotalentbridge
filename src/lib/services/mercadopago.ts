@@ -46,8 +46,14 @@ export async function createPaymentPreference(
   try {
     // Obter URL base (remover /api se existir)
     // URL oficial: https://uaecareers.com/
+    // Sempre usar URL de produção, não localhost
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://uaecareers.com/api';
-    const baseUrl = apiUrl.replace('/api', '') || 'https://uaecareers.com';
+    let baseUrl = apiUrl.replace('/api', '') || 'https://uaecareers.com';
+    
+    // Garantir que nunca use localhost em produção
+    if (baseUrl.includes('localhost') || baseUrl.includes('127.0.0.1')) {
+      baseUrl = 'https://uaecareers.com';
+    }
     
     const preference = await preferenceClient.create({
       body: {

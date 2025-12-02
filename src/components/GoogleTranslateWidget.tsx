@@ -67,20 +67,7 @@ export default function GoogleTranslateWidget({
     console.log('Hostname:', window.location.hostname);
     console.log('URL:', window.location.href);
     
-    // Verificar se estamos em localhost
-    const isLocalhost = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1' ||
-                       window.location.hostname.includes('192.168.');
-    
-    console.log('É localhost?', isLocalhost);
-    
-    if (isLocalhost) {
-      console.log('Ambiente localhost detectado - Google Translate desabilitado para desenvolvimento');
-      setIsLoaded(true); // Marcar como carregado para permitir uso do widget
-      return;
-    }
-    
-    // Função para inicializar o Google Translate (apenas em produção)
+    // Função para inicializar o Google Translate
     const initializeGoogleTranslate = () => {
       console.log('Inicializando Google Translate...');
       
