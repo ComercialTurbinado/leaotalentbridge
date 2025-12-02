@@ -205,13 +205,26 @@ function EmpresaPagamentoContent() {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
+      console.log('Enviando requisição para:', '/api/payments/create-preference');
+      console.log('Request body:', requestBody);
+      
       const response = await fetch('/api/payments/create-preference', {
         method: 'POST',
         headers,
         body: JSON.stringify(requestBody),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Erro HTTP:', response.status, errorText);
+        throw new Error(`Erro HTTP ${response.status}: ${errorText || 'Erro desconhecido'}`);
+      }
+
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (!data.success) {
         console.error('Erro da API:', data);
