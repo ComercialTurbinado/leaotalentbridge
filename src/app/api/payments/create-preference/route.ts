@@ -161,11 +161,22 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Erro ao criar preferência de pagamento:', error);
+    
+    // Verificar se é erro de credenciais
+    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+    let userMessage = 'Erro ao processar pagamento';
+    
+    if (errorMessage.includes('access_token') || errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
+      userMessage = 'Erro de configuração: Credenciais do Mercado Pago não configuradas. Verifique as variáveis de ambiente.';
+    } else if (errorMessage.includes('network') || errorMessage.includes('timeout')) {
+      userMessage = 'Erro de conexão com o Mercado Pago. Tente novamente em alguns instantes.';
+    }
+    
     return NextResponse.json(
       {
         success: false,
-        error: 'Erro ao processar pagamento',
-        details: error instanceof Error ? error.message : 'Erro desconhecido',
+        error: userMessage,
+        details: errorMessage,
       },
       { status: 500 }
     );
