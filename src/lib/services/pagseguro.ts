@@ -19,21 +19,13 @@ interface PagSeguroCheckoutResponse {
   checkoutUrl?: string;
 }
 
-// Configuração do PagSeguro
-// Método 1: API KEY e SECRET KEY (recomendado - método moderno)
-// Credenciais configuradas diretamente (fallback se variáveis de ambiente não estiverem disponíveis)
-const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
-const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY || '88b173f9a3e5414fbd805901cc86528a';
-
-// Método 2: Email e Token (método tradicional - fallback)
-const PAGSEGURO_EMAIL = process.env.PAGSEGURO_EMAIL;
-const PAGSEGURO_TOKEN = process.env.PAGSEGURO_TOKEN;
+// Configuração do PagSeguro - SIMPLIFICADO
+// A API v2 do PagSeguro usa email e token no body, mesmo com API KEY/SECRET KEY
+// API KEY vai no lugar do email, SECRET KEY vai no lugar do token
+const PAGSEGURO_EMAIL = process.env.PAGSEGURO_EMAIL || process.env.PAGSEGURO_API_KEY || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
+const PAGSEGURO_TOKEN = process.env.PAGSEGURO_TOKEN || process.env.PAGSEGURO_SECRET_KEY || '88b173f9a3e5414fbd805901cc86528a';
 
 const PAGSEGURO_ENV = process.env.PAGSEGURO_ENV || 'production'; // 'sandbox' ou 'production'
-
-// Determinar qual método usar
-const USE_API_KEY_METHOD = !!(PAGSEGURO_API_KEY && PAGSEGURO_SECRET_KEY);
-const USE_EMAIL_METHOD = !!(PAGSEGURO_EMAIL && PAGSEGURO_TOKEN);
 
 // URLs da API
 const PAGSEGURO_API_URL = PAGSEGURO_ENV === 'sandbox'
@@ -41,24 +33,16 @@ const PAGSEGURO_API_URL = PAGSEGURO_ENV === 'sandbox'
   : 'https://ws.pagseguro.uol.com.br';
 
 // Validar configuração (apenas logar, não lançar erro no build)
-if (!USE_API_KEY_METHOD && !USE_EMAIL_METHOD) {
+if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
   console.warn('⚠️ AVISO: Credenciais do PagSeguro não configuradas!');
-  console.warn('Configure UMA das opções no AWS Amplify:');
-  console.warn('  OPÇÃO 1 (Recomendado):');
-  console.warn('    - PAGSEGURO_API_KEY: sua API key do PagSeguro');
-  console.warn('    - PAGSEGURO_SECRET_KEY: sua Secret key do PagSeguro');
-  console.warn('  OPÇÃO 2 (Tradicional):');
-  console.warn('    - PAGSEGURO_EMAIL: seu email do PagSeguro');
-  console.warn('    - PAGSEGURO_TOKEN: token de segurança do PagSeguro');
-  console.warn('Veja CONFIGURAR_PAGSEGURO.md para mais detalhes.');
+  console.warn('Configure no AWS Amplify:');
+  console.warn('  - PAGSEGURO_API_KEY ou PAGSEGURO_EMAIL');
+  console.warn('  - PAGSEGURO_SECRET_KEY ou PAGSEGURO_TOKEN');
 } else {
-  const method = USE_API_KEY_METHOD ? 'API_KEY' : 'EMAIL';
-  console.log(`✅ PagSeguro configurado (método: ${method}):`, {
+  console.log('✅ PagSeguro configurado:', {
     env: PAGSEGURO_ENV,
-    apiKeyLength: PAGSEGURO_API_KEY?.length || 0,
-    secretKeyLength: PAGSEGURO_SECRET_KEY?.length || 0,
-    email: PAGSEGURO_EMAIL ? PAGSEGURO_EMAIL.substring(0, 3) + '***@***' : undefined,
-    tokenLength: PAGSEGURO_TOKEN?.length || 0
+    emailLength: PAGSEGURO_EMAIL.length,
+    tokenLength: PAGSEGURO_TOKEN.length
   });
 }
 
@@ -92,19 +76,9 @@ export async function createCheckout(
     // Preparar dados do checkout
     const checkoutData = new URLSearchParams();
     
-    // Credenciais e headers
-    let authHeader: string | undefined;
-    
-    if (USE_API_KEY_METHOD) {
-      // Método moderno: API KEY e SECRET KEY com Basic Auth
-      // Criar header Authorization: Basic base64(api-key:secret-key)
-      const credentials = `${PAGSEGURO_API_KEY}:${PAGSEGURO_SECRET_KEY}`;
-      authHeader = `Basic ${Buffer.from(credentials).toString('base64')}`;
-    } else {
-      // Método tradicional: Email e Token no body
-      checkoutData.append('email', PAGSEGURO_EMAIL!);
-      checkoutData.append('token', PAGSEGURO_TOKEN!);
-    }
+    // Credenciais (API KEY vai como email, SECRET KEY vai como token)
+    checkoutData.append('email', PAGSEGURO_EMAIL);
+    checkoutData.append('token', PAGSEGURO_TOKEN);
     
     // Dados do pagamento
     checkoutData.append('currency', 'BRL');
@@ -138,20 +112,12 @@ export async function createCheckout(
       }
     }
 
-    // Preparar headers
-    const headers: HeadersInit = {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    };
-    
-    // Adicionar Authorization header se usar API KEY/SECRET KEY
-    if (authHeader) {
-      headers['Authorization'] = authHeader;
-    }
-    
     // Fazer requisição para criar checkout
     const response = await fetch(`${PAGSEGURO_API_URL}/v2/checkout`, {
       method: 'POST',
-      headers,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
       body: checkoutData.toString(),
     });
 
@@ -204,31 +170,17 @@ export async function getPaymentStatus(transactionCode: string): Promise<{
   reference: string;
   amount: number;
 }> {
-  if (!USE_API_KEY_METHOD && !USE_EMAIL_METHOD) {
+  if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
     throw new Error('PagSeguro não configurado');
   }
 
   try {
-    // Preparar headers e params
-    const headers: HeadersInit = {};
-    let url = `${PAGSEGURO_API_URL}/v3/transactions/${transactionCode}`;
-    
-    if (USE_API_KEY_METHOD) {
-      // Método moderno: Basic Auth
-      const credentials = `${PAGSEGURO_API_KEY}:${PAGSEGURO_SECRET_KEY}`;
-      headers['Authorization'] = `Basic ${Buffer.from(credentials).toString('base64')}`;
-    } else {
-      // Método tradicional: email e token na query string
-      const params = new URLSearchParams({
-        email: PAGSEGURO_EMAIL!,
-        token: PAGSEGURO_TOKEN!,
-      });
-      url += `?${params.toString()}`;
-    }
-
-    const response = await fetch(url, {
-      headers,
+    const params = new URLSearchParams({
+      email: PAGSEGURO_EMAIL,
+      token: PAGSEGURO_TOKEN,
     });
+
+    const response = await fetch(`${PAGSEGURO_API_URL}/v3/transactions/${transactionCode}?${params.toString()}`);
     
     if (!response.ok) {
       throw new Error(`Erro ao consultar transação: ${response.status}`);
