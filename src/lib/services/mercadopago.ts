@@ -1,20 +1,36 @@
 import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 
 // Configuração do cliente Mercado Pago
-// Token de produção configurado diretamente (aba Live do Mercado Pago)
-const PRODUCTION_ACCESS_TOKEN = '88b173f9a3e5414fbd805901cc86528a'; // Secret key da aba Live
+// IMPORTANTE: Use o ACCESS TOKEN, não o Secret Key!
+// O Access Token começa com APP_USR- (produção) ou TEST- (teste)
+// O Secret Key NÃO funciona para criar preferências!
 
-// Usa token direto em produção, ou variável de ambiente se disponível
+// Usa variável de ambiente (obrigatório)
 const accessToken = process.env.NODE_ENV === 'production'
-  ? (process.env.MERCADOPAGO_ACCESS_TOKEN || PRODUCTION_ACCESS_TOKEN)
-  : (process.env.MERCADOPAGO_TEST_ACCESS_TOKEN || process.env.MERCADOPAGO_ACCESS_TOKEN || PRODUCTION_ACCESS_TOKEN);
+  ? process.env.MERCADOPAGO_ACCESS_TOKEN
+  : (process.env.MERCADOPAGO_TEST_ACCESS_TOKEN || process.env.MERCADOPAGO_ACCESS_TOKEN);
 
 // Validar se accessToken está configurado
 if (!accessToken) {
-  console.error('⚠️ ATENÇÃO: MERCADOPAGO_ACCESS_TOKEN não configurado!');
-  console.error('Configure a variável de ambiente apropriada no servidor.');
+  console.error('⚠️ ERRO CRÍTICO: MERCADOPAGO_ACCESS_TOKEN não configurado!');
+  console.error('Configure a variável de ambiente MERCADOPAGO_ACCESS_TOKEN no servidor.');
+  console.error('O token deve começar com APP_USR- (produção) ou TEST- (teste)');
+  console.error('NÃO use o Secret Key - use o Access Token!');
 } else {
-  console.log('✅ Mercado Pago Access Token configurado:', accessToken.substring(0, 10) + '...');
+  // Validar formato do token
+  const isValidFormat = accessToken.startsWith('APP_USR-') || accessToken.startsWith('TEST-');
+  if (!isValidFormat) {
+    console.error('⚠️ AVISO: O token não está no formato correto!');
+    console.error('Access Token deve começar com APP_USR- (produção) ou TEST- (teste)');
+    console.error('Token atual começa com:', accessToken.substring(0, 10));
+  } else {
+    console.log('✅ Mercado Pago Access Token configurado:', accessToken.substring(0, 15) + '...');
+  }
+}
+
+// Validar token antes de criar cliente
+if (!accessToken) {
+  throw new Error('MERCADOPAGO_ACCESS_TOKEN não configurado. Configure a variável de ambiente no servidor.');
 }
 
 const client = new MercadoPagoConfig({
