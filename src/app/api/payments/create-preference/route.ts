@@ -4,6 +4,7 @@ import dbConnect from '@/lib/mongodb';
 import { Payment } from '@/lib/models/Payment';
 import { verifyToken } from '@/lib/auth';
 import User from '@/lib/models/User';
+import mongoose from 'mongoose';
 
 export async function POST(request: NextRequest) {
   try {
@@ -95,7 +96,7 @@ export async function POST(request: NextRequest) {
     // Criar registro de pagamento no banco de dados ANTES de criar preferência
     // Isso permite usar o paymentId como external_reference
     // Criar um ObjectId temporário se não houver userId (para candidatos não autenticados)
-    const tempCompanyId = userId || new (await import('mongoose')).Types.ObjectId();
+    const tempCompanyId = userId ? new mongoose.Types.ObjectId(userId) : new mongoose.Types.ObjectId();
     
     const payment = await Payment.create({
       companyId: tempCompanyId, // Sempre precisa de um ID, mesmo que temporário
