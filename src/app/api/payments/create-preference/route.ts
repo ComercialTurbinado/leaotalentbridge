@@ -120,7 +120,12 @@ export async function POST(request: NextRequest) {
     console.log('Criando registro de pagamento no banco...');
     let payment;
     try {
+      // Gerar paymentId manualmente antes de criar
+      const paymentId = `PAY-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+      console.log('PaymentId gerado:', paymentId);
+      
       payment = await Payment.create({
+      paymentId: paymentId, // Gerar manualmente para garantir que existe
       companyId: userId ? new mongoose.Types.ObjectId(userId) : new mongoose.Types.ObjectId(), // Criar ObjectId temporário se não houver userId
       userId: userId || undefined, // undefined se não autenticado
       // Armazenar email para vincular depois
