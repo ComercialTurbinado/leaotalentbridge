@@ -105,7 +105,8 @@ export async function createCheckout(
     }
 
     // Fazer requisição para criar pedido
-    const response = await fetch(`${PAGSEGURO_API_URL}/orders`, {
+    // Tentar com Basic Auth primeiro (API moderna)
+    let response = await fetch(`${PAGSEGURO_API_URL}/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -118,9 +119,30 @@ export async function createCheckout(
     console.log('Response status:', response.status);
     console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
+    // Se der 401, pode ser que a API precise de outro formato
+    if (response.status === 401) {
+      console.log('⚠️ 401 Unauthorized - Tentando formato alternativo...');
+      // Tentar sem x-api-version ou com formato diferente
+      response = await fetch(`${PAGSEGURO_API_URL}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': getAuthHeader(),
+        },
+        body: JSON.stringify(orderData),
+      });
+      console.log('Response status (tentativa 2):', response.status);
+    }
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Erro ao criar pedido:', errorText);
+      console.error('URL:', `${PAGSEGURO_API_URL}/orders`);
+      console.error('Auth Header:', getAuthHeader().substring(0, 20) + '...');
+      console.error('API Key length:', PAGSEGURO_API_KEY.length);
+      console.error('Secret Key length:', PAGSEGURO_SECRET_KEY.length);
+      console.error('Environment:', PAGSEGURO_ENV);
+      
       let errorMessage = `Falha ao criar pedido no PagSeguro (Status: ${response.status})`;
       try {
         const errorJson = JSON.parse(errorText);
@@ -133,6 +155,15 @@ export async function createCheckout(
       } catch (e) {
         errorMessage += `: ${errorText}`;
       }
+      
+      // Mensagem mais específica para 401
+      if (response.status === 401) {
+        errorMessage += '\n\n⚠️ Erro de autenticação (401). Verifique:';
+        errorMessage += '\n- Se as credenciais estão corretas no AWS Amplify';
+        errorMessage += '\n- Se PAGSEGURO_ENV está correto (sandbox/production)';
+        errorMessage += '\n- Se as credenciais correspondem ao ambiente configurado';
+      }
+      
       throw new Error(errorMessage);
     }
 
