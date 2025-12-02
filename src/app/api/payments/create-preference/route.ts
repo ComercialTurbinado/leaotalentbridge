@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createPaymentPreference } from '@/lib/services/mercadopago';
+import { createCheckout } from '@/lib/services/pagseguro';
 import dbConnect from '@/lib/mongodb';
 import { Payment } from '@/lib/models/Payment';
 import { verifyToken } from '@/lib/auth';
@@ -138,12 +138,12 @@ export async function POST(request: NextRequest) {
       status: 'pending',
       paymentMethod: {
         type: paymentMethod === 'pix' ? 'bank_transfer' : 'credit_card',
-        provider: 'mercadopago',
-        providerId: 'pending', // Será atualizado após criar preferência
+        provider: 'pagseguro',
+        providerId: 'pending', // Será atualizado após criar checkout
         isDefault: true,
         isActive: true,
       },
-      gateway: 'mercadopago',
+      gateway: 'pagseguro',
       metadata: {
         planId,
         planName,
@@ -160,19 +160,19 @@ export async function POST(request: NextRequest) {
       throw new Error(`Erro ao criar registro de pagamento: ${dbError.message || 'Erro desconhecido'}`);
     }
 
-    // Criar preferência no Mercado Pago usando paymentId como external_reference
-    console.log('Criando preferência no Mercado Pago...');
-    let preference;
+    // Criar checkout no PagSeguro usando paymentId como reference
+    console.log('Criando checkout no PagSeguro...');
+    let checkout;
     try {
-      preference = await createPaymentPreference({
-      userId: payment.paymentId, // Usar paymentId como external_reference
+      checkout = await createCheckout({
+      userId: userId,
       userEmail: email,
       userName: name,
       planId,
       planName,
       amount,
-      installments,
-      paymentMethods: paymentMethodsConfig,
+      installments: installments || 1,
+      paymentMethod: paymentMethod === 'pix' ? 'pix' : 'credit',
       metadata: {
         userType,
         paymentMethod,
@@ -183,10 +183,10 @@ export async function POST(request: NextRequest) {
         createAccountAfterPayment: !userId,
       },
     });
-    console.log('Preferência criada no Mercado Pago:', preference.id);
-    } catch (mpError: any) {
-      console.error('Erro ao criar preferência no Mercado Pago:', mpError);
-      // Tentar remover o pagamento criado se a preferência falhar
+    console.log('Checkout criado no PagSeguro:', checkout.checkoutCode);
+    } catch (psError: any) {
+      console.error('Erro ao criar checkout no PagSeguro:', psError);
+      // Tentar remover o pagamento criado se o checkout falhar
       if (payment) {
         try {
           await Payment.deleteOne({ _id: payment._id });
@@ -194,13 +194,13 @@ export async function POST(request: NextRequest) {
           console.error('Erro ao remover pagamento após falha:', deleteError);
         }
       }
-      throw mpError;
+      throw psError;
     }
 
-    // Atualizar pagamento com preferenceId
-    console.log('Atualizando pagamento com preferenceId...');
-    payment.paymentMethod.providerId = preference.id;
-    payment.metadata.preferenceId = preference.id;
+    // Atualizar pagamento com checkoutCode
+    console.log('Atualizando pagamento com checkoutCode...');
+    payment.paymentMethod.providerId = checkout.checkoutCode;
+    payment.metadata.checkoutCode = checkout.checkoutCode;
     await payment.save();
     console.log('Pagamento atualizado com sucesso');
 
@@ -208,9 +208,8 @@ export async function POST(request: NextRequest) {
       success: true,
       data: {
         paymentId: payment.paymentId,
-        preferenceId: preference.id,
-        initPoint: preference.init_point,
-        sandboxInitPoint: preference.sandbox_init_point,
+        checkoutCode: checkout.checkoutCode,
+        checkoutUrl: checkout.checkoutUrl,
       },
     });
   } catch (error: any) {
@@ -219,29 +218,34 @@ export async function POST(request: NextRequest) {
     console.error('Error message:', error?.message);
     console.error('Error stack:', error?.stack);
     
-    // Log detalhado se for erro do Mercado Pago
+    // Log detalhado se for erro do PagSeguro
     if (error?.response) {
-      console.error('Mercado Pago response status:', error.response.status);
-      console.error('Mercado Pago response data:', JSON.stringify(error.response.data, null, 2));
+      console.error('PagSeguro response status:', error.response.status);
+      console.error('PagSeguro response data:', JSON.stringify(error.response.data, null, 2));
     }
     
     // Verificar se é erro de credenciais
     const errorMessage = error instanceof Error ? error.message : String(error);
     let userMessage = 'Erro ao processar pagamento';
     let statusCode = 500;
+    let errorType = 'Error';
     
-    if (errorMessage.includes('access_token') || errorMessage.includes('401') || errorMessage.includes('Unauthorized') || errorMessage.includes('Credenciais')) {
-      userMessage = 'Erro de configuração: Credenciais do Mercado Pago não configuradas ou inválidas. Verifique as variáveis de ambiente MERCADOPAGO_ACCESS_TOKEN ou MERCADOPAGO_TEST_ACCESS_TOKEN.';
+    if (errorMessage.includes('email') || errorMessage.includes('token') || errorMessage.includes('401') || errorMessage.includes('Unauthorized') || errorMessage.includes('Credenciais')) {
+      userMessage = 'Erro de configuração: Credenciais do PagSeguro não configuradas ou inválidas. Verifique as variáveis de ambiente PAGSEGURO_EMAIL e PAGSEGURO_TOKEN.';
       statusCode = 500;
+      errorType = 'PAGSEGURO_AUTH_ERROR';
     } else if (errorMessage.includes('network') || errorMessage.includes('timeout') || errorMessage.includes('ECONNREFUSED')) {
-      userMessage = 'Erro de conexão com o Mercado Pago. Tente novamente em alguns instantes.';
+      userMessage = 'Erro de conexão com o PagSeguro. Tente novamente em alguns instantes.';
       statusCode = 503;
+      errorType = 'PAGSEGURO_NETWORK_ERROR';
     } else if (errorMessage.includes('Dados inválidos') || errorMessage.includes('400')) {
       userMessage = 'Dados inválidos para processar pagamento. Verifique os dados enviados.';
       statusCode = 400;
-    } else if (errorMessage.includes('MongoDB') || errorMessage.includes('database') || errorMessage.includes('connection')) {
-      userMessage = 'Erro de conexão com o banco de dados. Tente novamente em alguns instantes.';
+      errorType = 'INVALID_DATA';
+    } else if (errorMessage.includes('MongoDB') || errorMessage.includes('database') || errorMessage.includes('connection') || errorMessage.includes('registro de pagamento')) {
+      userMessage = 'Erro de conexão com o banco de dados ou ao criar registro de pagamento. Tente novamente em alguns instantes.';
       statusCode = 503;
+      errorType = 'DATABASE_ERROR';
     }
     
     // Em produção, sempre mostrar detalhes do erro para facilitar debug

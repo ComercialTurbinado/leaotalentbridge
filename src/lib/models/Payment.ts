@@ -320,7 +320,7 @@ const PaymentSchema = new Schema<IPayment>({
   
   gateway: {
     type: String,
-    enum: ['stripe', 'paypal', 'bank_transfer', 'manual', 'mercadopago'],
+    enum: ['stripe', 'paypal', 'bank_transfer', 'manual', 'mercadopago', 'pagseguro'],
     required: true
   },
   gatewayResponse: {

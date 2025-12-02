@@ -180,7 +180,7 @@ function EmpresaPagamentoContent() {
           ? parseFloat(selectedPlanData.totalPrice.replace(/[R$,\s]/g, '').replace('.', ''))
           : parseFloat(selectedPlanData.price.replace(/[R$,\s]/g, '').replace('.', '')));
 
-      // Criar preferência de pagamento no Mercado Pago
+      // Criar checkout de pagamento no PagSeguro
       const requestBody: any = {
         planId: selectedPlan,
         planName: selectedPlanData.name,
@@ -231,14 +231,13 @@ function EmpresaPagamentoContent() {
         throw new Error(data.error || data.details || 'Erro ao criar preferência de pagamento');
       }
 
-      // Redirecionar para o checkout do Mercado Pago
-      // Usar sandbox em desenvolvimento, produção em produção
-      const checkoutUrl = data.data.sandboxInitPoint || data.data.initPoint;
+      // Redirecionar para o checkout do PagSeguro
+      const checkoutUrl = data.data.checkoutUrl;
 
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
-        throw new Error('URL de checkout não fornecida pelo Mercado Pago');
+        throw new Error('URL de checkout não fornecida pelo PagSeguro');
       }
     } catch (error: any) {
       console.error('Erro no pagamento:', error);
