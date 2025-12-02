@@ -30,13 +30,16 @@ const PAGSEGURO_API_URL = PAGSEGURO_ENV === 'sandbox'
   ? 'https://sandbox.pagseguro.uol.com.br'
   : 'https://ws.pagseguro.uol.com.br';
 
-// Validar configuração
+// Validar configuração (apenas logar, não lançar erro no build)
 if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
-  console.error('⚠️ ERRO CRÍTICO: PAGSEGURO_EMAIL e PAGSEGURO_TOKEN não configurados!');
-  console.error('Configure as variáveis de ambiente no servidor.');
+  console.warn('⚠️ AVISO: PAGSEGURO_EMAIL e/ou PAGSEGURO_TOKEN não configurados!');
+  console.warn('Configure as variáveis de ambiente no AWS Amplify:');
+  console.warn('  - PAGSEGURO_EMAIL: seu email do PagSeguro');
+  console.warn('  - PAGSEGURO_TOKEN: token de segurança do PagSeguro');
+  console.warn('Veja CONFIGURAR_PAGSEGURO.md para mais detalhes.');
 } else {
   console.log('✅ PagSeguro configurado:', {
-    email: PAGSEGURO_EMAIL,
+    email: PAGSEGURO_EMAIL.substring(0, 3) + '***@***',
     env: PAGSEGURO_ENV,
     tokenLength: PAGSEGURO_TOKEN.length
   });
@@ -50,7 +53,15 @@ export async function createCheckout(
   data: CreateCheckoutData
 ): Promise<{ checkoutCode: string; checkoutUrl: string }> {
   if (!PAGSEGURO_EMAIL || !PAGSEGURO_TOKEN) {
-    throw new Error('PagSeguro não configurado. Configure PAGSEGURO_EMAIL e PAGSEGURO_TOKEN no servidor.');
+    const errorMsg = 'PagSeguro não configurado. Configure as variáveis de ambiente no AWS Amplify:\n' +
+      '1. Acesse: https://console.aws.amazon.com/amplify\n' +
+      '2. Vá em "App settings" > "Environment variables"\n' +
+      '3. Adicione:\n' +
+      '   - PAGSEGURO_EMAIL: seu email do PagSeguro\n' +
+      '   - PAGSEGURO_TOKEN: token de segurança do PagSeguro\n' +
+      '4. Salve e aguarde o deploy\n' +
+      'Veja CONFIGURAR_PAGSEGURO.md para instruções detalhadas.';
+    throw new Error(errorMsg);
   }
 
   try {
