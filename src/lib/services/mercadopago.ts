@@ -1,15 +1,20 @@
 import { MercadoPagoConfig, Preference, Payment } from 'mercadopago';
 
 // Configuração do cliente Mercado Pago
-// Usa credenciais de teste em desenvolvimento, produção em produção
+// Token de produção configurado diretamente (aba Live do Mercado Pago)
+const PRODUCTION_ACCESS_TOKEN = '88b173f9a3e5414fbd805901cc86528a'; // Secret key da aba Live
+
+// Usa token direto em produção, ou variável de ambiente se disponível
 const accessToken = process.env.NODE_ENV === 'production'
-  ? (process.env.MERCADOPAGO_ACCESS_TOKEN || '')
-  : (process.env.MERCADOPAGO_TEST_ACCESS_TOKEN || process.env.MERCADOPAGO_ACCESS_TOKEN || '');
+  ? (process.env.MERCADOPAGO_ACCESS_TOKEN || PRODUCTION_ACCESS_TOKEN)
+  : (process.env.MERCADOPAGO_TEST_ACCESS_TOKEN || process.env.MERCADOPAGO_ACCESS_TOKEN || PRODUCTION_ACCESS_TOKEN);
 
 // Validar se accessToken está configurado
 if (!accessToken) {
-  console.error('⚠️ ATENÇÃO: MERCADOPAGO_ACCESS_TOKEN ou MERCADOPAGO_TEST_ACCESS_TOKEN não configurado!');
+  console.error('⚠️ ATENÇÃO: MERCADOPAGO_ACCESS_TOKEN não configurado!');
   console.error('Configure a variável de ambiente apropriada no servidor.');
+} else {
+  console.log('✅ Mercado Pago Access Token configurado:', accessToken.substring(0, 10) + '...');
 }
 
 const client = new MercadoPagoConfig({

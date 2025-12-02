@@ -1,6 +1,12 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
+  // Listar TODAS as variáveis de ambiente disponíveis (para debug)
+  const allEnvKeys = Object.keys(process.env).sort();
+  const envKeysWithValues = allEnvKeys
+    .filter(key => !key.includes('SECRET') && !key.includes('TOKEN') && !key.includes('PASSWORD') && !key.includes('KEY'))
+    .map(key => ({ key, exists: true, length: process.env[key]?.length || 0 }));
+  
   const envVars = {
     NODE_ENV: process.env.NODE_ENV,
     MONGODB_URI_EXISTS: !!process.env.MONGODB_URI,
@@ -24,7 +30,10 @@ export async function GET() {
         name: key,
         exists: !!process.env[key],
         length: process.env[key]?.length || 0
-      }))
+      })),
+    // Listar algumas variáveis seguras para debug
+    SAFE_ENV_VARS: envKeysWithValues.slice(0, 20), // Primeiras 20 variáveis seguras
+    TOTAL_ENV_VARS_COUNT: allEnvKeys.length
   };
 
   return NextResponse.json({

@@ -1,0 +1,318 @@
+0 verbose cli /opt/homebrew/Cellar/node/23.6.1/bin/node /opt/homebrew/bin/npm
+1 info using npm@11.3.0
+2 info using node@v23.6.1
+3 silly config load:file:/opt/homebrew/lib/node_modules/npm/npmrc
+4 silly config load:file:/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/.npmrc
+5 silly config load:file:/Users/claudiodamasco/.npmrc
+6 silly config load:file:/opt/homebrew/etc/npmrc
+7 verbose title npm install mercadopago
+8 verbose argv "install" "mercadopago"
+9 verbose logfile logs-max:10 dir:/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/.npm-cache/_logs/2025-10-19T23_22_17_091Z-
+10 verbose logfile /Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/.npm-cache/_logs/2025-10-19T23_22_17_091Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly packumentCache heap:4345298944 maxSize:1086324736 maxEntrySize:543162368
+13 silly logfile done cleaning log files
+14 http fetch GET 200 https://registry.npmjs.org/npm 173ms
+15 silly idealTree buildDeps
+16 silly fetch manifest mercadopago@*
+17 silly packumentCache full:https://registry.npmjs.org/mercadopago cache-miss
+18 verbose shrinkwrap failed to load node_modules/.package-lock.json out of date, updated: node_modules
+19 http fetch GET 200 https://registry.npmjs.org/mercadopago 181435ms (cache miss)
+20 silly packumentCache full:https://registry.npmjs.org/mercadopago set size:undefined disposed:false
+21 silly placeDep ROOT mercadopago@2.9.0 OK for: leao-careers@0.1.0 want: *
+22 silly fetch manifest node-fetch@^2.7.0
+23 silly packumentCache full:https://registry.npmjs.org/node-fetch cache-miss
+24 http fetch GET 200 https://registry.npmjs.org/node-fetch 90ms (cache miss)
+25 silly packumentCache full:https://registry.npmjs.org/node-fetch set size:undefined disposed:false
+26 silly fetch manifest encoding@^0.1.0
+27 silly packumentCache full:https://registry.npmjs.org/encoding cache-miss
+28 http fetch GET 200 https://registry.npmjs.org/encoding 33ms (cache miss)
+29 silly packumentCache full:https://registry.npmjs.org/encoding set size:undefined disposed:false
+30 silly placeDep node_modules/mercadopago node-fetch@2.7.0 OK for: mercadopago@2.9.0 want: ^2.7.0
+31 silly fetch manifest whatwg-url@^5.0.0
+32 silly packumentCache full:https://registry.npmjs.org/whatwg-url cache-miss
+33 http fetch GET 200 https://registry.npmjs.org/whatwg-url 75ms (cache miss)
+34 silly packumentCache full:https://registry.npmjs.org/whatwg-url set size:undefined disposed:false
+35 silly placeDep node_modules/mercadopago whatwg-url@5.0.0 OK for: node-fetch@2.7.0 want: ^5.0.0
+36 silly fetch manifest tr46@~0.0.3
+37 silly packumentCache full:https://registry.npmjs.org/tr46 cache-miss
+38 silly fetch manifest webidl-conversions@^3.0.0
+39 silly packumentCache full:https://registry.npmjs.org/webidl-conversions cache-miss
+40 http fetch GET 200 https://registry.npmjs.org/tr46 60ms (cache miss)
+41 silly packumentCache full:https://registry.npmjs.org/tr46 set size:undefined disposed:false
+42 http fetch GET 200 https://registry.npmjs.org/webidl-conversions 76ms (cache miss)
+43 silly packumentCache full:https://registry.npmjs.org/webidl-conversions set size:undefined disposed:false
+44 silly placeDep node_modules/mercadopago tr46@0.0.3 OK for: whatwg-url@5.0.0 want: ~0.0.3
+45 silly placeDep node_modules/mercadopago webidl-conversions@3.0.1 OK for: whatwg-url@5.0.0 want: ^3.0.0
+46 silly reify moves {}
+47 silly reify mark deleted [
+47 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@emnapi/core'
+47 silly reify ]
+48 silly reify mark deleted [
+48 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@emnapi/runtime'
+48 silly reify ]
+49 silly reify mark deleted [
+49 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@emnapi/wasi-threads'
+49 silly reify ]
+50 silly reify mark deleted [
+50 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-darwin-arm64'
+50 silly reify ]
+51 silly reify mark deleted [
+51 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-darwin-x64'
+51 silly reify ]
+52 silly reify mark deleted [
+52 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-darwin-arm64'
+52 silly reify ]
+53 silly reify mark deleted [
+53 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-darwin-x64'
+53 silly reify ]
+54 silly reify mark deleted [
+54 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-linux-arm'
+54 silly reify ]
+55 silly reify mark deleted [
+55 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-linux-arm64'
+55 silly reify ]
+56 silly reify mark deleted [
+56 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-linux-ppc64'
+56 silly reify ]
+57 silly reify mark deleted [
+57 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-linux-s390x'
+57 silly reify ]
+58 silly reify mark deleted [
+58 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-linux-x64'
+58 silly reify ]
+59 silly reify mark deleted [
+59 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-linuxmusl-arm64'
+59 silly reify ]
+60 silly reify mark deleted [
+60 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-libvips-linuxmusl-x64'
+60 silly reify ]
+61 silly reify mark deleted [
+61 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-linux-arm'
+61 silly reify ]
+62 silly reify mark deleted [
+62 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-linux-arm64'
+62 silly reify ]
+63 silly reify mark deleted [
+63 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-linux-ppc64'
+63 silly reify ]
+64 silly reify mark deleted [
+64 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-linux-s390x'
+64 silly reify ]
+65 silly reify mark deleted [
+65 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-linux-x64'
+65 silly reify ]
+66 silly reify mark deleted [
+66 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-linuxmusl-arm64'
+66 silly reify ]
+67 silly reify mark deleted [
+67 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-linuxmusl-x64'
+67 silly reify ]
+68 silly reify mark deleted [
+68 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-wasm32'
+68 silly reify ]
+69 silly reify mark deleted [
+69 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-win32-arm64'
+69 silly reify ]
+70 silly reify mark deleted [
+70 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-win32-ia32'
+70 silly reify ]
+71 silly reify mark deleted [
+71 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@img/sharp-win32-x64'
+71 silly reify ]
+72 silly reify mark deleted [
+72 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@napi-rs/wasm-runtime'
+72 silly reify ]
+73 silly reify mark deleted [
+73 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@next/swc-darwin-arm64'
+73 silly reify ]
+74 silly reify mark deleted [
+74 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@next/swc-darwin-x64'
+74 silly reify ]
+75 silly reify mark deleted [
+75 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@next/swc-linux-arm64-gnu'
+75 silly reify ]
+76 silly reify mark deleted [
+76 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@next/swc-linux-arm64-musl'
+76 silly reify ]
+77 silly reify mark deleted [
+77 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@next/swc-linux-x64-gnu'
+77 silly reify ]
+78 silly reify mark deleted [
+78 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@next/swc-linux-x64-musl'
+78 silly reify ]
+79 silly reify mark deleted [
+79 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@next/swc-win32-arm64-msvc'
+79 silly reify ]
+80 silly reify mark deleted [
+80 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@next/swc-win32-x64-msvc'
+80 silly reify ]
+81 silly reify mark deleted [
+81 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@tybys/wasm-util'
+81 silly reify ]
+82 silly reify mark deleted [
+82 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-android-arm-eabi'
+82 silly reify ]
+83 silly reify mark deleted [
+83 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-android-arm64'
+83 silly reify ]
+84 silly reify mark deleted [
+84 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-darwin-arm64'
+84 silly reify ]
+85 silly reify mark deleted [
+85 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-darwin-x64'
+85 silly reify ]
+86 silly reify mark deleted [
+86 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-freebsd-x64'
+86 silly reify ]
+87 silly reify mark deleted [
+87 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-arm-gnueabihf'
+87 silly reify ]
+88 silly reify mark deleted [
+88 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-arm-musleabihf'
+88 silly reify ]
+89 silly reify mark deleted [
+89 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-arm64-gnu'
+89 silly reify ]
+90 silly reify mark deleted [
+90 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-arm64-musl'
+90 silly reify ]
+91 silly reify mark deleted [
+91 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-ppc64-gnu'
+91 silly reify ]
+92 silly reify mark deleted [
+92 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-riscv64-gnu'
+92 silly reify ]
+93 silly reify mark deleted [
+93 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-riscv64-musl'
+93 silly reify ]
+94 silly reify mark deleted [
+94 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-s390x-gnu'
+94 silly reify ]
+95 silly reify mark deleted [
+95 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-x64-gnu'
+95 silly reify ]
+96 silly reify mark deleted [
+96 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-linux-x64-musl'
+96 silly reify ]
+97 silly reify mark deleted [
+97 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-wasm32-wasi'
+97 silly reify ]
+98 silly reify mark deleted [
+98 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-win32-arm64-msvc'
+98 silly reify ]
+99 silly reify mark deleted [
+99 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-win32-ia32-msvc'
+99 silly reify ]
+100 silly reify mark deleted [
+100 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/@unrs/resolver-binding-win32-x64-msvc'
+100 silly reify ]
+101 silly reify mark deleted [
+101 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/color'
+101 silly reify ]
+102 silly reify mark deleted [
+102 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/color-string'
+102 silly reify ]
+103 silly reify mark deleted [
+103 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/detect-libc'
+103 silly reify ]
+104 silly reify mark deleted [
+104 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/is-arrayish'
+104 silly reify ]
+105 silly reify mark deleted [
+105 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/sharp'
+105 silly reify ]
+106 silly reify mark deleted [
+106 silly reify   '/Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers/node_modules/simple-swizzle'
+106 silly reify ]
+107 http cache mercadopago@https://registry.npmjs.org/mercadopago/-/mercadopago-2.9.0.tgz 0ms (cache hit)
+108 http cache webidl-conversions@https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz 0ms (cache hit)
+109 http cache node-fetch@https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz 0ms (cache hit)
+110 http cache tr46@https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz 0ms (cache hit)
+111 http cache whatwg-url@https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz 1ms (cache hit)
+112 silly tarball no local data for mercadopago@https://registry.npmjs.org/mercadopago/-/mercadopago-2.9.0.tgz. Extracting by manifest.
+113 silly tarball no local data for webidl-conversions@https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz. Extracting by manifest.
+114 silly tarball no local data for node-fetch@https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz. Extracting by manifest.
+115 silly tarball no local data for tr46@https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz. Extracting by manifest.
+116 silly tarball no local data for whatwg-url@https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz. Extracting by manifest.
+117 http fetch GET 200 https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz 42ms (cache miss)
+118 http fetch GET 200 https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz 82ms (cache miss)
+119 http fetch GET 200 https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz 83ms (cache miss)
+120 http fetch GET 200 https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz 90ms (cache miss)
+121 http fetch GET 200 https://registry.npmjs.org/mercadopago/-/mercadopago-2.9.0.tgz 101ms (cache miss)
+122 silly ADD node_modules/mercadopago
+123 silly ADD node_modules/mercadopago/node_modules/webidl-conversions
+124 silly ADD node_modules/mercadopago/node_modules/tr46
+125 silly ADD node_modules/mercadopago/node_modules/whatwg-url
+126 silly ADD node_modules/mercadopago/node_modules/node-fetch
+127 silly ADD
+128 silly ADD
+129 silly ADD
+130 silly ADD
+131 silly ADD
+132 silly ADD
+133 silly ADD
+134 silly ADD
+135 silly ADD
+136 silly ADD
+137 silly ADD
+138 silly ADD
+139 silly ADD
+140 silly ADD
+141 silly ADD
+142 silly ADD
+143 silly ADD
+144 silly ADD
+145 silly ADD
+146 silly ADD
+147 silly ADD
+148 silly ADD
+149 silly ADD
+150 silly ADD
+151 silly ADD
+152 silly ADD
+153 silly ADD
+154 silly ADD
+155 silly ADD
+156 silly ADD
+157 silly ADD
+158 silly ADD
+159 silly ADD
+160 silly ADD
+161 silly ADD
+162 silly ADD
+163 silly ADD
+164 silly ADD
+165 silly ADD
+166 silly ADD
+167 silly ADD
+168 silly ADD
+169 silly ADD
+170 silly ADD
+171 silly ADD
+172 silly ADD
+173 silly ADD
+174 silly ADD
+175 silly ADD
+176 silly ADD
+177 silly ADD
+178 silly ADD
+179 silly ADD
+180 silly ADD
+181 silly ADD
+182 silly ADD
+183 silly ADD
+184 silly ADD
+185 silly ADD
+186 silly ADD
+187 verbose cwd /Users/claudiodamasco/Documents/www/leaotalentebridge/leao-careers
+188 verbose os Darwin 23.4.0
+189 verbose node v23.6.1
+190 verbose npm  v11.3.0
+191 notice
+191 notice New [33mminor[39m version of npm available! [33m11.3.0[39m -> [34m11.6.2[39m
+191 notice Changelog: [34mhttps://github.com/npm/cli/releases/tag/v11.6.2[39m
+191 notice To update run: [4mnpm install -g npm@11.6.2[24m
+191 notice  { force: true, [Symbol(proc-log.meta)]: true }
+192 verbose exit 0
+193 info ok
