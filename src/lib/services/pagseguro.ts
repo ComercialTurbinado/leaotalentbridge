@@ -21,8 +21,9 @@ interface PagSeguroCheckoutResponse {
 
 // Configuração do PagSeguro
 // Método 1: API KEY e SECRET KEY (recomendado - método moderno)
-const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY;
-const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY;
+// Credenciais configuradas diretamente (fallback se variáveis de ambiente não estiverem disponíveis)
+const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
+const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY || '88b173f9a3e5414fbd805901cc86528a';
 
 // Método 2: Email e Token (método tradicional - fallback)
 const PAGSEGURO_EMAIL = process.env.PAGSEGURO_EMAIL;
