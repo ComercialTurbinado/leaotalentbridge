@@ -187,6 +187,10 @@ export async function createPaymentPreference(
  * Busca informações de um pagamento pelo ID
  */
 export async function getPaymentById(paymentId: string | number) {
+  if (!paymentClient) {
+    throw new Error('Mercado Pago não configurado. Use PagSeguro.');
+  }
+  
   try {
     const payment = await paymentClient.get({ id: paymentId });
     return payment;
@@ -200,6 +204,10 @@ export async function getPaymentById(paymentId: string | number) {
  * Verifica o status de um pagamento
  */
 export async function verifyPaymentStatus(paymentId: string | number) {
+  if (!paymentClient) {
+    throw new Error('Mercado Pago não configurado. Use PagSeguro.');
+  }
+  
   try {
     const payment = await getPaymentById(paymentId);
     
@@ -226,6 +234,10 @@ export async function verifyPaymentStatus(paymentId: string | number) {
  * Processa reembolso de um pagamento
  */
 export async function refundPayment(paymentId: string | number, amount?: number) {
+  if (!paymentClient) {
+    throw new Error('Mercado Pago não configurado. Use PagSeguro.');
+  }
+  
   try {
     // No SDK do Mercado Pago v2, usamos cancel para reembolsos
     // Se amount for fornecido, é um reembolso parcial, caso contrário é total
