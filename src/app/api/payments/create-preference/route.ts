@@ -8,7 +8,22 @@ import mongoose from 'mongoose';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    // Log da requisição para debug
+    console.log('=== REQUISIÇÃO CREATE PREFERENCE ===');
+    console.log('Method:', request.method);
+    console.log('URL:', request.url);
+    
+    let body;
+    try {
+      body = await request.json();
+      console.log('Body recebido:', JSON.stringify(body, null, 2));
+    } catch (parseError) {
+      console.error('Erro ao fazer parse do JSON:', parseError);
+      return NextResponse.json(
+        { success: false, error: 'Erro ao processar dados da requisição. Verifique o formato JSON.' },
+        { status: 400 }
+      );
+    }
     const {
       planId,
       planName,
@@ -95,7 +110,10 @@ export async function POST(request: NextRequest) {
 
     // Criar registro de pagamento no banco de dados ANTES de criar preferência
     // Isso permite usar o paymentId como external_reference
-    const payment = await Payment.create({
+    console.log('Criando registro de pagamento no banco...');
+    let payment;
+    try {
+      payment = await Payment.create({
       companyId: userId ? new mongoose.Types.ObjectId(userId) : new mongoose.Types.ObjectId(), // Criar ObjectId temporário se não houver userId
       userId: userId || undefined, // undefined se não autenticado
       // Armazenar email para vincular depois
@@ -124,9 +142,17 @@ export async function POST(request: NextRequest) {
         createAccountAfterPayment: !userId,
       },
     });
+    console.log('Pagamento criado no banco:', payment.paymentId);
+    } catch (dbError: any) {
+      console.error('Erro ao criar pagamento no banco:', dbError);
+      throw new Error(`Erro ao criar registro de pagamento: ${dbError.message || 'Erro desconhecido'}`);
+    }
 
     // Criar preferência no Mercado Pago usando paymentId como external_reference
-    const preference = await createPaymentPreference({
+    console.log('Criando preferência no Mercado Pago...');
+    let preference;
+    try {
+      preference = await createPaymentPreference({
       userId: payment.paymentId, // Usar paymentId como external_reference
       userEmail: email,
       userName: name,
@@ -145,11 +171,26 @@ export async function POST(request: NextRequest) {
         createAccountAfterPayment: !userId,
       },
     });
+    console.log('Preferência criada no Mercado Pago:', preference.id);
+    } catch (mpError: any) {
+      console.error('Erro ao criar preferência no Mercado Pago:', mpError);
+      // Tentar remover o pagamento criado se a preferência falhar
+      if (payment) {
+        try {
+          await Payment.deleteOne({ _id: payment._id });
+        } catch (deleteError) {
+          console.error('Erro ao remover pagamento após falha:', deleteError);
+        }
+      }
+      throw mpError;
+    }
 
     // Atualizar pagamento com preferenceId
+    console.log('Atualizando pagamento com preferenceId...');
     payment.paymentMethod.providerId = preference.id;
     payment.metadata.preferenceId = preference.id;
     await payment.save();
+    console.log('Pagamento atualizado com sucesso');
 
     return NextResponse.json({
       success: true,
@@ -196,10 +237,34 @@ export async function POST(request: NextRequest) {
         success: false,
         error: userMessage,
         details: process.env.NODE_ENV === 'development' ? errorMessage : undefined, // Só mostrar detalhes em desenvolvimento
+        // Em produção, mostrar detalhes se for erro conhecido
+        ...(process.env.NODE_ENV === 'production' && (errorMessage.includes('MongoDB') || errorMessage.includes('database') || errorMessage.includes('connection') || errorMessage.includes('Credenciais')) ? { details: errorMessage } : {}),
       },
       { status: statusCode }
     );
   }
+}
+
+// Handler para métodos não permitidos
+export async function GET() {
+  return NextResponse.json(
+    { success: false, error: 'Método não permitido. Use POST.' },
+    { status: 405 }
+  );
+}
+
+export async function PUT() {
+  return NextResponse.json(
+    { success: false, error: 'Método não permitido. Use POST.' },
+    { status: 405 }
+  );
+}
+
+export async function DELETE() {
+  return NextResponse.json(
+    { success: false, error: 'Método não permitido. Use POST.' },
+    { status: 405 }
+  );
 }
 
 
