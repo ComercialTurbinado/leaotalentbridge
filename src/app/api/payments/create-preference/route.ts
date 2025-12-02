@@ -234,7 +234,7 @@ export async function POST(request: NextRequest) {
     let errorType = 'Error';
     
     if (errorMessage.includes('email') || errorMessage.includes('token') || errorMessage.includes('401') || errorMessage.includes('Unauthorized') || errorMessage.includes('Credenciais')) {
-      userMessage = 'Erro de configuração: Credenciais do PagSeguro não configuradas ou inválidas. Verifique as variáveis de ambiente PAGSEGURO_EMAIL e PAGSEGURO_TOKEN.';
+      userMessage = 'Erro de configuração: Credenciais do PagSeguro não configuradas ou inválidas. Verifique as variáveis de ambiente PAGSEGURO_API_KEY e PAGSEGURO_SECRET_KEY no AWS Amplify.';
       statusCode = 500;
       errorType = 'PAGSEGURO_AUTH_ERROR';
     } else if (errorMessage.includes('network') || errorMessage.includes('timeout') || errorMessage.includes('ECONNREFUSED')) {
