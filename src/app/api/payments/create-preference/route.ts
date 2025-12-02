@@ -94,8 +94,11 @@ export async function POST(request: NextRequest) {
 
     // Criar registro de pagamento no banco de dados ANTES de criar preferência
     // Isso permite usar o paymentId como external_reference
+    // Criar um ObjectId temporário se não houver userId (para candidatos não autenticados)
+    const tempCompanyId = userId || new (await import('mongoose')).Types.ObjectId();
+    
     const payment = await Payment.create({
-      companyId: userType === 'empresa' && userId ? userId : undefined,
+      companyId: tempCompanyId, // Sempre precisa de um ID, mesmo que temporário
       userId: userId || undefined, // undefined se não autenticado
       // Armazenar email para vincular depois
       guestEmail: !userId ? email : undefined,
@@ -108,7 +111,7 @@ export async function POST(request: NextRequest) {
       paymentMethod: {
         type: paymentMethod === 'pix' ? 'bank_transfer' : 'credit_card',
         provider: 'mercadopago',
-        providerId: '', // Será atualizado após criar preferência
+        providerId: 'pending', // Será atualizado após criar preferência
         isDefault: true,
         isActive: true,
       },

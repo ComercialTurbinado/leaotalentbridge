@@ -69,7 +69,7 @@ export interface IPayment extends Document {
   paymentMethod: IPaymentMethod;
   
   // Gateway de pagamento
-  gateway: 'stripe' | 'paypal' | 'bank_transfer' | 'manual';
+  gateway: 'stripe' | 'paypal' | 'bank_transfer' | 'manual' | 'mercadopago';
   gatewayResponse?: {
     id: string;
     status: string;
@@ -194,7 +194,7 @@ const PaymentMethodSchema = new Schema({
   },
   providerId: {
     type: String,
-    required: true
+    required: false // Será preenchido após criar preferência no gateway
   },
   last4: String,
   brand: String,
@@ -267,7 +267,7 @@ const PaymentSchema = new Schema<IPayment>({
   companyId: {
     type: Schema.Types.ObjectId,
     ref: 'Company',
-    required: true
+    required: false // Opcional para pagamentos de convidados
   },
   userId: {
     type: Schema.Types.ObjectId,
@@ -320,7 +320,7 @@ const PaymentSchema = new Schema<IPayment>({
   
   gateway: {
     type: String,
-    enum: ['stripe', 'paypal', 'bank_transfer', 'manual'],
+    enum: ['stripe', 'paypal', 'bank_transfer', 'manual', 'mercadopago'],
     required: true
   },
   gatewayResponse: {
