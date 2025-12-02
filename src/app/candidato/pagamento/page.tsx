@@ -1,14 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
 import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrDocument, GrVideo, GrPower, GrCalendar, GrChat, GrGlobe, GrBriefcase, GrTarget, GrBook, GrUser, GrTrophy } from 'react-icons/gr';
 import styles from './pagamento.module.css';
 
 export default function CandidatoPagamentoPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { i18n } = useTranslation();
   const [selectedPlan, setSelectedPlan] = useState('anual-vista');
   const [paymentMethod, setPaymentMethod] = useState('credit');
   const [isLoading, setIsLoading] = useState(false);
@@ -17,45 +20,85 @@ export default function CandidatoPagamentoPage() {
   const [userName, setUserName] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Verificar autenticação ao carregar
+  // Taxa de conversão BRL para USD (aproximada)
+  const BRL_TO_USD = 0.18; // 1 BRL = 0.18 USD (ajuste conforme necessário)
+
+  // Verificar autenticação e pré-preencher dados da URL
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
-  }, []);
+    
+    // Pré-preencher dados da URL se vier da home
+    const emailParam = searchParams.get('email');
+    const nameParam = searchParams.get('name');
+    
+    if (emailParam && !token) {
+      setUserEmail(emailParam);
+    }
+    if (nameParam && !token) {
+      setUserName(nameParam);
+    }
+  }, [searchParams]);
+
+  // Função para formatar valores baseado no idioma
+  const formatPrice = (brlValue: number, isTotal: boolean = false) => {
+    const currentLang = i18n.language;
+    const isEnglishOrArabic = currentLang === 'en' || currentLang === 'ar';
+    
+    if (isEnglishOrArabic) {
+      const usdValue = brlValue * BRL_TO_USD;
+      return isTotal ? `$${usdValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `$${usdValue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+    } else {
+      return `R$ ${brlValue.toLocaleString('pt-BR')}`;
+    }
+  };
+
+  const formatPeriod = (period: string) => {
+    const currentLang = i18n.language;
+    const isEnglishOrArabic = currentLang === 'en' || currentLang === 'ar';
+    
+    if (isEnglishOrArabic) {
+      return period.replace('/ano', '/year').replace('/mês', '/month').replace('por 3 meses', 'for 3 months').replace('por 6 meses', 'for 6 months');
+    }
+    return period;
+  };
 
   const plans = [
     {
       id: 'anual-vista',
       name: 'Anual à Vista',
-      price: 'R$ 5.500',
-      originalPrice: 'R$ 6.000',
-      period: '/ano',
+      price: formatPrice(5500),
+      originalPrice: formatPrice(6000),
+      period: formatPeriod('/ano'),
       description: 'Melhor custo-benefício com desconto especial',
       popular: true,
-      discount: 'Economia de R$ 500',
-      allowsPix: true
+      discount: i18n.language === 'en' || i18n.language === 'ar' ? `Save ${formatPrice(500)}` : `Economia de ${formatPrice(500)}`,
+      allowsPix: true,
+      amount: 5500 // Valor numérico para cálculos
     },
     {
       id: 'anual-3x',
       name: 'Anual 3x sem Juros',
-      price: 'R$ 2.000',
-      totalPrice: 'R$ 6.000',
-      period: '/mês por 3 meses',
+      price: formatPrice(2000),
+      totalPrice: formatPrice(6000, true),
+      period: formatPeriod('/mês por 3 meses'),
       description: 'Parcelamento sem juros no cartão',
       popular: false,
       installments: '3x sem juros',
-      allowsPix: false
+      allowsPix: false,
+      amount: 6000
     },
     {
       id: 'anual-6x',
       name: 'Anual 6x no Cartão',
-      price: 'R$ 1.083',
-      totalPrice: 'R$ 6.500',
-      period: '/mês por 6 meses',
+      price: formatPrice(1083),
+      totalPrice: formatPrice(6500, true),
+      period: formatPeriod('/mês por 6 meses'),
       description: 'Maior flexibilidade de pagamento',
       popular: false,
       installments: '6x no cartão',
-      allowsPix: false
+      allowsPix: false,
+      amount: 6500
     }
   ];
 
@@ -131,10 +174,11 @@ export default function CandidatoPagamentoPage() {
         }
       }
 
-      // Calcular valor total
-      const totalAmount = selectedPlanData.totalPrice 
-        ? parseFloat(selectedPlanData.totalPrice.replace('R$ ', '').replace('.', '').replace(',', '.'))
-        : parseFloat(selectedPlanData.price.replace('R$ ', '').replace('.', '').replace(',', '.'));
+      // Usar valor numérico do plano (já convertido se necessário)
+      const totalAmount = selectedPlanData.amount || 
+        (selectedPlanData.totalPrice 
+          ? parseFloat(selectedPlanData.totalPrice.replace(/[R$,\s]/g, '').replace('.', ''))
+          : parseFloat(selectedPlanData.price.replace(/[R$,\s]/g, '').replace('.', '')));
 
       // Criar preferência de pagamento no Mercado Pago
       const requestBody: any = {

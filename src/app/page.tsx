@@ -66,11 +66,15 @@ export default function HomePage() {
       // Simular cadastro inicial na base
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Redirecionar para página de pagamento
+      // Redirecionar para página de pagamento com dados do formulário
+      const params = new URLSearchParams();
+      if (formData.email) params.set('email', formData.email);
+      if (formData.name) params.set('name', formData.name);
+      
       if (userType === 'candidato') {
-        window.location.href = '/candidato/pagamento';
+        window.location.href = `/candidato/pagamento?${params.toString()}`;
       } else if (userType === 'empresa') {
-        window.location.href = '/empresa/pagamento';
+        window.location.href = `/empresa/pagamento?${params.toString()}`;
       }
     } catch (error) {
       console.error('Erro no cadastro:', error);
