@@ -91,13 +91,16 @@ export async function createCheckout(
     // Preparar dados do checkout
     const checkoutData = new URLSearchParams();
     
-    // Credenciais (usar API KEY/SECRET KEY se disponível, senão usar email/token)
+    // Credenciais e headers
+    let authHeader: string | undefined;
+    
     if (USE_API_KEY_METHOD) {
-      // Método moderno: API KEY e SECRET KEY
-      checkoutData.append('email', PAGSEGURO_API_KEY); // API KEY vai no lugar do email
-      checkoutData.append('token', PAGSEGURO_SECRET_KEY); // SECRET KEY vai no lugar do token
+      // Método moderno: API KEY e SECRET KEY com Basic Auth
+      // Criar header Authorization: Basic base64(api-key:secret-key)
+      const credentials = `${PAGSEGURO_API_KEY}:${PAGSEGURO_SECRET_KEY}`;
+      authHeader = `Basic ${Buffer.from(credentials).toString('base64')}`;
     } else {
-      // Método tradicional: Email e Token
+      // Método tradicional: Email e Token no body
       checkoutData.append('email', PAGSEGURO_EMAIL!);
       checkoutData.append('token', PAGSEGURO_TOKEN!);
     }
@@ -134,12 +137,20 @@ export async function createCheckout(
       }
     }
 
+    // Preparar headers
+    const headers: HeadersInit = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+    
+    // Adicionar Authorization header se usar API KEY/SECRET KEY
+    if (authHeader) {
+      headers['Authorization'] = authHeader;
+    }
+    
     // Fazer requisição para criar checkout
     const response = await fetch(`${PAGSEGURO_API_URL}/v2/checkout`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      headers,
       body: checkoutData.toString(),
     });
 
@@ -197,16 +208,26 @@ export async function getPaymentStatus(transactionCode: string): Promise<{
   }
 
   try {
-    const params = new URLSearchParams();
+    // Preparar headers e params
+    const headers: HeadersInit = {};
+    let url = `${PAGSEGURO_API_URL}/v3/transactions/${transactionCode}`;
+    
     if (USE_API_KEY_METHOD) {
-      params.append('email', PAGSEGURO_API_KEY!);
-      params.append('token', PAGSEGURO_SECRET_KEY!);
+      // Método moderno: Basic Auth
+      const credentials = `${PAGSEGURO_API_KEY}:${PAGSEGURO_SECRET_KEY}`;
+      headers['Authorization'] = `Basic ${Buffer.from(credentials).toString('base64')}`;
     } else {
-      params.append('email', PAGSEGURO_EMAIL!);
-      params.append('token', PAGSEGURO_TOKEN!);
+      // Método tradicional: email e token na query string
+      const params = new URLSearchParams({
+        email: PAGSEGURO_EMAIL!,
+        token: PAGSEGURO_TOKEN!,
+      });
+      url += `?${params.toString()}`;
     }
 
-    const response = await fetch(`${PAGSEGURO_API_URL}/v3/transactions/${transactionCode}?${params.toString()}`);
+    const response = await fetch(url, {
+      headers,
+    });
     
     if (!response.ok) {
       throw new Error(`Erro ao consultar transação: ${response.status}`);
