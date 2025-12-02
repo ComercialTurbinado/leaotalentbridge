@@ -15,9 +15,10 @@ interface CreateCheckoutData {
 }
 
 // Configuração do PagSeguro - API Moderna (Checkout Transparente)
-// Usa API KEY e SECRET KEY com Basic Authentication
-const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
-const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY || '88b173f9a3e5414fbd805901cc86528a';
+// IMPORTANTE: A API de Orders pode precisar de EMAIL e TOKEN ao invés de API KEY/SECRET KEY
+// Se API KEY/SECRET KEY não funcionarem, use PAGSEGURO_EMAIL e PAGSEGURO_TOKEN
+const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY || process.env.PAGSEGURO_EMAIL || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
+const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY || process.env.PAGSEGURO_TOKEN || '88b173f9a3e5414fbd805901cc86528a';
 
 const PAGSEGURO_ENV = process.env.PAGSEGURO_ENV || 'production'; // 'sandbox' ou 'production'
 
