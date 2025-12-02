@@ -587,6 +587,72 @@
   }
 }
 
+/* User Form Styles */
+.userForm {
+  background: var(--secondary-black);
+  border: 1px solid var(--gray-400);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.userForm h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--spacing-sm);
+}
+
+.userForm > p {
+  color: var(--gray-700);
+  font-size: 0.95rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.formGroup {
+  margin-bottom: var(--spacing-lg);
+}
+
+.formGroup label {
+  display: block;
+  color: var(--white);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+  font-size: 0.95rem;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--primary-black);
+  border: 1px solid var(--gray-400);
+  border-radius: var(--radius-md);
+  color: var(--white);
+  font-size: 1rem;
+  transition: all var(--transition-medium);
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.formGroup input::placeholder {
+  color: var(--gray-600);
+}
+
+.formNote {
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid var(--primary-gold);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  color: var(--gray-300);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-top: var(--spacing-lg);
+}
+
 /* Common Features Section */
 .commonFeaturesSection {
   margin-bottom: var(--spacing-3xl);

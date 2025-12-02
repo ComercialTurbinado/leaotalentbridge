@@ -174,14 +174,13 @@ export default function CandidatoPagamentoPage() {
       }
 
       // Redirecionar para o checkout do Mercado Pago
-      const checkoutUrl = process.env.NODE_ENV === 'production' 
-        ? data.data.initPoint 
-        : (data.data.sandboxInitPoint || data.data.initPoint);
+      // Usar sandbox em desenvolvimento, produção em produção
+      const checkoutUrl = data.data.sandboxInitPoint || data.data.initPoint;
 
       if (checkoutUrl) {
         window.location.href = checkoutUrl;
       } else {
-        throw new Error('URL de checkout não fornecida');
+        throw new Error('URL de checkout não fornecida pelo Mercado Pago');
       }
     } catch (error) {
       console.error('Erro no pagamento:', error);

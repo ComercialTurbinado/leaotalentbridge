@@ -65,7 +65,7 @@ export async function createPaymentPreference(
           email: data.userEmail,
           name: data.userName,
         },
-        external_reference: data.userId, // Referência para identificar o usuário
+        external_reference: data.userId, // paymentId será passado aqui
         notification_url: `${apiUrl}/payments/webhook`, // URL do webhook
         back_urls: {
           success: data.metadata?.userType === 'empresa' 

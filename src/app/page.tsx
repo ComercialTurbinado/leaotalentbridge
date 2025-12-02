@@ -202,7 +202,6 @@ export default function HomePage() {
                             placeholder={t('home.hero.placeholders.linkedin')}
                             value={formData.linkedin}
                             onChange={handleInputChange}
-                            required
                           />
                         </div>
                       )}
