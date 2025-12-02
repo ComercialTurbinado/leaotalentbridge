@@ -31,25 +31,28 @@ if (!accessToken) {
   }
 }
 
-// Validar token antes de criar cliente
+// Validar token antes de criar cliente (apenas se configurado)
+// Não lançar erro no build - apenas logar aviso
 if (!accessToken) {
-  throw new Error('MERCADOPAGO_ACCESS_TOKEN não configurado. Configure a variável de ambiente MERCADOPAGO_ACCESS_TOKEN no servidor (AWS Amplify). O token deve começar com APP_USR- (produção) ou TEST- (teste).');
+  console.warn('⚠️ MERCADOPAGO_ACCESS_TOKEN não configurado. Este serviço não será usado se PagSeguro estiver configurado.');
+} else {
+  // Validar formato do token apenas se existir
+  if (!accessToken.startsWith('APP_USR-') && !accessToken.startsWith('TEST-')) {
+    console.warn('⚠️ Token do Mercado Pago não está no formato correto. Este serviço não será usado se PagSeguro estiver configurado.');
+  }
 }
 
-// Validar formato do token
-if (!accessToken.startsWith('APP_USR-') && !accessToken.startsWith('TEST-')) {
-  throw new Error('Token do Mercado Pago inválido! Use o ACCESS TOKEN (começa com APP_USR- ou TEST-), não o Secret Key. Configure MERCADOPAGO_ACCESS_TOKEN no servidor.');
-}
-
-const client = new MercadoPagoConfig({
+// Criar cliente apenas se accessToken estiver configurado
+const client = accessToken ? new MercadoPagoConfig({
   accessToken,
   options: {
     timeout: 5000,
   }
-});
+}) : null;
 
-const preferenceClient = new Preference(client);
-const paymentClient = new Payment(client);
+// Criar clientes apenas se client estiver configurado
+const preferenceClient = client ? new Preference(client) : null;
+const paymentClient = client ? new Payment(client) : null;
 
 export interface CreatePreferenceData {
   userId: string;
@@ -78,6 +81,10 @@ export interface MercadoPagoPreferenceResponse {
 export async function createPaymentPreference(
   data: CreatePreferenceData
 ): Promise<MercadoPagoPreferenceResponse> {
+  if (!preferenceClient) {
+    throw new Error('Mercado Pago não configurado. Use PagSeguro.');
+  }
+  
   try {
     // Obter URL base (remover /api se existir)
     // URL oficial: https://uaecareers.com/
