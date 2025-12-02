@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import jwt from 'jsonwebtoken';
 
 export interface User {
   _id: string;
@@ -176,5 +177,21 @@ export class AuthService {
       ...options,
       headers
     });
+  }
+}
+
+/**
+ * Verifica e decodifica um token JWT
+ * @param token - Token JWT a ser verificado
+ * @returns Dados decodificados do token ou null se inválido
+ */
+export function verifyToken(token: string): { userId: string; email?: string; name?: string; type?: string } | null {
+  try {
+    const jwtSecret = process.env.JWT_SECRET || 'default-jwt-secret-key-for-production-leao-careers-2024-mongodb-atlas-amplify';
+    const decoded = jwt.verify(token, jwtSecret) as any;
+    return decoded;
+  } catch (error) {
+    console.error('Erro ao verificar token:', error);
+    return null;
   }
 } 

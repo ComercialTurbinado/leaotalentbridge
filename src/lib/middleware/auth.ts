@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import connectMongoDB from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { Subscription } from '@/lib/models/Payment';
 
 export interface AuthenticatedUser {
   _id: string;
@@ -226,5 +227,59 @@ export function createProtectedRoute(
       console.error('Erro na rota protegida:', error);
       return NextResponse.json({ success: false, message: 'Erro interno do servidor' }, { status: 500 });
     }
+  };
+}
+
+/**
+ * Verifica se o usuário tem uma assinatura ativa e não expirada
+ * @param userId - ID do usuário
+ * @returns true se tiver assinatura ativa, false caso contrário
+ */
+export async function hasActiveSubscription(userId: string): Promise<boolean> {
+  try {
+    await connectMongoDB();
+    
+    const subscription = await Subscription.findOne({
+      companyId: userId,
+      status: 'active',
+      endDate: { $gte: new Date() } // Assinatura não expirada
+    }).lean();
+
+    return !!subscription;
+  } catch (error) {
+    console.error('Erro ao verificar assinatura ativa:', error);
+    return false;
+  }
+}
+
+/**
+ * Middleware para verificar se o usuário tem assinatura ativa
+ * Use em rotas que requerem pagamento para acessar
+ */
+export function requireActiveSubscription() {
+  return async (request: NextRequest, handler: (user: AuthenticatedUser) => Promise<NextResponse>) => {
+    const user = await verifyAuth(request);
+    
+    if (!user) {
+      return NextResponse.json({ success: false, message: 'Token inválido ou ausente' }, { status: 401 });
+    }
+
+    // Admin sempre tem acesso
+    if (user.type === 'admin') {
+      return handler(user);
+    }
+
+    // Verificar se tem assinatura ativa
+    const hasSubscription = await hasActiveSubscription(user._id);
+    
+    if (!hasSubscription) {
+      return NextResponse.json({ 
+        success: false, 
+        message: 'Assinatura não encontrada ou expirada. Por favor, renove sua assinatura.',
+        statusCode: 'SUBSCRIPTION_REQUIRED'
+      }, { status: 403 });
+    }
+
+    return handler(user);
   };
 }

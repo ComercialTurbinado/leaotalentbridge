@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { GrNotification, GrLogout, GrUser } from 'react-icons/gr';
 import { AuthService, User as UserType } from '@/lib/auth';
 import styles from './DashboardHeader.module.css';
+import GoogleTranslate from './GoogleTranslate';
 
 interface DashboardHeaderProps {
   user: UserType | null;
@@ -99,6 +100,8 @@ export default function DashboardHeader({ user, userType }: DashboardHeaderProps
         </nav>
         
         <div className={styles.headerActions}>
+          <GoogleTranslate />
+          
           <button className={styles.notificationBtn}>
             <GrNotification size={20} />
             <span className={styles.notificationBadge}>3</span>

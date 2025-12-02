@@ -44,6 +44,9 @@ export interface IPaymentInvoice {
 export interface IPayment extends Document {
   companyId: mongoose.Types.ObjectId;
   userId?: mongoose.Types.ObjectId; // Usuário que fez o pagamento
+  // Dados de convidado (para pagamentos sem autenticação)
+  guestEmail?: string; // Email do usuário não autenticado
+  guestName?: string; // Nome do usuário não autenticado
   
   // Identificação do pagamento
   paymentId: string; // ID único do pagamento
@@ -270,6 +273,9 @@ const PaymentSchema = new Schema<IPayment>({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
+  // Dados de convidado (para pagamentos sem autenticação)
+  guestEmail: String,
+  guestName: String,
   
   paymentId: {
     type: String,

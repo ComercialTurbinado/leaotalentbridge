@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,6 +12,16 @@ export default function EmpresaPagamentoPage() {
   const [selectedPlan, setSelectedPlan] = useState('anual-vista');
   const [paymentMethod, setPaymentMethod] = useState('credit');
   const [isLoading, setIsLoading] = useState(false);
+  // Dados do usuário (para pagamento sem autenticação)
+  const [userEmail, setUserEmail] = useState('');
+  const [userName, setUserName] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Verificar autenticação ao carregar
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
 
   const plans = [
     {
@@ -106,14 +116,76 @@ export default function EmpresaPagamentoPage() {
     setIsLoading(true);
     
     try {
-      // Simular processamento do pagamento
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const selectedPlanData = plans.find(p => p.id === selectedPlan);
+      if (!selectedPlanData) return;
+
+      // Obter token de autenticação (opcional)
+      const token = localStorage.getItem('token');
       
-      // Redirecionar para dashboard com acesso liberado
-      router.push('/empresa/dashboard?pagamento=sucesso');
+      // Se não estiver autenticado, verificar se tem dados do usuário
+      if (!token) {
+        if (!userEmail || !userName) {
+          setIsLoading(false);
+          alert('Por favor, preencha seu email e nome para continuar com o pagamento.');
+          return;
+        }
+      }
+
+      // Calcular valor total
+      const totalAmount = selectedPlanData.totalPrice 
+        ? parseFloat(selectedPlanData.totalPrice.replace('R$ ', '').replace('.', '').replace(',', '.'))
+        : parseFloat(selectedPlanData.price.replace('R$ ', '').replace('.', '').replace(',', '.'));
+
+      // Criar preferência de pagamento no Mercado Pago
+      const requestBody: any = {
+        planId: selectedPlan,
+        planName: selectedPlanData.name,
+        amount: totalAmount,
+        installments: selectedPlanData.installments ? parseInt(selectedPlanData.installments.split('x')[0]) : 1,
+        paymentMethod,
+        userType: 'empresa',
+      };
+
+      // Adicionar dados do usuário se não estiver autenticado
+      if (!token) {
+        requestBody.userEmail = userEmail;
+        requestBody.userName = userName;
+      }
+
+      const headers: any = {
+        'Content-Type': 'application/json',
+      };
+
+      // Adicionar token se existir
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch('/api/payments/create-preference', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(requestBody),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || 'Erro ao criar preferência de pagamento');
+      }
+
+      // Redirecionar para o checkout do Mercado Pago
+      const checkoutUrl = process.env.NODE_ENV === 'production' 
+        ? data.data.initPoint 
+        : (data.data.sandboxInitPoint || data.data.initPoint);
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        throw new Error('URL de checkout não fornecida');
+      }
     } catch (error) {
       console.error('Erro no pagamento:', error);
-      alert('Erro ao processar pagamento. Tente novamente.');
+      alert(error instanceof Error ? error.message : 'Erro ao processar pagamento. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -268,6 +340,40 @@ export default function EmpresaPagamentoPage() {
                   </div>
                 )}
               </div>
+
+              {/* Formulário de dados do usuário (se não autenticado) */}
+              {!isAuthenticated && (
+                <div className={styles.userForm}>
+                  <h4>Dados para Pagamento</h4>
+                  <p>Preencha os dados da empresa para continuar com o pagamento</p>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="userEmail">Email da Empresa *</label>
+                    <input
+                      type="email"
+                      id="userEmail"
+                      value={userEmail}
+                      onChange={(e) => setUserEmail(e.target.value)}
+                      placeholder="contato@empresa.com"
+                      required
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="userName">Nome da Empresa *</label>
+                    <input
+                      type="text"
+                      id="userName"
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
+                      placeholder="Nome da Empresa"
+                      required
+                    />
+                  </div>
+                  <p className={styles.formNote}>
+                    💡 A conta da empresa será criada automaticamente após o pagamento aprovado.
+                    Você receberá um email com instruções para acessar.
+                  </p>
+                </div>
+              )}
 
               <div className={styles.paymentSummary}>
                 <div className={styles.summaryRow}>
