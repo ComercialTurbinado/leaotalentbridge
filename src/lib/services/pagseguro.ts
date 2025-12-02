@@ -188,15 +188,4 @@ export async function getPaymentStatus(transactionCode: string): Promise<{
   }
 }
 
-export interface CreateCheckoutData {
-  userId?: string;
-  userEmail: string;
-  userName: string;
-  planId: string;
-  planName: string;
-  amount: number;
-  installments?: number;
-  paymentMethod: 'credit' | 'pix';
-  metadata?: Record<string, any>;
-}
 
