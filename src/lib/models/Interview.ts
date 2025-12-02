@@ -88,8 +88,7 @@ const InterviewSchema = new Schema<IInterview>({
   },
   scheduledDate: {
     type: Date,
-    required: true,
-    index: true
+    required: true
   },
   duration: {
     type: Number,

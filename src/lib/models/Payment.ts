@@ -543,7 +543,7 @@ const SubscriptionSchema = new Schema<ISubscription>({
 
 // Índices para Payment
 PaymentSchema.index({ companyId: 1, status: 1 });
-PaymentSchema.index({ paymentId: 1 });
+// paymentId já tem unique: true, não precisa de índice adicional
 PaymentSchema.index({ transactionId: 1 });
 PaymentSchema.index({ type: 1, status: 1 });
 PaymentSchema.index({ createdAt: -1 });

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { GrCheckbox, GrCreditCard, GrShield, GrPrevious, GrStar, GrGroup, GrDocument, GrVideo, GrPower, GrCalendar, GrChat, GrGlobe, GrBriefcase, GrTarget, GrBook, GrUser, GrTrophy } from 'react-icons/gr';
 import styles from './pagamento.module.css';
 
-export default function CandidatoPagamentoPage() {
+function CandidatoPagamentoContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { i18n } = useTranslation();
@@ -480,5 +480,21 @@ export default function CandidatoPagamentoPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CandidatoPagamentoPage() {
+  return (
+    <Suspense fallback={
+      <div className={styles.pagamentoPage}>
+        <div className={styles.pagamentoContainer}>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <p>Carregando...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <CandidatoPagamentoContent />
+    </Suspense>
   );
 } 
