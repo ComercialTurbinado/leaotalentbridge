@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -63,7 +63,7 @@ export default function CandidatoPagamentoPage() {
     return period;
   };
 
-  const plans = [
+  const plans = useMemo(() => [
     {
       id: 'anual-vista',
       name: 'Anual à Vista',
@@ -100,7 +100,7 @@ export default function CandidatoPagamentoPage() {
       allowsPix: false,
       amount: 6500
     }
-  ];
+  ], [i18n.language]);
 
   const commonFeatures = [
     {
