@@ -11,6 +11,12 @@ interface CreateCheckoutData {
   amount: number;
   installments?: number;
   paymentMethod: 'credit' | 'pix';
+  cardData?: {
+    number: string;
+    name: string;
+    expiry: string; // MM/AA
+    cvv: string;
+  };
   metadata?: Record<string, any>;
 }
 
@@ -97,11 +103,25 @@ export async function createCheckout(
       };
     } else {
       // Pagamento via cartão de crédito
-      // Para checkout transparente, o cartão será processado no frontend
-      // Por enquanto, criamos a transação sem dados do cartão
-      // O frontend precisará processar o cartão depois
+      // Incluir dados do cartão na transação
+      if (!data.cardData) {
+        throw new Error('Dados do cartão não fornecidos');
+      }
+
+      // Converter validade de MM/AA para formato esperado pela API
+      const [month, year] = data.cardData.expiry.split('/');
+      const expiryYear = `20${year}`; // Converter AA para AAAA
+
       transactionData.payment_method = {
         type: 'CREDIT_CARD',
+        card: {
+          number: data.cardData.number,
+          holder_name: data.cardData.name,
+          expiry_month: month,
+          expiry_year: expiryYear,
+          cvv: data.cardData.cvv,
+        },
+        installments: data.installments || 1,
       };
     }
 

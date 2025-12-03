@@ -19,6 +19,12 @@ function EmpresaPagamentoContent() {
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Dados do cartão de crédito
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardName, setCardName] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvv, setCardCvv] = useState('');
+  const [cardInstallments, setCardInstallments] = useState(1);
 
   // Taxa de conversão BRL para USD (aproximada)
   const BRL_TO_USD = 0.18; // 1 BRL = 0.18 USD (ajuste conforme necessário)
@@ -180,12 +186,42 @@ function EmpresaPagamentoContent() {
           ? parseFloat(selectedPlanData.totalPrice.replace(/[R$,\s]/g, '').replace('.', ''))
           : parseFloat(selectedPlanData.price.replace(/[R$,\s]/g, '').replace('.', '')));
 
+      // Validar dados do cartão se método for crédito
+      if (paymentMethod === 'credit') {
+        if (!cardNumber || !cardName || !cardExpiry || !cardCvv) {
+          alert('Por favor, preencha todos os dados do cartão');
+          return;
+        }
+        
+        // Validar formato do cartão (mínimo 13 dígitos)
+        const cardNumberClean = cardNumber.replace(/\s/g, '');
+        if (cardNumberClean.length < 13 || cardNumberClean.length > 19) {
+          alert('Número do cartão inválido');
+          return;
+        }
+        
+        // Validar validade (formato MM/AA)
+        const expiryParts = cardExpiry.split('/');
+        if (expiryParts.length !== 2 || expiryParts[0].length !== 2 || expiryParts[1].length !== 2) {
+          alert('Data de validade inválida. Use o formato MM/AA');
+          return;
+        }
+        
+        // Validar CVV
+        if (cardCvv.length < 3) {
+          alert('CVV inválido');
+          return;
+        }
+      }
+
       // Criar checkout de pagamento no PagSeguro
       const requestBody: any = {
         planId: selectedPlan,
         planName: selectedPlanData.name,
         amount: totalAmount,
-        installments: selectedPlanData.installments ? parseInt(selectedPlanData.installments.split('x')[0]) : 1,
+        installments: paymentMethod === 'credit' && selectedPlan === 'anual-parcelado' 
+          ? cardInstallments 
+          : (selectedPlanData.installments ? parseInt(selectedPlanData.installments.split('x')[0]) : 1),
         paymentMethod,
         userType: 'empresa',
       };
@@ -194,6 +230,16 @@ function EmpresaPagamentoContent() {
       if (!token) {
         requestBody.userEmail = userEmail;
         requestBody.userName = userName;
+      }
+
+      // Adicionar dados do cartão se método for crédito
+      if (paymentMethod === 'credit') {
+        requestBody.cardData = {
+          number: cardNumber.replace(/\s/g, ''),
+          name: cardName,
+          expiry: cardExpiry,
+          cvv: cardCvv,
+        };
       }
 
       const headers: any = {
@@ -415,6 +461,92 @@ function EmpresaPagamentoContent() {
                   </div>
                 )}
               </div>
+
+              {/* Formulário de dados do cartão (se método for cartão) */}
+              {paymentMethod === 'credit' && (
+                <div className={styles.cardForm}>
+                  <h4>Dados do Cartão</h4>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Número do Cartão</label>
+                      <input
+                        type="text"
+                        placeholder="0000 0000 0000 0000"
+                        value={cardNumber}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+                          const formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+                          setCardNumber(formatted);
+                        }}
+                        maxLength={19}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Nome no Cartão</label>
+                      <input
+                        type="text"
+                        placeholder="NOME COMO ESTÁ NO CARTÃO"
+                        value={cardName}
+                        onChange={(e) => setCardName(e.target.value.toUpperCase())}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label>Validade (MM/AA)</label>
+                      <input
+                        type="text"
+                        placeholder="MM/AA"
+                        value={cardExpiry}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          if (value.length <= 4) {
+                            const formatted = value.length > 2 ? `${value.slice(0, 2)}/${value.slice(2)}` : value;
+                            setCardExpiry(formatted);
+                          }
+                        }}
+                        maxLength={5}
+                        required
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label>CVV</label>
+                      <input
+                        type="text"
+                        placeholder="123"
+                        value={cardCvv}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                          setCardCvv(value);
+                        }}
+                        maxLength={4}
+                        required
+                      />
+                    </div>
+                  </div>
+                  {selectedPlan === 'anual-parcelado' && (
+                    <div className={styles.formRow}>
+                      <div className={styles.formGroup}>
+                        <label>Parcelas</label>
+                        <select
+                          value={cardInstallments}
+                          onChange={(e) => setCardInstallments(Number(e.target.value))}
+                        >
+                          {[1, 2, 3, 4, 5, 6].map((num) => (
+                            <option key={num} value={num}>
+                              {num}x {num === 1 ? 'sem juros' : 'sem juros'}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Formulário de dados do usuário (se não autenticado) */}
               {!isAuthenticated && (

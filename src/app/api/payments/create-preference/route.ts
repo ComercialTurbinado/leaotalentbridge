@@ -173,6 +173,7 @@ export async function POST(request: NextRequest) {
       amount,
       installments: installments || 1,
       paymentMethod: paymentMethod === 'pix' ? 'pix' : 'credit',
+      cardData: body.cardData, // Incluir dados do cartão se fornecido
       metadata: {
         userType,
         paymentMethod,
