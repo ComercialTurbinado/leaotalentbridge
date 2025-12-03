@@ -134,7 +134,7 @@ export async function createCheckout(
         'Content-Type': 'application/json',
         'Authorization': getAuthHeader(),
       },
-      body: JSON.stringify(orderData),
+      body: JSON.stringify(transactionData),
     });
 
     console.log('Response status:', response.status);
