@@ -16,8 +16,9 @@ interface CreateCheckoutData {
 
 // Configuração do PagSeguro - API Internacional
 // Aceita API KEY e SECRET KEY do myaccount.international.pagseguro.com
-const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY || process.env.PAGSEGURO_EMAIL || '';
-const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY || process.env.PAGSEGURO_TOKEN || '';
+// Credenciais hardcoded (do cliente)
+const PAGSEGURO_API_KEY = process.env.PAGSEGURO_API_KEY || '7f3fafd67ebb4204bcd3d7f4f28ae23d';
+const PAGSEGURO_SECRET_KEY = process.env.PAGSEGURO_SECRET_KEY || '88b173f9a3e5414fbd805901cc86528a';
 
 const PAGSEGURO_ENV = process.env.PAGSEGURO_ENV || 'production'; // 'sandbox' ou 'production'
 
