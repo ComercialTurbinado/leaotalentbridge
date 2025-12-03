@@ -69,52 +69,50 @@ export async function createCheckout(
   }
 
   try {
-    console.log('=== CRIANDO PEDIDO NO PAGSEGURO (API MODERNA) ===');
+    console.log('=== CRIANDO TRANSAÇÃO NO PAGSEGURO (API INTERNACIONAL v3) ===');
     console.log('Dados:', JSON.stringify(data, null, 2));
 
-    // Preparar dados do pedido
-    const orderData: any = {
-      reference_id: data.metadata?.paymentId || `PAY-${Date.now()}`,
+    // Preparar dados da transação conforme documentação:
+    // https://developers.international.pagseguro.com/reference/create-transaction
+    const transactionData: any = {
+      reference: data.metadata?.paymentId || `PAY-${Date.now()}`,
+      amount: {
+        value: Math.round(data.amount * 100), // Converter para centavos
+        currency: 'BRL',
+      },
+      description: data.planName,
       customer: {
         name: data.userName,
         email: data.userEmail,
       },
-      items: [
-        {
-          reference_id: data.planId,
-          name: data.planName,
-          quantity: 1,
-          unit_amount: Math.round(data.amount * 100), // Converter para centavos
-        },
-      ],
     };
 
     // Adicionar método de pagamento
     if (data.paymentMethod === 'pix') {
-      // Pagamento via PIX - criar cobrança PIX
-      orderData.qr_codes = [
-        {
-          amount: {
-            value: Math.round(data.amount * 100),
-          },
-        },
-      ];
+      // Pagamento via PIX
+      // Nota: A API Internacional pode não suportar PIX diretamente
+      // Pode ser necessário usar outra API ou método
+      transactionData.payment_method = {
+        type: 'PIX',
+      };
     } else {
       // Pagamento via cartão de crédito
-      // Para checkout transparente, criamos o pedido primeiro
-      // O cartão será capturado em uma etapa separada via API de charges
-      // Por enquanto, criamos o pedido sem charge para retornar orderId
-      // O frontend precisará criar a charge depois com os dados do cartão
+      // Para checkout transparente, o cartão será processado no frontend
+      // Por enquanto, criamos a transação sem dados do cartão
+      // O frontend precisará processar o cartão depois
+      transactionData.payment_method = {
+        type: 'CREDIT_CARD',
+      };
     }
 
-    // Fazer requisição para criar pedido
-    // Tentar com Basic Auth primeiro (API moderna)
-    let response = await fetch(`${PAGSEGURO_API_URL}/orders`, {
+    // Fazer requisição para criar transação
+    // Seguindo documentação: https://developers.international.pagseguro.com/reference/create-transaction
+    // Endpoint: POST /v3/transactions
+    let response = await fetch(`${PAGSEGURO_API_URL}/v3/transactions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': getAuthHeader(),
-        'x-api-version': '4.0',
       },
       body: JSON.stringify(orderData),
     });
@@ -228,10 +226,10 @@ export async function getPaymentStatus(transactionCode: string): Promise<{
   }
 
   try {
-    const response = await fetch(`${PAGSEGURO_API_URL}/orders/${transactionCode}`, {
+    // Endpoint para buscar transação: GET /v3/transactions/{transactionCode}
+    const response = await fetch(`${PAGSEGURO_API_URL}/v3/transactions/${transactionCode}`, {
       headers: {
         'Authorization': getAuthHeader(),
-        'x-api-version': '4.0',
       },
     });
     
