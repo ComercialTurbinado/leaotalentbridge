@@ -138,13 +138,13 @@ export async function createCheckout(
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Erro ao criar pedido:', errorText);
-      console.error('URL:', `${PAGSEGURO_API_URL}/orders`);
+      console.error('URL:', `${PAGSEGURO_API_URL}/v3/transactions`);
       console.error('Auth Header:', getAuthHeader().substring(0, 20) + '...');
       console.error('API Key length:', PAGSEGURO_API_KEY.length);
       console.error('Secret Key length:', PAGSEGURO_SECRET_KEY.length);
       console.error('Environment:', PAGSEGURO_ENV);
       
-      let errorMessage = `Falha ao criar pedido no PagSeguro (Status: ${response.status})`;
+      let errorMessage = `Falha ao criar transação no PagSeguro (Status: ${response.status})`;
       try {
         const errorJson = JSON.parse(errorText);
         if (errorJson.message) {
@@ -171,36 +171,37 @@ export async function createCheckout(
     const responseData = await response.json();
     console.log('Response data:', JSON.stringify(responseData, null, 2));
 
-    // Extrair informações do pedido
-    const orderId = responseData.id || responseData.reference_id;
+    // Extrair informações da transação
+    // A resposta da API v3/transactions retorna um objeto com código da transação
+    const transactionCode = responseData.code || responseData.id || responseData.reference;
     
-    // Se for PIX, extrair QR Code
+    // Se for PIX, extrair QR Code (se disponível na resposta)
     let qrCode: string | undefined;
     let qrCodeText: string | undefined;
     
-    if (data.paymentMethod === 'pix' && responseData.qr_codes && responseData.qr_codes.length > 0) {
-      qrCode = responseData.qr_codes[0].links?.[0]?.href || responseData.qr_codes[0].text;
-      qrCodeText = responseData.qr_codes[0].text;
+    if (data.paymentMethod === 'pix' && responseData.qr_code) {
+      qrCode = responseData.qr_code;
+      qrCodeText = responseData.qr_code;
     }
 
-    // Para checkout transparente, não há URL de redirecionamento tradicional
+    // Para checkout transparente, não há URL de redirecionamento
     // O pagamento é processado no próprio site
     const checkoutUrl = data.paymentMethod === 'pix' 
       ? undefined 
-      : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://uaecareers.com'}/${data.metadata?.userType || 'candidato'}/pagamento/processar?orderId=${orderId}`;
+      : undefined; // Cartão será processado no frontend, não precisa de URL
 
-    console.log('✅ Pedido criado com sucesso:', {
-      orderId,
+    console.log('✅ Transação criada com sucesso:', {
+      transactionCode,
       qrCode: qrCode ? 'Gerado' : 'N/A',
       checkoutUrl: checkoutUrl || 'N/A'
     });
 
     return {
-      checkoutCode: orderId,
+      checkoutCode: transactionCode,
       checkoutUrl: checkoutUrl || '',
       qrCode,
       qrCodeText,
-      orderId,
+      orderId: transactionCode,
     };
   } catch (error: any) {
     console.error('=== ERRO AO CRIAR PEDIDO NO PAGSEGURO ===');
