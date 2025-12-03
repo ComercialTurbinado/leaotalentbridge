@@ -120,21 +120,6 @@ export async function createCheckout(
     console.log('Response status:', response.status);
     console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
-    // Se der 401, pode ser que a API precise de outro formato
-    if (response.status === 401) {
-      console.log('⚠️ 401 Unauthorized - Tentando formato alternativo...');
-      // Tentar sem x-api-version ou com formato diferente
-      response = await fetch(`${PAGSEGURO_API_URL}/orders`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': getAuthHeader(),
-        },
-        body: JSON.stringify(orderData),
-      });
-      console.log('Response status (tentativa 2):', response.status);
-    }
-
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Erro ao criar pedido:', errorText);
